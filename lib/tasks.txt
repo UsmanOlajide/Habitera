@@ -1,0 +1,31 @@
+- Built the navigation bar
+- Added the themeing (apptheme & fonts)
+- Built the date section
+- I made the greeting show dynamically based on current time
+- Clean up the code
+- Remove the if-else statement in the habits screen
+- Added a getter in the Greeting enum to handle the all the logic instead
+- Created a repo for the app
+- Fix issue where the greeting's state only updated by hot restart
+
+
+
+
+
+
+
+
+Jan 3/Jan 4  (midnight to midnight)
+- Built the navigation bar
+- Added the themeing (apptheme & fonts)
+- Built the date section
+- I made the greeting show dynamically based on current time
+
+Jan 4
+- Clean up the code
+- Remove the if-else statement in the habits screen
+- Added a getter in the Greeting enum to handle the currentGreeting instead.
+   -This way all the logic is in the enum.
+- Created a repo for the app
+- Fix issue where the greeting's state only updated by hot restart, 
+   - so I made sure the greeting text state changes with the appropriate hour
