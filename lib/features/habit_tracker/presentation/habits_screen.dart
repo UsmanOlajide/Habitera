@@ -1,4 +1,4 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+// ignore_for_file: public_member_api_docs, sort_constructors_first, avoid_unnecessary_containers
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -8,10 +8,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'package:habitera/constants/color_picker.dart';
 import 'package:habitera/constants/enums.dart';
 import 'package:habitera/constants/sizes.dart';
 import 'package:habitera/features/habit_tracker/data/models/habit_isar.dart';
+import 'package:habitera/features/habit_tracker/data/repositories/checkin_repository.dart';
 import 'package:habitera/features/habit_tracker/presentation/habit_provider.dart';
 import 'package:habitera/features/habit_tracker/presentation/widgets/date_section.dart';
 import 'package:habitera/features/habit_tracker/presentation/widgets/habit_type_bottom_sheet.dart';
@@ -58,6 +58,8 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen> {
   Widget build(BuildContext context) {
     final habits = ref.watch(habitsProvider);
     final repo = ref.read(habitRepositoryProvider);
+    final doneHabitIdsAsync = ref.watch(doneHabitIdsProvider);
+    final doneHabitIds = doneHabitIdsAsync.value ?? <int>{};
 
     // print(habits);
     return Scaffold(
@@ -67,6 +69,7 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              kSizedBoxh10,
               Text(
                 currentGreeting,
                 style: GoogleFonts.nunitoSans(
@@ -74,7 +77,7 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen> {
                   fontSize: 30.0,
                 ),
               ),
-              kSizedBoxh20,
+              kSizedBoxh10,
               DateSection(),
               kSizedBoxh20,
               Text(
@@ -90,19 +93,26 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen> {
                 child: habits.when(
                   data: (habits) {
                     if (habits.isEmpty) {
-                      Center(child: Text('No habits yet'));
+                      return Center(
+                        child: Column(
+                          children: [
+                            Text('No habits yet'),
+                            Text('Create a your first habit to get started'),
+                          ],
+                        ),
+                      );
                     }
 
                     return ListView.separated(
                       itemBuilder: (_, i) {
                         final habit = habits[i];
+                        final isDone = doneHabitIds.contains(habit.id);
                         return HabitTile(
                           habit: habit,
                           type: habit.type,
                           habitTitle: habit.title,
                           createdAt: habit.createdAt,
                           onDelete: () async {
-                            print('Delete called for habit: ${habit.id}');
                             await repo.deleteHabit(habit.id);
                             ref.invalidate(habitsProvider);
                           },
@@ -122,10 +132,10 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen> {
                                 action: SnackBarAction(
                                   label: 'UNDO',
                                   onPressed: () async {
-                                    final repository = ref.read(
-                                      habitRepositoryProvider,
-                                    );
-                                    await repository.addHabit(deletedHabit);
+                                    // final repository = ref.read(
+                                    //   habitRepositoryProvider,
+                                    // );
+                                    await repo.addHabit(deletedHabit);
                                     ref.invalidate(habitsProvider);
 
                                     messenger.showSnackBar(
@@ -138,6 +148,17 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen> {
                                 ),
                               ),
                             );
+                          },
+                          isDone: isDone,
+                          onChanged: (value) async {
+                            final checkinRepo = ref.read(
+                              checkinRepositoryProvider,
+                            );
+                            await checkinRepo.toggleDone(habit.id);
+                            ref.invalidate(doneHabitIdsProvider);
+                            // setState(() {
+
+                            // });
                           },
                         );
                       },
@@ -223,6 +244,8 @@ class HabitTile extends StatelessWidget {
     this.onDelete,
     this.onTapDelete,
     required this.habit,
+    this.onChanged,
+    required this.isDone,
   });
 
   final String habitTitle;
@@ -232,7 +255,9 @@ class HabitTile extends StatelessWidget {
   final VoidCallback? onEdit;
   final Future<void> Function()? onDelete;
   final void Function()? onTapDelete;
+  final void Function(bool?)? onChanged;
   final HabitIsar habit;
+  final bool isDone;
 
   String createdDate(DateTime createdAt) {
     final now = DateTime.now();
@@ -285,7 +310,8 @@ class HabitTile extends StatelessWidget {
         ],
       ),
       child: Container(
-        height: 74.0,
+        // height: 74.0,
+        height: 113.0,
         // padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
         decoration: BoxDecoration(
           color: Colors.grey.shade200,
@@ -340,6 +366,8 @@ class HabitTile extends StatelessWidget {
                         ],
                       ),
                     ),
+                    //. Checkbox
+                    Checkbox(value: isDone, onChanged: onChanged),
                   ],
                 ),
               ),
@@ -457,10 +485,6 @@ class HabitTile extends StatelessWidget {
   }
 }
 
-// child: Transform.translate(
-//   offset: const Offset(2, -7),
-//   child: Icon(Icons.more_horiz, size: 20),
-// ),
 class TypeChip extends StatelessWidget {
   const TypeChip({super.key, required this.type});
 
@@ -489,120 +513,107 @@ class TypeChip extends StatelessWidget {
   }
 }
 
-//* OLD getter for current greeting
+//* agglo code
+// class CustomCard extends ConsumerWidget {
+//   CustomCard({
+//     super.key,
+//     required this.title,
+//     required this.titleColor,
+//     this.trailingWidget,
+//     this.menuPadding,
+//     this.width,
+//     this.height,
+//     this.dividerBottomSpace,
+//     required this.itemBuilder,
+//     this.onSelected,
+//     required this.children,
+//     this.isEnabled,
+//   });
 
-// String get greeting {
-//   final hour = DateTime.now().hour;
+//   final String title;
+//   final Color? titleColor;
+//   final Widget? trailingWidget;
+//   final EdgeInsetsGeometry? menuPadding;
+//   final double? width;
+//   final double? height;
+//   final double? dividerBottomSpace;
+//   final void Function(String)? onSelected;
+//   final List<PopupMenuEntry<String>> Function(BuildContext) itemBuilder;
+//   final List<Widget> children;
+//   bool? isEnabled;
 
-//   if (hour >= 0 && hour < 12) {
-//     return 'Good Morning';
-//   } else if (hour >= 12 && hour < 18) {
-//     return 'Good Afternoon';
-//   } else {
-//     return 'Good Evening';
+//   @override
+//   Widget build(BuildContext context, WidgetRef ref) {
+//     return Container(
+//       height: height,
+//       decoration: BoxDecoration(
+//         color: Colors.white,
+//         borderRadius: BorderRadius.circular(4),
+//         boxShadow: const [
+//           BoxShadow(
+//             color: Color.fromRGBO(0, 0, 0, 0.1),
+//             blurRadius: 5,
+//             offset: Offset(0, 2),
+//           ),
+//         ],
+//       ),
+//       child: Padding(
+//         padding: const EdgeInsets.only(
+//           right: 15,
+//           left: 15,
+//           // bottom: 13,
+//           bottom: 15,
+//         ),
+//         child: Column(
+//           children: [
+//             Row(
+//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//               children: [
+//                 Text(
+//                   title,
+//                   style: context.textTheme.bodyMedium?.copyWith(
+//                     fontSize: 15,
+//                     fontWeight: FontWeight.w500,
+//                     color: titleColor,
+//                   ),
+//                 ),
+//                 if (trailingWidget != null) ...[
+//                   const SizedBox(width: 8.0),
+//                   trailingWidget!,
+//                 ],
+//                 PopupMenuButton<String>(
+//                   // shadowColor: ColorPicker.dividerColor,
+//                   offset: const Offset(14, 0),
+//                   padding: const EdgeInsets.only(left: 6),
+//                   menuPadding: menuPadding,
+//                   // menuPadding: const EdgeInsets.only(
+//                   //     left: 9, right: 9, top: 9, bottom: 7),
+//                   icon: SvgPicture.asset(
+//                     "assets/icons/options.svg",
+//                     height: 8,
+//                     fit: BoxFit.scaleDown,
+//                   ),
+//                   onSelected: onSelected,
+//                   enabled: isEnabled ?? true,
+//                   itemBuilder: itemBuilder,
+//                   constraints: BoxConstraints.tightFor(width: width),
+//                   // constraints: const BoxConstraints.tightFor(width: 121.5),
+//                   shape: RoundedRectangleBorder(
+//                     borderRadius: BorderRadius.circular(5),
+//                   ),
+//                 ),
+//               ],
+//             ),
+//             // const CustomDivider(),
+//             SizedBox(height: dividerBottomSpace),
+//             // const SizedBox(height: 10),
+//             Row(
+//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//               children: children,
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
 //   }
 // }
-
-class CustomCard extends ConsumerWidget {
-  CustomCard({
-    super.key,
-    required this.title,
-    required this.titleColor,
-    this.trailingWidget,
-    this.menuPadding,
-    this.width,
-    this.height,
-    this.dividerBottomSpace,
-    required this.itemBuilder,
-    this.onSelected,
-    required this.children,
-    this.isEnabled,
-  });
-
-  final String title;
-  final Color? titleColor;
-  final Widget? trailingWidget;
-  final EdgeInsetsGeometry? menuPadding;
-  final double? width;
-  final double? height;
-  final double? dividerBottomSpace;
-  final void Function(String)? onSelected;
-  final List<PopupMenuEntry<String>> Function(BuildContext) itemBuilder;
-  final List<Widget> children;
-  bool? isEnabled;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
-      height: height,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(4),
-        boxShadow: const [
-          BoxShadow(
-            color: Color.fromRGBO(0, 0, 0, 0.1),
-            blurRadius: 5,
-            offset: Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.only(
-          right: 15,
-          left: 15,
-          // bottom: 13,
-          bottom: 15,
-        ),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  title,
-                  style: context.textTheme.bodyMedium?.copyWith(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w500,
-                    color: titleColor,
-                  ),
-                ),
-                if (trailingWidget != null) ...[
-                  const SizedBox(width: 8.0),
-                  trailingWidget!,
-                ],
-                PopupMenuButton<String>(
-                  // shadowColor: ColorPicker.dividerColor,
-                  offset: const Offset(14, 0),
-                  padding: const EdgeInsets.only(left: 6),
-                  menuPadding: menuPadding,
-                  // menuPadding: const EdgeInsets.only(
-                  //     left: 9, right: 9, top: 9, bottom: 7),
-                  icon: SvgPicture.asset(
-                    "assets/icons/options.svg",
-                    height: 8,
-                    fit: BoxFit.scaleDown,
-                  ),
-                  onSelected: onSelected,
-                  enabled: isEnabled ?? true,
-                  itemBuilder: itemBuilder,
-                  constraints: BoxConstraints.tightFor(width: width),
-                  // constraints: const BoxConstraints.tightFor(width: 121.5),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                ),
-              ],
-            ),
-            // const CustomDivider(),
-            SizedBox(height: dividerBottomSpace),
-            // const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: children,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}

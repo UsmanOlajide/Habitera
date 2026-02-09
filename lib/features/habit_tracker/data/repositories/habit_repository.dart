@@ -1,7 +1,6 @@
 // will handle all isar operations so the ui doesn't handle that
 // will handle saving and loading of habits from the database so the ui doesn't need to know how data is stored
 import 'package:habitera/features/habit_tracker/data/models/habit_isar.dart';
-import 'package:habitera/features/habit_tracker/domain/habit.dart';
 import 'package:habitera/isar_service.dart';
 import 'package:isar/isar.dart';
 

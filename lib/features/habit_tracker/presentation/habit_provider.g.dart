@@ -6,6 +6,36 @@ part of 'habit_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+String _$doneHabitIdsHash() => r'04f337588821736bb2f30ae61c186f7a4de90319';
+
+/// See also [doneHabitIds].
+@ProviderFor(doneHabitIds)
+final doneHabitIdsProvider = AutoDisposeFutureProvider<Set<int>>.internal(
+  doneHabitIds,
+  name: r'doneHabitIdsProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$doneHabitIdsHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef DoneHabitIdsRef = AutoDisposeFutureProviderRef<Set<int>>;
+String _$checkinRepositoryHash() => r'beb7ea004d24b2db5420d1c078eb6636ad1cb8b6';
+
+/// See also [checkinRepository].
+@ProviderFor(checkinRepository)
+final checkinRepositoryProvider =
+    AutoDisposeProvider<CheckinRepository>.internal(
+  checkinRepository,
+  name: r'checkinRepositoryProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$checkinRepositoryHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef CheckinRepositoryRef = AutoDisposeProviderRef<CheckinRepository>;
 String _$habitRepositoryHash() => r'99f3d3542a631d09990307fc2ea4cbf419f2f7bc';
 
 /// See also [habitRepository].
