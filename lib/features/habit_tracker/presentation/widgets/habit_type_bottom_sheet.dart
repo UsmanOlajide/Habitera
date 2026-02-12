@@ -15,17 +15,17 @@ class HabitTypeBottomSheet extends StatelessWidget {
       width: double.infinity,
       child: Column(
         children: [
-          kSizedBoxh10,
+          kSizedBoxH10,
           Text('Add a Habit', style: context.textTheme.titleMedium),
-          kSizedBoxh20,
+          kSizedBoxH20,
           ElevatedButton(
             onPressed: () => context.pop(HabitType.startHabit),
             child: Text('Start a Habit'),
           ),
           Text('(e.g. Exercise, Read, Wake up early)'),
-          kSizedBoxh15,
+          kSizedBoxH15,
           ElevatedButton(
-           onPressed: () => context.pop(HabitType.breakHabit),
+            onPressed: () => context.pop(HabitType.breakHabit),
             child: Text('Break a Habit'),
           ),
           Text('(e.g. Smoking, Sugar, Procrastination)'),
@@ -58,9 +58,9 @@ void goToAddHabit(BuildContext context, HabitType type) async {
 //       width: double.infinity,
 //       child: Column(
 //         children: [
-//           kSizedBoxh10,
+//           kSizedBoxH10,
 //           Text('Add a Habit', style: context.textTheme.titleMedium),
-//           kSizedBoxh20,
+//           kSizedBoxH20,
 //           ElevatedButton(
 //             onPressed: () {
 //               context.pop();
@@ -69,7 +69,7 @@ void goToAddHabit(BuildContext context, HabitType type) async {
 //             child: Text('Start a Habit'),
 //           ),
 //           Text('(e.g. Exercise, Read, Wake up early)'),
-//           kSizedBoxh15,
+//           kSizedBoxH15,
 //           ElevatedButton(
 //             onPressed: () {
 //               context.pop();

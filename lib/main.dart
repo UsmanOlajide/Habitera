@@ -25,27 +25,3 @@ class MyApp extends ConsumerWidget {
     );
   }
 }
-
-// void main() async {
-//   WidgetsFlutterBinding.ensureInitialized();
-//   await Firebase.initializeApp(
-//     options: DefaultFirebaseOptions.currentPlatform,
-//   );
-//   runApp(
-//     const ProviderScope(
-//       child: MyApp(),
-//     ),
-//   );
-
-//   // Test Firestore connection
-//   try {
-//     await FirebaseFirestore.instance.collection('test').doc('testDoc').set({
-//       'testField': 'Hello Firestore',
-//     });
-//     debugPrint("Firestore test document written successfully!");
-//   } catch (e) {
-//     debugPrint("Error writing to Firestore: $e");
-//   }
-
-//   runApp(const MyApp());
-// }

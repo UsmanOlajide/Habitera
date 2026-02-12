@@ -84,7 +84,7 @@ class _EditHabitScreenState extends ConsumerState<EditHabitScreen> {
                         return null;
                       },
                     ),
-                    kSizedBoxh8,
+                    kSizedBoxH8,
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
@@ -92,7 +92,7 @@ class _EditHabitScreenState extends ConsumerState<EditHabitScreen> {
                         style: context.textTheme.labelLarge,
                       ),
                     ),
-                    kSizedBoxh8,
+                    kSizedBoxH8,
                     Align(
                       alignment: Alignment.centerLeft,
                       child: SegmentedButton(
@@ -229,7 +229,7 @@ class TitleField extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(title, style: context.textTheme.labelLarge),
-        kSizedBoxh8,
+        kSizedBoxH8,
         SizedBox(
           height: 50.0,
           child: TextFormField(

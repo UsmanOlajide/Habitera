@@ -4,18 +4,20 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:habitera/constants/enums.dart';
 import 'package:habitera/constants/sizes.dart';
 import 'package:habitera/features/habit_tracker/data/models/habit_isar.dart';
-import 'package:habitera/features/habit_tracker/data/repositories/checkin_repository.dart';
+import 'package:habitera/features/habit_tracker/data/repositories/habit_repository.dart';
 import 'package:habitera/features/habit_tracker/presentation/habit_provider.dart';
 import 'package:habitera/features/habit_tracker/presentation/widgets/date_section.dart';
 import 'package:habitera/features/habit_tracker/presentation/widgets/habit_type_bottom_sheet.dart';
+import 'package:habitera/features/habit_tracker/presentation/widgets/type_chip.dart';
 import 'package:habitera/router/app_router.dart';
+import 'package:habitera/router/habit_details_args.dart';
+import 'package:habitera/utils/created_date.dart';
 import 'package:habitera/utils/extensions.dart';
 
 // -----------------------------
@@ -58,10 +60,10 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen> {
   Widget build(BuildContext context) {
     final habits = ref.watch(habitsProvider);
     final repo = ref.read(habitRepositoryProvider);
+
     final doneHabitIdsAsync = ref.watch(doneHabitIdsProvider);
     final doneHabitIds = doneHabitIdsAsync.value ?? <int>{};
 
-    // print(habits);
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -69,7 +71,7 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              kSizedBoxh10,
+              kSizedBoxH10,
               Text(
                 currentGreeting,
                 style: GoogleFonts.nunitoSans(
@@ -77,16 +79,37 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen> {
                   fontSize: 30.0,
                 ),
               ),
-              kSizedBoxh10,
+              kSizedBoxH10,
               DateSection(),
-              kSizedBoxh20,
-              Text(
-                'YOUR HABITS',
-                // 'TODAY',
-                style: GoogleFonts.nunitoSans(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 15.0,
-                ),
+              kSizedBoxH20,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'YOUR HABITS',
+                    // 'TODAY',
+                    style: GoogleFonts.nunitoSans(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 15.0,
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        'SORT',
+                        style: context.textTheme.bodyLarge?.copyWith(
+                          // color: Colors.black38,
+                          // color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          fontSize: 15.0,
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.filter_list),
+                        onPressed: () {},
+                      ),
+                    ],
+                  ),
+                ],
               ),
               const SizedBox(height: 10.0),
               Expanded(
@@ -103,67 +126,11 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen> {
                       );
                     }
 
-                    return ListView.separated(
-                      itemBuilder: (_, i) {
-                        final habit = habits[i];
-                        final isDone = doneHabitIds.contains(habit.id);
-                        return HabitTile(
-                          habit: habit,
-                          type: habit.type,
-                          habitTitle: habit.title,
-                          createdAt: habit.createdAt,
-                          onDelete: () async {
-                            await repo.deleteHabit(habit.id);
-                            ref.invalidate(habitsProvider);
-                          },
-                          onTapDelete: () async {
-                            final deletedHabit = habit;
-                            await repo.deleteHabit(deletedHabit.id);
-                            ref.invalidate(habitsProvider);
-
-                            if (!context.mounted) return;
-
-                            final messenger = ScaffoldMessenger.of(context);
-                            messenger.hideCurrentSnackBar();
-                            messenger.showSnackBar(
-                              SnackBar(
-                                duration: Duration(seconds: 8),
-                                content: Text('Habit deleted'),
-                                action: SnackBarAction(
-                                  label: 'UNDO',
-                                  onPressed: () async {
-                                    // final repository = ref.read(
-                                    //   habitRepositoryProvider,
-                                    // );
-                                    await repo.addHabit(deletedHabit);
-                                    ref.invalidate(habitsProvider);
-
-                                    messenger.showSnackBar(
-                                      SnackBar(
-                                        duration: Duration(seconds: 2),
-                                        content: Text('Habit restored'),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                            );
-                          },
-                          isDone: isDone,
-                          onChanged: (value) async {
-                            final checkinRepo = ref.read(
-                              checkinRepositoryProvider,
-                            );
-                            await checkinRepo.toggleDone(habit.id);
-                            ref.invalidate(doneHabitIdsProvider);
-                            // setState(() {
-
-                            // });
-                          },
-                        );
-                      },
-                      separatorBuilder: (_, _) => const SizedBox(height: 10.0),
-                      itemCount: habits.length,
+                    return HabitListView(
+                      doneHabitIds: doneHabitIds,
+                      repo: repo,
+                      ref: ref,
+                      habits: habits,
                     );
                   },
                   error: (error, stack) => Center(child: Text('Error: $error')),
@@ -173,6 +140,408 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen> {
               ),
               CreateHabitButton(),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class HabitListView extends StatelessWidget {
+  const HabitListView({
+    super.key,
+    required this.doneHabitIds,
+    required this.repo,
+    required this.ref,
+    required this.habits,
+  });
+
+  final Set<int> doneHabitIds;
+  final HabitRepository repo;
+  final WidgetRef ref;
+  final List<HabitIsar> habits;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.separated(
+      itemBuilder: (_, i) {
+        final habit = habits[i];
+        final isDone = doneHabitIds.contains(habit.id);
+        return HabitTile(
+          habit: habit,
+          type: habit.type,
+          habitTitle: habit.title,
+          createdAt: habit.createdAt,
+          onDelete: () async {
+            await repo.deleteHabit(habit.id);
+            ref.invalidate(habitsProvider);
+          },
+          onTapDelete: () async {
+            final deletedHabit = habit;
+            await repo.deleteHabit(deletedHabit.id);
+            ref.invalidate(habitsProvider);
+
+            if (!context.mounted) return;
+
+            final messenger = ScaffoldMessenger.of(context);
+            messenger.hideCurrentSnackBar();
+            messenger.showSnackBar(
+              SnackBar(
+                duration: Duration(seconds: 8),
+                content: Text('Habit deleted'),
+                action: SnackBarAction(
+                  label: 'UNDO',
+                  onPressed: () async {
+                    // final repository = ref.read(
+                    //   habitRepositoryProvider,
+                    // );
+                    await repo.addHabit(deletedHabit);
+                    ref.invalidate(habitsProvider);
+
+                    messenger.showSnackBar(
+                      SnackBar(
+                        duration: Duration(seconds: 2),
+                        content: Text('Habit restored'),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            );
+          },
+          isDone: isDone,
+          onChanged: (value) async {
+            final checkinRepo = ref.read(checkinRepositoryProvider);
+            await checkinRepo.toggleDone(habit.id);
+            ref.invalidate(doneHabitIdsProvider);
+          },
+        );
+      },
+      separatorBuilder: (_, _) => const SizedBox(height: 10.0),
+      itemCount: habits.length,
+    );
+  }
+}
+
+//   @override
+//   Widget build(BuildContext context) {
+//     final habits = ref.watch(habitsProvider);
+//     final repo = ref.read(habitRepositoryProvider);
+//     final doneHabitIdsAsync = ref.watch(doneHabitIdsProvider);
+//     final doneHabitIds = doneHabitIdsAsync.value ?? <int>{};
+//     return Scaffold(
+//       body: SafeArea(
+//         child: Padding(
+//           padding: EdgeInsets.symmetric(horizontal: 16.0),
+//           child: Column(
+//             crossAxisAlignment: CrossAxisAlignment.start,
+//             children: [
+//               kSizedBoxH10,
+//               Text(
+//                 currentGreeting,
+//                 style: GoogleFonts.nunitoSans(
+//                   fontWeight: FontWeight.bold,
+//                   fontSize: 30.0,
+//                 ),
+//               ),
+//               kSizedBoxH10,
+//               DateSection(),
+//               kSizedBoxH20,
+//               Text(
+//                 'YOUR HABITS',
+//                 // 'TODAY',
+//                 style: GoogleFonts.nunitoSans(
+//                   fontWeight: FontWeight.w700,
+//                   fontSize: 15.0,
+//                 ),
+//               ),
+//               const SizedBox(height: 10.0),
+//               Expanded(
+//                 child: habits.when(
+//                   data: (habits) {
+//                     if (habits.isEmpty) {
+//                       return Center(
+//                         child: Column(
+//                           children: [
+//                             Text('No habits yet'),
+//                             Text('Create a your first habit to get started'),
+//                           ],
+//                         ),
+//                       );
+//                     }
+
+//                     return ListView.separated(
+//                       itemBuilder: (_, i) {
+//                         final habit = habits[i];
+//                         final isDone = doneHabitIds.contains(habit.id);
+//                         return HabitTile(
+//                           habit: habit,
+//                           type: habit.type,
+//                           habitTitle: habit.title,
+//                           createdAt: habit.createdAt,
+//                           onDelete: () async {
+//                             await repo.deleteHabit(habit.id);
+//                             ref.invalidate(habitsProvider);
+//                           },
+//                           onTapDelete: () async {
+//                             final deletedHabit = habit;
+//                             await repo.deleteHabit(deletedHabit.id);
+//                             ref.invalidate(habitsProvider);
+
+//                             if (!context.mounted) return;
+
+//                             final messenger = ScaffoldMessenger.of(context);
+//                             messenger.hideCurrentSnackBar();
+//                             messenger.showSnackBar(
+//                               SnackBar(
+//                                 duration: Duration(seconds: 8),
+//                                 content: Text('Habit deleted'),
+//                                 action: SnackBarAction(
+//                                   label: 'UNDO',
+//                                   onPressed: () async {
+//                                     // final repository = ref.read(
+//                                     //   habitRepositoryProvider,
+//                                     // );
+//                                     await repo.addHabit(deletedHabit);
+//                                     ref.invalidate(habitsProvider);
+
+//                                     messenger.showSnackBar(
+//                                       SnackBar(
+//                                         duration: Duration(seconds: 2),
+//                                         content: Text('Habit restored'),
+//                                       ),
+//                                     );
+//                                   },
+//                                 ),
+//                               ),
+//                             );
+//                           },
+//                           isDone: isDone,
+//                           onChanged: (value) async {
+//                             final checkinRepo = ref.read(
+//                               checkinRepositoryProvider,
+//                             );
+//                             await checkinRepo.toggleDone(habit.id);
+//                             // ref.invalidate(doneHabitIdsProvider);
+//                           },
+//                         );
+//                       },
+//                       separatorBuilder: (_, _) => const SizedBox(height: 10.0),
+//                       itemCount: habits.length,
+//                     );
+//                   },
+//                   error: (error, stack) => Center(child: Text('Error: $error')),
+//                   loading: () =>
+//                       Center(child: CircularProgressIndicator.adaptive()),
+//                 ),
+//               ),
+//               CreateHabitButton(),
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+class HabitTile extends StatelessWidget {
+  const HabitTile({
+    super.key,
+    required this.habitTitle,
+    required this.type,
+    required this.createdAt,
+    this.onEdit,
+    this.onDelete,
+    this.onTapDelete,
+    required this.habit,
+    this.onChanged,
+    required this.isDone,
+  });
+
+  final String habitTitle;
+  // final String habitCreatedTime;
+  final int type;
+  final DateTime createdAt;
+  final VoidCallback? onEdit;
+  final Future<void> Function()? onDelete;
+  final void Function()? onTapDelete;
+  final void Function(bool?)? onChanged;
+  final HabitIsar habit;
+  final bool isDone;
+
+  // String createdDate(DateTime createdAt) {
+  //   final now = DateTime.now();
+  //   final today = DateTime(now.year, now.month, now.day);
+  //   final createdDay = DateTime(createdAt.year, createdAt.month, createdAt.day);
+
+  //   final diffDays = today.difference(createdDay).inDays;
+
+  //   if (diffDays == 0) return 'Created today';
+  //   if (diffDays == 1) return 'Created yesterday';
+  //   if (diffDays == 0) return 'Created today';
+
+  //   const months = [
+  //     'Jan',
+  //     'Feb',
+  //     'Mar',
+  //     'Apr',
+  //     'May',
+  //     'Jun',
+  //     'Jul',
+  //     'Aug',
+  //     'Sep',
+  //     'Oct',
+  //     'Nov',
+  //     'Dec',
+  //   ];
+
+  //   return 'Created ${months[createdAt.month - 1]} ${createdAt.day}';
+  // }
+
+  @override
+  Widget build(BuildContext context) {
+    return Slidable(
+      key: UniqueKey(),
+      endActionPane: ActionPane(
+        motion: const StretchMotion(),
+        children: [
+          SlidableAction(
+            onPressed: (_) {},
+            icon: Icons.edit,
+            backgroundColor: Colors.grey,
+          ),
+          SlidableAction(
+            onPressed: (_) async {
+              await onDelete?.call();
+            },
+            icon: Icons.delete,
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        ],
+      ),
+      child: InkWell(
+        onTap: () {
+          context.goNamed(
+            AppRoutes.habitDetailsScreen.name,
+            extra: habit,
+
+            // extra: HabitDetailsArgs(
+            //   habit: habit,
+            //   isDone: isDone,
+            //   onChanged: onChanged,
+            // ),
+          );
+        },
+        child: Container(
+          // height: 74.0,
+          height: 113.0,
+          // padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+          decoration: BoxDecoration(
+            color: Colors.grey.shade200,
+            borderRadius: BorderRadius.circular(13.0),
+          ),
+          child: Container(
+            // color: Colors.blue.shade200,
+            child: Stack(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10.0,
+                    vertical: 10.0,
+                  ),
+
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        // color: Colors.red.shade200,
+
+                        // height: 20,
+                        child: Row(
+                          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                habitTitle,
+                                style: context.textTheme.bodyLarge,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        // color: Colors.green.shade200,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+                          children: [
+                            Text(
+                              'Daily • ${createdDate(createdAt)}',
+                              style: context.textTheme.bodySmall?.copyWith(
+                                // color: Colors.black38,
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                            TypeChip(type: type),
+                          ],
+                        ),
+                      ),
+                      //. Checkbox
+                      Checkbox(
+                        value: isDone,
+                        activeColor: Colors.green,
+                        onChanged: onChanged,
+                      ),
+                    ],
+                  ),
+                ),
+                Positioned(
+                  right: 6,
+                  top: 2,
+                  child: Container(
+                    // color: Colors.orange.shade200,
+                    // height: 10,
+                    child: PopupMenuButton(
+                      padding: EdgeInsets.zero,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Icon(Icons.more_horiz),
+
+                      itemBuilder: (_) {
+                        return [
+                          PopupMenuItem(
+                            onTap: () {
+                              context.goNamed(
+                                AppRoutes.editHabitsScreen.name,
+                                extra: habit,
+                              );
+                            },
+                            child: Text('Edit'),
+                          ),
+                          // PopupMenuItem(
+                          //   padding: const EdgeInsets.symmetric(vertical: 5),
+                          //   height: 1,
+                          //   enabled: false,
+                          //   child: Container(
+                          //     height: 1,
+                          //     color: ColorPicker.dividerColor,
+                          //   ),
+                          // ),
+                          PopupMenuItem(
+                            onTap: onTapDelete,
+                            child: Text('Delete'),
+                          ),
+                        ];
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -230,285 +599,6 @@ class CreateHabitButton extends StatelessWidget {
         //   }
         // }
       ],
-    );
-  }
-}
-
-class HabitTile extends StatelessWidget {
-  const HabitTile({
-    super.key,
-    required this.habitTitle,
-    required this.type,
-    required this.createdAt,
-    this.onEdit,
-    this.onDelete,
-    this.onTapDelete,
-    required this.habit,
-    this.onChanged,
-    required this.isDone,
-  });
-
-  final String habitTitle;
-  // final String habitCreatedTime;
-  final int type;
-  final DateTime createdAt;
-  final VoidCallback? onEdit;
-  final Future<void> Function()? onDelete;
-  final void Function()? onTapDelete;
-  final void Function(bool?)? onChanged;
-  final HabitIsar habit;
-  final bool isDone;
-
-  String createdDate(DateTime createdAt) {
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-    final createdDay = DateTime(createdAt.year, createdAt.month, createdAt.day);
-
-    final diffDays = today.difference(createdDay).inDays;
-
-    if (diffDays == 0) return 'Created today';
-    if (diffDays == 1) return 'Created yesterday';
-    if (diffDays == 0) return 'Created today';
-
-    const months = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-    ];
-
-    return 'Created ${months[createdAt.month - 1]} ${createdAt.day}';
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Slidable(
-      key: UniqueKey(),
-      endActionPane: ActionPane(
-        motion: const StretchMotion(),
-        children: [
-          SlidableAction(
-            onPressed: (_) {},
-            icon: Icons.edit,
-            backgroundColor: Colors.grey,
-          ),
-          SlidableAction(
-            onPressed: (_) async {
-              await onDelete?.call();
-            },
-            icon: Icons.delete,
-            backgroundColor: Theme.of(context).colorScheme.error,
-          ),
-        ],
-      ),
-      child: Container(
-        // height: 74.0,
-        height: 113.0,
-        // padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
-        decoration: BoxDecoration(
-          color: Colors.grey.shade200,
-          borderRadius: BorderRadius.circular(13.0),
-        ),
-        child: Container(
-          // color: Colors.blue.shade200,
-          child: Stack(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10.0,
-                  vertical: 10.0,
-                ),
-
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      // color: Colors.red.shade200,
-
-                      // height: 20,
-                      child: Row(
-                        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              habitTitle,
-                              style: context.textTheme.bodyLarge,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      // color: Colors.green.shade200,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-                        children: [
-                          Text(
-                            'Daily • ${createdDate(createdAt)}',
-                            style: context.textTheme.bodySmall?.copyWith(
-                              // color: Colors.black38,
-                              color: Theme.of(
-                                context,
-                              ).colorScheme.onSurfaceVariant,
-                            ),
-                          ),
-                          TypeChip(type: type),
-                        ],
-                      ),
-                    ),
-                    //. Checkbox
-                    Checkbox(value: isDone, onChanged: onChanged),
-                  ],
-                ),
-              ),
-              Positioned(
-                right: 6,
-                top: 2,
-                child: Container(
-                  // color: Colors.orange.shade200,
-                  // height: 10,
-                  child: PopupMenuButton(
-                    padding: EdgeInsets.zero,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Icon(Icons.more_horiz),
-
-                    itemBuilder: (_) {
-                      return [
-                        PopupMenuItem(
-                          onTap: () {
-                            context.goNamed(
-                              AppRoutes.editHabitsScreen.name,
-                              extra: habit,
-                            );
-                          },
-                          child: Text('Edit'),
-                        ),
-                        // PopupMenuItem(
-                        //   padding: const EdgeInsets.symmetric(vertical: 5),
-                        //   height: 1,
-                        //   enabled: false,
-                        //   child: Container(
-                        //     height: 1,
-                        //     color: ColorPicker.dividerColor,
-                        //   ),
-                        // ),
-                        PopupMenuItem(
-                          onTap: onTapDelete,
-                          child: Text('Delete'),
-                        ),
-                      ];
-                    },
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-      // child: Container(
-      //   height: 74.0,
-      //   padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
-      //   decoration: BoxDecoration(
-      //     color: Colors.grey.shade200,
-      //     borderRadius: BorderRadius.circular(13.0),
-      //   ),
-      //   child: Stack(
-      //     children: [
-      //       Padding(
-      //         padding: const EdgeInsets.only(
-      //           right: 36,
-      //         ), // keep content away from the menu
-      //         child: Column(
-      //           crossAxisAlignment: CrossAxisAlignment.start,
-      //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //           children: [
-      //             Text(habitTitle, style: context.textTheme.bodyLarge),
-      //             Row(
-      //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //               children: [
-      //                 Text(
-      //                   'Daily • ${createdDate(createdAt)}',
-      //                   style: context.textTheme.bodySmall?.copyWith(
-      //                     color: Theme.of(context).colorScheme.onSurfaceVariant,
-      //                   ),
-      //                 ),
-      //                 TypeChip(type: type),
-      //               ],
-      //             ),
-      //           ],
-      //         ),
-      //       ),
-
-      //       Positioned(
-      //         top: 0,
-      //         right: 0,
-      //         child: Theme(
-      //           data: Theme.of(context).copyWith(
-      //             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      //             visualDensity: VisualDensity.compact,
-      //           ),
-      //           child: PopupMenuButton(
-      //             padding: EdgeInsets.zero,
-      //             child: const SizedBox(
-      //               width: 20,
-      //               height: 20,
-      //               child: Center(child: Icon(Icons.more_horiz, size: 20)),
-      //             ),
-      //             itemBuilder: (_) => [
-      //               PopupMenuItem(onTap: () {}, child: const Text('Edit')),
-      //               PopupMenuItem(
-      //                 onTap: () async {
-      //                   await onDelete?.call();
-      //                 },
-      //                 child: const Text('Delete'),
-      //               ),
-      //             ],
-      //           ),
-      //         ),
-      //       ),
-      //     ],
-      //   ),
-      // ),
-    );
-  }
-}
-
-class TypeChip extends StatelessWidget {
-  const TypeChip({super.key, required this.type});
-
-  final int type;
-
-  @override
-  Widget build(BuildContext context) {
-    final isHabitType = type == 0;
-    final label = isHabitType ? 'START' : 'BREAK';
-
-    // final bg = isHabitType ?
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-      decoration: BoxDecoration(
-        color: Colors.blueGrey.shade100,
-        borderRadius: BorderRadius.circular(50),
-      ),
-      child: Text(
-        label,
-        style: context.textTheme.labelSmall?.copyWith(
-          fontWeight: FontWeight.w700,
-          letterSpacing: 0.6,
-        ),
-      ),
     );
   }
 }

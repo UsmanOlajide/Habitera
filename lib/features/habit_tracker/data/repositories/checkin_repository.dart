@@ -12,7 +12,6 @@ import 'package:isar/isar.dart';
 //. Toggle (insert/delete)
 
 class CheckinRepository {
-  //. this is what happens when the user taps the checkbox
   Future<void> toggleDone(int habitId) async {
     final today = DateTime.now().dayOnly;
 
@@ -29,13 +28,12 @@ class CheckinRepository {
         final checkin = HabitCheckinIsar()
           ..habitId = habitId
           ..day = today;
+          // ..dayKey = today;
         await IsarService.isar.habitCheckinIsars.put(checkin);
       }
     });
   }
 
-  //. Get all the habitIds of the habits done today
-  //. query the HabitCheckin database and check for where day equal to today
   Future<Set<int>> doneHabitIdsToday() async {
     final today = DateTime.now().dayOnly;
     final doneCheckinsToday = await IsarService.isar.habitCheckinIsars

@@ -52,7 +52,7 @@ class _AddHabitScreenState extends ConsumerState<AddHabitScreen> {
       appBar: AppBar(title: Text(title)),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: padAll16,
           child: Form(
             key: _formKey,
             child: Column(
@@ -71,7 +71,7 @@ class _AddHabitScreenState extends ConsumerState<AddHabitScreen> {
                         return null;
                       },
                     ),
-                    kSizedBoxh8,
+                    kSizedBoxH8,
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
@@ -79,7 +79,7 @@ class _AddHabitScreenState extends ConsumerState<AddHabitScreen> {
                         style: context.textTheme.labelLarge,
                       ),
                     ),
-                    kSizedBoxh8,
+                    kSizedBoxH8,
                     Align(
                       alignment: Alignment.centerLeft,
                       child: SegmentedButton(
@@ -214,7 +214,7 @@ class TitleField extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(title, style: context.textTheme.labelLarge),
-        kSizedBoxh8,
+        kSizedBoxH8,
         SizedBox(
           height: 50.0,
           child: TextFormField(

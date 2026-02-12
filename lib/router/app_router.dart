@@ -3,7 +3,9 @@ import 'package:habitera/constants/enums.dart';
 import 'package:habitera/features/habit_tracker/data/models/habit_isar.dart';
 import 'package:habitera/features/habit_tracker/presentation/add_habit_screen.dart';
 import 'package:habitera/features/habit_tracker/presentation/edit_habit_screen.dart';
+import 'package:habitera/features/habit_tracker/presentation/habit_details_screen.dart';
 import 'package:habitera/navigation/navbar.dart';
+import 'package:habitera/router/habit_details_args.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'app_router.g.dart';
@@ -15,16 +17,15 @@ enum AppRoutes {
   editHabitsScreen('/edit-habits'),
   chatsScreen('/chats-screen'),
   shopScreen('/shop-screen'),
-  profileScreen('/profile-screen');
+  profileScreen('/profile-screen'),
+  habitDetailsScreen('/habit-details-screen');
 
   final String path;
   const AppRoutes(this.path);
 }
 
 extension on AppRoutes {
-  String get childPath {
-    return path.split('/').last;
-  }
+  String get childPath => path.split('/').last;
 }
 
 @riverpod
@@ -33,13 +34,13 @@ GoRouter appRouter(AppRouterRef ref) {
     initialLocation: AppRoutes.navbar.path,
     routes: [
       GoRoute(
-        path: AppRoutes.navbar.path,
         name: AppRoutes.navbar.name,
+        path: AppRoutes.navbar.path,
         builder: (_, _) => const NavBar(),
         routes: [
           GoRoute(
-            path: '${AppRoutes.addHabitsScreen.childPath}/:type',
             name: AppRoutes.addHabitsScreen.name,
+            path: '${AppRoutes.addHabitsScreen.childPath}/:type',
             builder: (_, state) {
               final typeString = state.pathParameters['type'] ?? 'startHabit';
               final type = HabitType.values.firstWhere(
@@ -50,16 +51,22 @@ GoRouter appRouter(AppRouterRef ref) {
             },
           ),
           GoRoute(
-            path: AppRoutes.editHabitsScreen.childPath,
-
             name: AppRoutes.editHabitsScreen.name,
+            path: AppRoutes.editHabitsScreen.childPath,
             builder: (_, state) {
               final habit = state.extra as HabitIsar;
-              // if (habit == null) {
-              //   // Fallback: redirect back or show error
-              //   return const SizedBox.shrink(); // or handle error
-              // }
               return EditHabitScreen(habit: habit);
+            },
+          ),
+          GoRoute(
+            name: AppRoutes.habitDetailsScreen.name,
+            path: AppRoutes.habitDetailsScreen.childPath,
+            builder: (_, state) {
+              final habit = state.extra as HabitIsar;
+             
+              return HabitDetailsScreen(
+                habit: habit
+              );
             },
           ),
         ],
@@ -67,3 +74,8 @@ GoRouter appRouter(AppRouterRef ref) {
     ],
   );
 }
+// . /navbar/habit-details-screen
+//. What i want to do is to pass values from habitsScreen to habitDetailsScreen
+//. 
+//. 
+//. 

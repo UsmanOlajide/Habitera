@@ -10,6 +10,7 @@ class HabitCheckinIsar {
   late int habitId;
 
   @Index()
+  // late int dayKey;
   late DateTime day;
 
 }
