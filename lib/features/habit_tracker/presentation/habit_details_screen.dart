@@ -128,3 +128,6 @@ class _HabitDetailsScreenState extends ConsumerState<HabitDetailsScreen> {
 final last7days = List.generate(7, (index) {
   return ;
 });
+
+//. generate the last 7 days including today
+//. hint: I can use dayKey but how?

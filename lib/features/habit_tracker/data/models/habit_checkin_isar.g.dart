@@ -17,10 +17,10 @@ const HabitCheckinIsarSchema = CollectionSchema(
   name: r'HabitCheckinIsar',
   id: 4976464977320818189,
   properties: {
-    r'day': PropertySchema(
+    r'dayKey': PropertySchema(
       id: 0,
-      name: r'day',
-      type: IsarType.dateTime,
+      name: r'dayKey',
+      type: IsarType.long,
     ),
     r'habitId': PropertySchema(
       id: 1,
@@ -47,14 +47,14 @@ const HabitCheckinIsarSchema = CollectionSchema(
         )
       ],
     ),
-    r'day': IndexSchema(
-      id: 3809350088207220763,
-      name: r'day',
+    r'dayKey': IndexSchema(
+      id: -3264092797330672150,
+      name: r'dayKey',
       unique: false,
       replace: false,
       properties: [
         IndexPropertySchema(
-          name: r'day',
+          name: r'dayKey',
           type: IndexType.value,
           caseSensitive: false,
         )
@@ -84,7 +84,7 @@ void _habitCheckinIsarSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeDateTime(offsets[0], object.day);
+  writer.writeLong(offsets[0], object.dayKey);
   writer.writeLong(offsets[1], object.habitId);
 }
 
@@ -95,7 +95,7 @@ HabitCheckinIsar _habitCheckinIsarDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = HabitCheckinIsar();
-  object.day = reader.readDateTime(offsets[0]);
+  object.dayKey = reader.readLong(offsets[0]);
   object.habitId = reader.readLong(offsets[1]);
   object.id = id;
   return object;
@@ -109,7 +109,7 @@ P _habitCheckinIsarDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readDateTime(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 1:
       return (reader.readLong(offset)) as P;
     default:
@@ -146,10 +146,10 @@ extension HabitCheckinIsarQueryWhereSort
     });
   }
 
-  QueryBuilder<HabitCheckinIsar, HabitCheckinIsar, QAfterWhere> anyDay() {
+  QueryBuilder<HabitCheckinIsar, HabitCheckinIsar, QAfterWhere> anyDayKey() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
-        const IndexWhereClause.any(indexName: r'day'),
+        const IndexWhereClause.any(indexName: r'dayKey'),
       );
     });
   }
@@ -318,44 +318,44 @@ extension HabitCheckinIsarQueryWhere
   }
 
   QueryBuilder<HabitCheckinIsar, HabitCheckinIsar, QAfterWhereClause>
-      dayEqualTo(DateTime day) {
+      dayKeyEqualTo(int dayKey) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.equalTo(
-        indexName: r'day',
-        value: [day],
+        indexName: r'dayKey',
+        value: [dayKey],
       ));
     });
   }
 
   QueryBuilder<HabitCheckinIsar, HabitCheckinIsar, QAfterWhereClause>
-      dayNotEqualTo(DateTime day) {
+      dayKeyNotEqualTo(int dayKey) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
             .addWhereClause(IndexWhereClause.between(
-              indexName: r'day',
+              indexName: r'dayKey',
               lower: [],
-              upper: [day],
+              upper: [dayKey],
               includeUpper: false,
             ))
             .addWhereClause(IndexWhereClause.between(
-              indexName: r'day',
-              lower: [day],
+              indexName: r'dayKey',
+              lower: [dayKey],
               includeLower: false,
               upper: [],
             ));
       } else {
         return query
             .addWhereClause(IndexWhereClause.between(
-              indexName: r'day',
-              lower: [day],
+              indexName: r'dayKey',
+              lower: [dayKey],
               includeLower: false,
               upper: [],
             ))
             .addWhereClause(IndexWhereClause.between(
-              indexName: r'day',
+              indexName: r'dayKey',
               lower: [],
-              upper: [day],
+              upper: [dayKey],
               includeUpper: false,
             ));
       }
@@ -363,14 +363,14 @@ extension HabitCheckinIsarQueryWhere
   }
 
   QueryBuilder<HabitCheckinIsar, HabitCheckinIsar, QAfterWhereClause>
-      dayGreaterThan(
-    DateTime day, {
+      dayKeyGreaterThan(
+    int dayKey, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.between(
-        indexName: r'day',
-        lower: [day],
+        indexName: r'dayKey',
+        lower: [dayKey],
         includeLower: include,
         upper: [],
       ));
@@ -378,33 +378,33 @@ extension HabitCheckinIsarQueryWhere
   }
 
   QueryBuilder<HabitCheckinIsar, HabitCheckinIsar, QAfterWhereClause>
-      dayLessThan(
-    DateTime day, {
+      dayKeyLessThan(
+    int dayKey, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.between(
-        indexName: r'day',
+        indexName: r'dayKey',
         lower: [],
-        upper: [day],
+        upper: [dayKey],
         includeUpper: include,
       ));
     });
   }
 
   QueryBuilder<HabitCheckinIsar, HabitCheckinIsar, QAfterWhereClause>
-      dayBetween(
-    DateTime lowerDay,
-    DateTime upperDay, {
+      dayKeyBetween(
+    int lowerDayKey,
+    int upperDayKey, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.between(
-        indexName: r'day',
-        lower: [lowerDay],
+        indexName: r'dayKey',
+        lower: [lowerDayKey],
         includeLower: includeLower,
-        upper: [upperDay],
+        upper: [upperDayKey],
         includeUpper: includeUpper,
       ));
     });
@@ -414,53 +414,53 @@ extension HabitCheckinIsarQueryWhere
 extension HabitCheckinIsarQueryFilter
     on QueryBuilder<HabitCheckinIsar, HabitCheckinIsar, QFilterCondition> {
   QueryBuilder<HabitCheckinIsar, HabitCheckinIsar, QAfterFilterCondition>
-      dayEqualTo(DateTime value) {
+      dayKeyEqualTo(int value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'day',
+        property: r'dayKey',
         value: value,
       ));
     });
   }
 
   QueryBuilder<HabitCheckinIsar, HabitCheckinIsar, QAfterFilterCondition>
-      dayGreaterThan(
-    DateTime value, {
+      dayKeyGreaterThan(
+    int value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'day',
+        property: r'dayKey',
         value: value,
       ));
     });
   }
 
   QueryBuilder<HabitCheckinIsar, HabitCheckinIsar, QAfterFilterCondition>
-      dayLessThan(
-    DateTime value, {
+      dayKeyLessThan(
+    int value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'day',
+        property: r'dayKey',
         value: value,
       ));
     });
   }
 
   QueryBuilder<HabitCheckinIsar, HabitCheckinIsar, QAfterFilterCondition>
-      dayBetween(
-    DateTime lower,
-    DateTime upper, {
+      dayKeyBetween(
+    int lower,
+    int upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'day',
+        property: r'dayKey',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -590,16 +590,17 @@ extension HabitCheckinIsarQueryLinks
 
 extension HabitCheckinIsarQuerySortBy
     on QueryBuilder<HabitCheckinIsar, HabitCheckinIsar, QSortBy> {
-  QueryBuilder<HabitCheckinIsar, HabitCheckinIsar, QAfterSortBy> sortByDay() {
+  QueryBuilder<HabitCheckinIsar, HabitCheckinIsar, QAfterSortBy>
+      sortByDayKey() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'day', Sort.asc);
+      return query.addSortBy(r'dayKey', Sort.asc);
     });
   }
 
   QueryBuilder<HabitCheckinIsar, HabitCheckinIsar, QAfterSortBy>
-      sortByDayDesc() {
+      sortByDayKeyDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'day', Sort.desc);
+      return query.addSortBy(r'dayKey', Sort.desc);
     });
   }
 
@@ -620,16 +621,17 @@ extension HabitCheckinIsarQuerySortBy
 
 extension HabitCheckinIsarQuerySortThenBy
     on QueryBuilder<HabitCheckinIsar, HabitCheckinIsar, QSortThenBy> {
-  QueryBuilder<HabitCheckinIsar, HabitCheckinIsar, QAfterSortBy> thenByDay() {
+  QueryBuilder<HabitCheckinIsar, HabitCheckinIsar, QAfterSortBy>
+      thenByDayKey() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'day', Sort.asc);
+      return query.addSortBy(r'dayKey', Sort.asc);
     });
   }
 
   QueryBuilder<HabitCheckinIsar, HabitCheckinIsar, QAfterSortBy>
-      thenByDayDesc() {
+      thenByDayKeyDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'day', Sort.desc);
+      return query.addSortBy(r'dayKey', Sort.desc);
     });
   }
 
@@ -663,9 +665,10 @@ extension HabitCheckinIsarQuerySortThenBy
 
 extension HabitCheckinIsarQueryWhereDistinct
     on QueryBuilder<HabitCheckinIsar, HabitCheckinIsar, QDistinct> {
-  QueryBuilder<HabitCheckinIsar, HabitCheckinIsar, QDistinct> distinctByDay() {
+  QueryBuilder<HabitCheckinIsar, HabitCheckinIsar, QDistinct>
+      distinctByDayKey() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'day');
+      return query.addDistinctBy(r'dayKey');
     });
   }
 
@@ -685,9 +688,9 @@ extension HabitCheckinIsarQueryProperty
     });
   }
 
-  QueryBuilder<HabitCheckinIsar, DateTime, QQueryOperations> dayProperty() {
+  QueryBuilder<HabitCheckinIsar, int, QQueryOperations> dayKeyProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'day');
+      return query.addPropertyName(r'dayKey');
     });
   }
 

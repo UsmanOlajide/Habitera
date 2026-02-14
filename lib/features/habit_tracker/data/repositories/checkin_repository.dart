@@ -1,6 +1,7 @@
 import 'package:habitera/features/habit_tracker/data/models/habit_checkin_isar.dart';
 import 'package:habitera/features/habit_tracker/data/models/habit_isar.dart';
 import 'package:habitera/isar_service.dart';
+import 'package:habitera/utils/day_key.dart';
 import 'package:habitera/utils/extensions.dart';
 import 'package:isar/isar.dart';
 
@@ -12,13 +13,14 @@ import 'package:isar/isar.dart';
 //. Toggle (insert/delete)
 
 class CheckinRepository {
+  //. this is what happens when the user taps the checkbox
   Future<void> toggleDone(int habitId) async {
-    final today = DateTime.now().dayOnly;
+    final today = dayKey(DateTime.now());
 
     final existing = await IsarService.isar.habitCheckinIsars
         .filter()
         .habitIdEqualTo(habitId)
-        .dayEqualTo(today)
+        .dayKeyEqualTo(today)
         .findFirst();
 
     await IsarService.isar.writeTxn(() async {
@@ -27,18 +29,18 @@ class CheckinRepository {
       } else {
         final checkin = HabitCheckinIsar()
           ..habitId = habitId
-          ..day = today;
-          // ..dayKey = today;
+          ..dayKey = today;
         await IsarService.isar.habitCheckinIsars.put(checkin);
       }
     });
   }
 
   Future<Set<int>> doneHabitIdsToday() async {
-    final today = DateTime.now().dayOnly;
+    final today = dayKey(DateTime.now());
+
     final doneCheckinsToday = await IsarService.isar.habitCheckinIsars
         .filter()
-        .dayEqualTo(today)
+        .dayKeyEqualTo(today)
         .findAll();
 
     return doneCheckinsToday.map((doneCheckin) => doneCheckin.habitId).toSet();
