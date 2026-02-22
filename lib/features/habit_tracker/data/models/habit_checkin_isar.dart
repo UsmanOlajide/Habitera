@@ -11,6 +11,4 @@ class HabitCheckinIsar {
 
   @Index()
   late int dayKey;
-  // late DateTime day;
-
 }

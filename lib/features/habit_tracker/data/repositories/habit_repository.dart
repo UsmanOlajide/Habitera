@@ -5,7 +5,6 @@ import 'package:habitera/isar_service.dart';
 import 'package:isar/isar.dart';
 
 class HabitRepository {
-  // add habit
   Future<void> addHabit(HabitIsar habit) async {
     await IsarService.isar.writeTxn(() async {
       await IsarService.isar.habitIsars.put(habit);
@@ -18,7 +17,6 @@ class HabitRepository {
     });
   }
 
-  // to load habits
   Future<List<HabitIsar>> getHabits() async {
     return await IsarService.isar.habitIsars.where().findAll();
   }

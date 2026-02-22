@@ -1,8 +1,6 @@
 import 'package:habitera/features/habit_tracker/data/models/habit_checkin_isar.dart';
-import 'package:habitera/features/habit_tracker/data/models/habit_isar.dart';
 import 'package:habitera/isar_service.dart';
 import 'package:habitera/utils/day_key.dart';
-import 'package:habitera/utils/extensions.dart';
 import 'package:isar/isar.dart';
 
 //. Handle all checkin related stuffs here that the UI doesn't need to know about
@@ -12,8 +10,8 @@ import 'package:isar/isar.dart';
 //. Ensure “one check-in per habit per day”
 //. Toggle (insert/delete)
 
-class CheckinRepository {
   //. this is what happens when the user taps the checkbox
+class CheckinRepository {
   Future<void> toggleDone(int habitId) async {
     final today = dayKey(DateTime.now());
 
@@ -47,6 +45,21 @@ class CheckinRepository {
   }
 }
 
+  // Future<Set<int>> doneHabitDays(int habitId) async {
+  //   final last7 = generate
+  //   final checkedInHabit = await IsarService.isar.habitCheckinIsars
+  //       .filter()
+  //       .habitIdEqualTo(habitId)
+  //       .findAll();
+
+  //   return checkedInHabit.map((checkedInHabit) {
+  //     return checkedInHabit.dayKey;
+  //   }).toSet();
+  // }
+
+
+//. All i need is a bool that lets me know if a checkin was done on a particular day
+//. or a day among thos last 7 days
 
 
 

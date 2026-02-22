@@ -8,9 +8,14 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'habit_provider.g.dart';
 
 @riverpod
-Future<Set<int>> doneHabitIds(DoneHabitIdsRef ref) async {
-  final repo = ref.read(checkinRepositoryProvider);
-  return  await repo.doneHabitIdsToday();
+Future<List<HabitIsar>> habits(HabitsRef ref) async {
+  final repo = ref.read(habitRepositoryProvider);
+  return repo.getHabits();
+}
+
+@riverpod
+HabitRepository habitRepository(HabitRepositoryRef ref) {
+  return HabitRepository();
 }
 
 @riverpod
@@ -19,15 +24,7 @@ CheckinRepository checkinRepository(CheckinRepositoryRef ref) {
 }
 
 @riverpod
-HabitRepository habitRepository(HabitRepositoryRef ref) {
-  return HabitRepository();
+Future<Set<int>> doneHabitIds(DoneHabitIdsRef ref) async {
+  final repo = ref.read(checkinRepositoryProvider);
+  return repo.doneHabitIdsToday();
 }
-// all i did here is to create a provider for the habit repository
-// to create an instance of the repository
-
-@riverpod
-Future<List<HabitIsar>> habits(HabitsRef ref) async {
-  final repo = ref.read(habitRepositoryProvider);
-  return await repo.getHabits();
-}
-// all i did here is to create a provider to return the habits
