@@ -10,7 +10,7 @@ import 'package:isar/isar.dart';
 //. Ensure “one check-in per habit per day”
 //. Toggle (insert/delete)
 
-  //. this is what happens when the user taps the checkbox
+//. this is what happens when the user taps the checkbox
 class CheckinRepository {
   Future<void> toggleDone(int habitId) async {
     final today = dayKey(DateTime.now());
@@ -43,23 +43,47 @@ class CheckinRepository {
 
     return doneCheckinsToday.map((doneCheckin) => doneCheckin.habitId).toSet();
   }
+
+  Future<Set<int>> getCheckinDayKeysForHabit(int habitId) async {
+    final sevenDaysago = DateTime.now().subtract(Duration(days: 6));
+    final startKey = dayKey(sevenDaysago);
+    final firstKey = dayKey(DateTime.now());
+
+    final checkins = await IsarService.isar.habitCheckinIsars
+        .filter()
+        .habitIdEqualTo(habitId)
+        .dayKeyBetween(startKey, firstKey)
+        .findAll();
+
+    return checkins.map((checkin) => checkin.dayKey).toSet();
+  }
 }
 
-  // Future<Set<int>> doneHabitDays(int habitId) async {
-  //   final last7 = generate
-  //   final checkedInHabit = await IsarService.isar.habitCheckinIsars
-  //       .filter()
-  //       .habitIdEqualTo(habitId)
-  //       .findAll();
+//. Create a method that fetches checkins for a habit in the last 7 days
 
-  //   return checkedInHabit.map((checkedInHabit) {
-  //     return checkedInHabit.dayKey;
-  //   }).toSet();
-  // }
+
+
+
+
+
+
+
+
+
 
 
 //. All i need is a bool that lets me know if a checkin was done on a particular day
 //. or a day among thos last 7 days
+
+
+
+
+
+
+
+
+
+
 
 
 

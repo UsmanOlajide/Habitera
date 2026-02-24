@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:habitera/constants/sizes.dart';
+import 'package:habitera/features/habit_tracker/presentation/habit_provider.dart';
 
 import 'package:habitera/utils/day_key.dart';
 import 'package:habitera/utils/extensions.dart';
 import 'package:intl/intl.dart';
 
-class LastSevenDaysDateSection extends StatelessWidget {
-  LastSevenDaysDateSection({super.key});
+class LastSevenDaysDateSection extends ConsumerWidget {
+  LastSevenDaysDateSection({super.key, required this.habitId});
 
-  final today = DateTime.now();
+  final int habitId;
 
   List<int> generateLastSevendays() {
+    final today = DateTime.now();
     return List.generate(7, (i) {
       final date = today.subtract(Duration(days: i));
       return dayKey(date);
@@ -18,12 +21,25 @@ class LastSevenDaysDateSection extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final checkinDayKeysForHabitAsync = ref.watch(
+      checkinDayKeysForHabitProvider(habitId),
+    );
+    final checkinDayKeysForHabit = checkinDayKeysForHabitAsync.value ?? <int>{};
+    print('checkin day keys: $checkinDayKeysForHabit');
     final dates = generateLastSevendays();
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: List.generate(7, (index) {
-        return DetailsDateColumn(dates: dates, index: index, isToday: true);
+        final isToday = index == 6;
+        final isDone = checkinDayKeysForHabit.contains(dates[index]);
+
+        return DetailsDateColumn(
+          dates: dates,
+          index: index,
+          isToday: isToday,
+          isDone: isDone,
+        );
       }),
     );
   }
@@ -35,11 +51,13 @@ class DetailsDateColumn extends StatelessWidget {
     required this.dates,
     required this.index,
     required this.isToday,
+    required this.isDone,
   });
 
   final List<int> dates;
   final int index;
   final bool isToday;
+  final bool isDone;
 
   @override
   Widget build(BuildContext context) {
@@ -54,54 +72,32 @@ class DetailsDateColumn extends StatelessWidget {
 
     return Column(
       children: [
-        isToday
-            ? Container(
-                width: 40.0,
-                height: 40.0,
-                decoration: BoxDecoration(
+        Container(
+          width: 40.0,
+          height: 40.0,
+          decoration: isToday
+              ? BoxDecoration(
                   border: Border.all(color: Colors.black),
                   borderRadius: BorderRadius.circular(13.0),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                )
+              : null,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
 
-                  children: [
-                    Text(
-                      weekDay.toLowerCase(),
-                      style: context.textTheme.labelMedium!.copyWith(
-                        fontSize: 14.0,
-                        fontWeight: isToday
-                            ? FontWeight.w700
-                            : FontWeight.normal,
-                      ),
-                    ),
-                    Text('$dayNumber', style: labelMediumFSize14),
-                  ],
-                ),
-              )
-            : SizedBox(
-                width: 40.0,
-                height: 40.0,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      weekDay.toLowerCase(),
-                      style: context.textTheme.labelMedium!.copyWith(
-                        fontSize: 14.0,
-                        fontWeight: isToday
-                            ? FontWeight.w700
-                            : FontWeight.normal,
-                      ),
-                    ),
-                    Text('$dayNumber', style: labelMediumFSize14),
-                  ],
+            children: [
+              Text(
+                weekDay.toLowerCase(),
+                style: context.textTheme.labelMedium!.copyWith(
+                  fontSize: 14.0,
+                  fontWeight: isToday ? FontWeight.w700 : FontWeight.normal,
                 ),
               ),
+              Text('$dayNumber', style: labelMediumFSize14),
+            ],
+          ),
+        ),
         kSizedBoxH10,
-        isToday
-            ? Icon(Icons.circle, size: 15)
-            : Icon(Icons.circle_outlined, size: 15),
+        Icon(isDone ? Icons.circle : Icons.circle_outlined, size: 15),
       ],
     );
   }

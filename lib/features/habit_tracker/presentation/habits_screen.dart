@@ -16,7 +16,6 @@ import 'package:habitera/features/habit_tracker/presentation/widgets/date_sectio
 import 'package:habitera/features/habit_tracker/presentation/widgets/habit_type_bottom_sheet.dart';
 import 'package:habitera/features/habit_tracker/presentation/widgets/type_chip.dart';
 import 'package:habitera/router/app_router.dart';
-import 'package:habitera/router/habit_details_args.dart';
 import 'package:habitera/utils/created_date.dart';
 import 'package:habitera/utils/extensions.dart';
 
@@ -59,7 +58,6 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen> {
   @override
   Widget build(BuildContext context) {
     final habits = ref.watch(habitsProvider);
-    final repo = ref.read(habitRepositoryProvider);
 
     final doneHabitIdsAsync = ref.watch(doneHabitIdsProvider);
     final doneHabitIds = doneHabitIdsAsync.value ?? <int>{};
@@ -128,8 +126,6 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen> {
 
                     return HabitListView(
                       doneHabitIds: doneHabitIds,
-                      repo: repo,
-                      ref: ref,
                       habits: habits,
                     );
                   },
@@ -147,22 +143,18 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen> {
   }
 }
 
-class HabitListView extends StatelessWidget {
+class HabitListView extends ConsumerWidget {
   const HabitListView({
     super.key,
     required this.doneHabitIds,
-    required this.repo,
-    required this.ref,
     required this.habits,
   });
 
   final Set<int> doneHabitIds;
-  final HabitRepository repo;
-  final WidgetRef ref;
   final List<HabitIsar> habits;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return ListView.separated(
       itemBuilder: (_, i) {
         final habit = habits[i];
@@ -173,13 +165,11 @@ class HabitListView extends StatelessWidget {
           habitTitle: habit.title,
           createdAt: habit.createdAt,
           onDelete: () async {
-            await repo.deleteHabit(habit.id);
-            ref.invalidate(habitsProvider);
+            ref.read(habitsProvider.notifier).deleteHabit(habit.id);
           },
           onTapDelete: () async {
             final deletedHabit = habit;
-            await repo.deleteHabit(deletedHabit.id);
-            ref.invalidate(habitsProvider);
+            ref.read(habitsProvider.notifier).deleteHabit(deletedHabit.id);
 
             if (!context.mounted) return;
 
@@ -192,11 +182,7 @@ class HabitListView extends StatelessWidget {
                 action: SnackBarAction(
                   label: 'UNDO',
                   onPressed: () async {
-                    // final repository = ref.read(
-                    //   habitRepositoryProvider,
-                    // );
-                    await repo.addHabit(deletedHabit);
-                    ref.invalidate(habitsProvider);
+                    ref.read(habitsProvider.notifier).addHabit(habit);
 
                     messenger.showSnackBar(
                       SnackBar(
@@ -211,9 +197,7 @@ class HabitListView extends StatelessWidget {
           },
           isDone: isDone,
           onChanged: (value) async {
-            final checkinRepo = ref.read(checkinRepositoryProvider);
-            await checkinRepo.toggleDone(habit.id);
-            ref.invalidate(doneHabitIdsProvider);
+            ref.read(doneHabitIdsProvider.notifier).toggleDone(habit.id);
           },
         );
       },
@@ -522,15 +506,7 @@ class HabitTile extends StatelessWidget {
                             },
                             child: Text('Edit'),
                           ),
-                          // PopupMenuItem(
-                          //   padding: const EdgeInsets.symmetric(vertical: 5),
-                          //   height: 1,
-                          //   enabled: false,
-                          //   child: Container(
-                          //     height: 1,
-                          //     color: ColorPicker.dividerColor,
-                          //   ),
-                          // ),
+
                           PopupMenuItem(
                             onTap: onTapDelete,
                             child: Text('Delete'),

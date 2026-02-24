@@ -33,9 +33,7 @@ class _HabitDetailsScreenState extends ConsumerState<HabitDetailsScreen> {
           children: [
             Text(
               widget.habit.title,
-              style: context.textTheme.titleLarge?.copyWith(
-                fontSize: 18,
-              ),
+              style: context.textTheme.titleLarge?.copyWith(fontSize: 18),
             ),
             kSizedBoxH20,
             Row(
@@ -59,9 +57,12 @@ class _HabitDetailsScreenState extends ConsumerState<HabitDetailsScreen> {
                   value: isDone,
                   activeColor: Colors.green,
                   onChanged: (value) async {
-                    final checkinRepo = ref.read(checkinRepositoryProvider);
-                    await checkinRepo.toggleDone(widget.habit.id);
-                    ref.invalidate(doneHabitIdsProvider);
+                   await ref
+                        .read(doneHabitIdsProvider.notifier)
+                        .toggleDone(widget.habit.id);
+                    ref.invalidate(
+                      checkinDayKeysForHabitProvider(widget.habit.id),
+                    );
                   },
                 ),
                 Text(
@@ -72,7 +73,7 @@ class _HabitDetailsScreenState extends ConsumerState<HabitDetailsScreen> {
             ),
             Text('Last 7 days', style: context.textTheme.bodyLarge?.copyWith()),
             kSizedBoxH5,
-            LastSevenDaysDateSection(),
+            LastSevenDaysDateSection(habitId: widget.habit.id),
           ],
         ),
       ),
