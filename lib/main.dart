@@ -63,6 +63,3 @@ class _MyAppState extends ConsumerState<MyApp> {
     );
   }
 }
-
-// project url:  https://zrwhshiecoxfddncljhx.supabase.co
-// publishable key: sb_publishable_uTqGN7krgRpcr5u7RhKDWA_zaCKsed9

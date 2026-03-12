@@ -33,7 +33,6 @@ class _ForgotpasswordScreenState extends ConsumerState<ForgotpasswordScreen> {
     print('is now on Forgot Password Screen');
 
     return Scaffold(
-      backgroundColor: ColorPicker.white,
       appBar: AppBar(backgroundColor: ColorPicker.white),
       body: Padding(
         padding: padAll16,

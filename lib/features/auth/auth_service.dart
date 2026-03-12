@@ -36,11 +36,11 @@ class AuthService {
     );
   }
 
-  Future<void> updatePassword(String newPassword) async{
-    await _supabase.auth.updateUser(
-      UserAttributes(
-        password: newPassword,
-      )
-    );
+  Future<void> updatePassword(String newPassword) async {
+    await _supabase.auth.updateUser(UserAttributes(password: newPassword));
+  }
+
+  Future<void> resendLink(String email) async {
+    await _supabase.auth.resend(type: OtpType.signup, email: email);
   }
 }

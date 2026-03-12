@@ -37,7 +37,6 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorPicker.white,
       // appBar: AppBar(),
       body: SafeArea(
         child: Padding(
@@ -124,6 +123,12 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                                       _passwordController.text,
                                       _nameController.text,
                                     );
+                                    if (context.mounted) {
+                                      context.goNamed(
+                                        AppRoutes.confirmEmailScreen.name,
+                                        extra: _emailController.text,
+                                      );
+                                    }
                                   } catch (error) {
                                     var message =
                                         'Something went wrong. Try again';

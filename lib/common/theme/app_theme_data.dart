@@ -3,6 +3,7 @@ import 'package:habitera/common/theme/app_elevated_button_theme.dart';
 import 'package:habitera/common/theme/app_input_decoration_theme.dart';
 import 'package:habitera/common/theme/app_navbar_theme.dart';
 import 'package:habitera/common/theme/text_theme.dart';
+import 'package:habitera/constants/color_picker.dart';
 // import 'package:habitera/common/theme/dark_mode.dart';
 // import 'package:habitera/common/theme/light_mode.dart';
 
@@ -14,6 +15,7 @@ class AppThemeData {
     textTheme: AppTextTheme.appTextTheme,
     inputDecorationTheme: AppInputDecorationTheme.appInputDecorationTheme,
     elevatedButtonTheme: AppElevatedButtonTheme.elevatedButtonTheme,
+    scaffoldBackgroundColor: ColorPicker.white,
   );
 }
 

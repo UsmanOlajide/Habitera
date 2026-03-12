@@ -8,12 +8,12 @@ import 'package:habitera/features/auth/presentation/signup_screen.dart';
 import 'package:habitera/features/habit_tracker/data/models/habit_isar.dart';
 import 'package:habitera/features/habit_tracker/presentation/add_habit_screen.dart';
 import 'package:habitera/features/auth/presentation/auth_provider.dart';
+import 'package:habitera/features/habit_tracker/presentation/confirm_email_screen.dart';
 import 'package:habitera/features/habit_tracker/presentation/edit_habit_screen.dart';
 import 'package:habitera/features/habit_tracker/presentation/forgot_password_screen.dart';
 import 'package:habitera/features/habit_tracker/presentation/habit_details_screen.dart';
 import 'package:habitera/features/habit_tracker/presentation/reset_password_screen.dart';
 import 'package:habitera/navigation/navbar.dart';
-import 'package:habitera/router/habit_details_args.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -31,7 +31,8 @@ enum AppRoutes {
   loginScreen('/login-screen'),
   signupScreen('/signup-screen'),
   forgotPasswordScreen('/forgot-password-screen'),
-  resetPasswordScreen('/reset-password-screen');
+  resetPasswordScreen('/reset-password-screen'),
+  confirmEmailScreen('/confirm-email-screen');
 
   final String path;
   const AppRoutes(this.path);
@@ -73,8 +74,9 @@ GoRouter appRouter(AppRouterRef ref) {
       final onAuthScreen =
           state.matchedLocation == AppRoutes.loginScreen.path ||
           state.matchedLocation == AppRoutes.signupScreen.path ||
-          state.matchedLocation.startsWith(AppRoutes.loginScreen.path);
-      // state.matchedLocation == AppRoutes.resetPasswordScreen.path;
+          state.matchedLocation.startsWith(AppRoutes.loginScreen.path) ||
+          state.matchedLocation == AppRoutes.resetPasswordScreen.path ||
+          state.matchedLocation == AppRoutes.confirmEmailScreen.path;
 
       print(
         'redirect running, isLoggedIn: $isLoggedIn , onAuthScreen: $onAuthScreen',
@@ -116,6 +118,14 @@ GoRouter appRouter(AppRouterRef ref) {
         path: AppRoutes.signupScreen.path,
         builder: (_, state) {
           return SignupScreen();
+        },
+      ),
+      GoRoute(
+        name: AppRoutes.confirmEmailScreen.name,
+        path: AppRoutes.confirmEmailScreen.path,
+        builder: (_, state) {
+          final email = state.extra as String;
+          return ConfirmEmailScreen(email: email);
         },
       ),
       GoRoute(
