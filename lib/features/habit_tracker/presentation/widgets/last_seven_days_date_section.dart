@@ -3,14 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:habitera/constants/sizes.dart';
 import 'package:habitera/features/habit_tracker/presentation/habit_provider.dart';
 
-import 'package:habitera/utils/day_key.dart';
+import 'package:habitera/utils/date_utils.dart';
 import 'package:habitera/utils/extensions.dart';
 import 'package:intl/intl.dart';
 
-class LastSevenDaysDateSection extends ConsumerWidget {
-  LastSevenDaysDateSection({super.key, required this.habitId});
+class LastSevenDaysDateSection extends StatelessWidget {
+  const LastSevenDaysDateSection({super.key, required this.checkinDayKeysForHabit});
 
-  final int habitId;
+  final Set<int> checkinDayKeysForHabit;
 
   List<int> generateLastSevendays() {
     final today = DateTime.now();
@@ -21,12 +21,7 @@ class LastSevenDaysDateSection extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final checkinDayKeysForHabitAsync = ref.watch(
-      checkinDayKeysForHabitProvider(habitId),
-    );
-    final checkinDayKeysForHabit = checkinDayKeysForHabitAsync.value ?? <int>{};
-    print('checkin day keys: $checkinDayKeysForHabit');
+  Widget build(BuildContext context) {
     final dates = generateLastSevendays();
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,

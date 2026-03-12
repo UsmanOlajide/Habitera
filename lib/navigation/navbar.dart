@@ -21,9 +21,9 @@ class NavBar extends StatefulWidget {
 class _NavBarState extends State<NavBar> {
   final screens = [
     const HabitsScreen(),
-    const ChatsScreen(),
+    // const ChatsScreen(),
     // AddHabitScreen(type: ,),
-    const ShopScreen(),
+    // const ShopScreen(),
     const ProfileScreen(),
   ];
 
@@ -45,7 +45,7 @@ class _NavBarState extends State<NavBar> {
             icon: Icon(Icons.punch_clock_rounded),
             label: 'Habits',
           ),
-          const NavigationDestination(icon: Icon(Icons.people), label: 'Chats'),
+          // const NavigationDestination(icon: Icon(Icons.people), label: 'Chats'),
           // CircleAvatar(
           //   radius: 30.0,
           //   backgroundColor: Colors.indigoAccent,
@@ -60,10 +60,10 @@ class _NavBarState extends State<NavBar> {
           //     icon: const Icon(Icons.add),
           //   ),
           // ),
-          const NavigationDestination(
-            icon: Icon(Icons.shopping_bag_rounded),
-            label: 'Shop',
-          ),
+          // const NavigationDestination(
+          //   icon: Icon(Icons.shopping_bag_rounded),
+          //   label: 'Shop',
+          // ),
           const NavigationDestination(
             icon: Icon(Icons.person_rounded),
             label: 'Profile',
@@ -87,6 +87,3 @@ class _NavBarState extends State<NavBar> {
     );
   }
 }
-
-
-

@@ -1,4 +1,4 @@
-import 'package:habitera/utils/day_key.dart';
+import 'package:habitera/utils/date_utils.dart';
 import 'package:intl/intl.dart';
 
 final today = DateTime.now();

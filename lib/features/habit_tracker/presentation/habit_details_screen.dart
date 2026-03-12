@@ -6,6 +6,7 @@ import 'package:habitera/features/habit_tracker/presentation/habit_provider.dart
 import 'package:habitera/features/habit_tracker/presentation/widgets/last_seven_days_date_section.dart';
 import 'package:habitera/features/habit_tracker/presentation/widgets/type_chip.dart';
 import 'package:habitera/utils/created_date.dart';
+import 'package:habitera/utils/date_utils.dart';
 import 'package:habitera/utils/extensions.dart';
 
 class HabitDetailsScreen extends ConsumerStatefulWidget {
@@ -20,6 +21,13 @@ class HabitDetailsScreen extends ConsumerStatefulWidget {
 class _HabitDetailsScreenState extends ConsumerState<HabitDetailsScreen> {
   @override
   Widget build(BuildContext context) {
+    final checkinDayKeysForHabitAsync = ref.watch(
+      checkinDayKeysForHabitProvider(widget.habit.id),
+    );
+    final checkinDayKeysForHabit = checkinDayKeysForHabitAsync.value ?? <int>{};
+
+    final streak = calculateStreak(checkinDayKeysForHabit);
+
     final doneHabitIdsAsync = ref.watch(doneHabitIdsProvider);
     final isDone =
         doneHabitIdsAsync.valueOrNull?.contains(widget.habit.id) ?? false;
@@ -31,9 +39,18 @@ class _HabitDetailsScreenState extends ConsumerState<HabitDetailsScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              widget.habit.title,
-              style: context.textTheme.titleLarge?.copyWith(fontSize: 18),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  widget.habit.title,
+                  style: context.textTheme.titleLarge?.copyWith(fontSize: 18),
+                ),
+                Text(
+                  'Streak : $streak 🔥',
+                  style: context.textTheme.bodyLarge?.copyWith(),
+                ),
+              ],
             ),
             kSizedBoxH20,
             Row(
@@ -57,7 +74,7 @@ class _HabitDetailsScreenState extends ConsumerState<HabitDetailsScreen> {
                   value: isDone,
                   activeColor: Colors.green,
                   onChanged: (value) async {
-                   await ref
+                    await ref
                         .read(doneHabitIdsProvider.notifier)
                         .toggleDone(widget.habit.id);
                     ref.invalidate(
@@ -73,7 +90,7 @@ class _HabitDetailsScreenState extends ConsumerState<HabitDetailsScreen> {
             ),
             Text('Last 7 days', style: context.textTheme.bodyLarge?.copyWith()),
             kSizedBoxH5,
-            LastSevenDaysDateSection(habitId: widget.habit.id),
+            LastSevenDaysDateSection(checkinDayKeysForHabit: checkinDayKeysForHabit),
           ],
         ),
       ),
