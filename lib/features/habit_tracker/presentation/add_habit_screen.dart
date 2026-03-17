@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:habitera/constants/enums.dart';
 import 'package:habitera/constants/sizes.dart';
+import 'package:habitera/features/habit_tracker/data/models/habit.dart';
 import 'package:habitera/features/habit_tracker/data/models/habit_isar.dart';
 import 'package:habitera/features/habit_tracker/presentation/habit_provider.dart';
 import 'package:habitera/utils/extensions.dart';
@@ -41,6 +42,12 @@ class _AddHabitScreenState extends ConsumerState<AddHabitScreen> {
       enabled: false,
     ),
   ];
+
+  @override
+  void dispose() {
+    textController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -119,11 +126,19 @@ class _AddHabitScreenState extends ConsumerState<AddHabitScreen> {
 
                     final repository = ref.read(habitRepositoryProvider);
 
-                    final habit = HabitIsar()
-                      ..title = textController.text
-                      ..type = widget.type.index
-                      ..frequency = _selectedFrequency.index
-                      ..createdAt = DateTime.now();
+                    // final habit = HabitIsar()
+                    //   ..title = textController.text
+                    //   ..type = widget.type.index
+                    //   ..frequency = _selectedFrequency.index
+                    //   ..createdAt = DateTime.now();
+                    final habit = Habit(
+                      userId: '',
+                      title: textController.text,
+                      type: widget.type.index,
+                      createdAt: DateTime.now(),
+                      frequency: _selectedFrequency.index,
+                    );
+
                     await repository.addHabit(habit);
 
                     ref.invalidate(habitsProvider);

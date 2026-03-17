@@ -3,17 +3,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:habitera/constants/enums.dart';
 import 'package:habitera/constants/sizes.dart';
+import 'package:habitera/features/habit_tracker/data/models/habit.dart';
 import 'package:habitera/features/habit_tracker/data/models/habit_isar.dart';
 import 'package:habitera/features/habit_tracker/presentation/habit_provider.dart';
 import 'package:habitera/utils/extensions.dart';
 
 class EditHabitScreen extends ConsumerStatefulWidget {
-  // const EditHabitScreen({super.key});
   const EditHabitScreen({super.key, required this.habit});
 
-  // late TextEditingController titleController;
-  // final HabitType type;
-  final HabitIsar habit;
+  final Habit habit;
 
   @override
   ConsumerState<EditHabitScreen> createState() => _EditHabitScreenState();
@@ -48,8 +46,8 @@ class _EditHabitScreenState extends ConsumerState<EditHabitScreen> {
   void initState() {
     super.initState();
     textController = TextEditingController(text: widget.habit.title);
-    _selectedFrequency = HabitFrequency.values[widget.habit.frequency];
-    _selectedFrequencies = {_selectedFrequency};
+    // _selectedFrequency = HabitFrequency.values[widget.habit.frequency];
+    // _selectedFrequencies = {_selectedFrequency};
   }
 
   @override
@@ -131,19 +129,18 @@ class _EditHabitScreenState extends ConsumerState<EditHabitScreen> {
                     setState(() => _isSubmitting = true);
 
                     final repository = ref.read(habitRepositoryProvider);
-
-                    final editedHabit = HabitIsar()
-                      ..id = widget.habit.id
-                      ..title = textController.text
-                      ..type = widget.habit.type
-                      ..frequency = _selectedFrequency.index
-                      ..createdAt = widget.habit.createdAt;
+                    
+                    //   //TODO: I should be able to edit the type
+                    final editedHabit = widget.habit.copyWith(
+                      title: textController.text,
+                      frequency: _selectedFrequency.index,
+                    );
                     await repository.editHabit(editedHabit);
 
                     ref.invalidate(habitsProvider);
                     // this is me telling the provider that the database has changed
 
-                    textController.clear();
+                    // textController.clear();
                     if (context.mounted) {
                       context.pop();
                     }

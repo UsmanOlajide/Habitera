@@ -207,127 +207,6 @@ class HabitListView extends ConsumerWidget {
   }
 }
 
-//   @override
-//   Widget build(BuildContext context) {
-//     final habits = ref.watch(habitsProvider);
-//     final repo = ref.read(habitRepositoryProvider);
-//     final doneHabitIdsAsync = ref.watch(doneHabitIdsProvider);
-//     final doneHabitIds = doneHabitIdsAsync.value ?? <int>{};
-//     return Scaffold(
-//       body: SafeArea(
-//         child: Padding(
-//           padding: EdgeInsets.symmetric(horizontal: 16.0),
-//           child: Column(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//               kSizedBoxH10,
-//               Text(
-//                 currentGreeting,
-//                 style: GoogleFonts.nunitoSans(
-//                   fontWeight: FontWeight.bold,
-//                   fontSize: 30.0,
-//                 ),
-//               ),
-//               kSizedBoxH10,
-//               DateSection(),
-//               kSizedBoxH20,
-//               Text(
-//                 'YOUR HABITS',
-//                 // 'TODAY',
-//                 style: GoogleFonts.nunitoSans(
-//                   fontWeight: FontWeight.w700,
-//                   fontSize: 15.0,
-//                 ),
-//               ),
-//               const SizedBox(height: 10.0),
-//               Expanded(
-//                 child: habits.when(
-//                   data: (habits) {
-//                     if (habits.isEmpty) {
-//                       return Center(
-//                         child: Column(
-//                           children: [
-//                             Text('No habits yet'),
-//                             Text('Create a your first habit to get started'),
-//                           ],
-//                         ),
-//                       );
-//                     }
-
-//                     return ListView.separated(
-//                       itemBuilder: (_, i) {
-//                         final habit = habits[i];
-//                         final isDone = doneHabitIds.contains(habit.id);
-//                         return HabitTile(
-//                           habit: habit,
-//                           type: habit.type,
-//                           habitTitle: habit.title,
-//                           createdAt: habit.createdAt,
-//                           onDelete: () async {
-//                             await repo.deleteHabit(habit.id);
-//                             ref.invalidate(habitsProvider);
-//                           },
-//                           onTapDelete: () async {
-//                             final deletedHabit = habit;
-//                             await repo.deleteHabit(deletedHabit.id);
-//                             ref.invalidate(habitsProvider);
-
-//                             if (!context.mounted) return;
-
-//                             final messenger = ScaffoldMessenger.of(context);
-//                             messenger.hideCurrentSnackBar();
-//                             messenger.showSnackBar(
-//                               SnackBar(
-//                                 duration: Duration(seconds: 8),
-//                                 content: Text('Habit deleted'),
-//                                 action: SnackBarAction(
-//                                   label: 'UNDO',
-//                                   onPressed: () async {
-//                                     // final repository = ref.read(
-//                                     //   habitRepositoryProvider,
-//                                     // );
-//                                     await repo.addHabit(deletedHabit);
-//                                     ref.invalidate(habitsProvider);
-
-//                                     messenger.showSnackBar(
-//                                       SnackBar(
-//                                         duration: Duration(seconds: 2),
-//                                         content: Text('Habit restored'),
-//                                       ),
-//                                     );
-//                                   },
-//                                 ),
-//                               ),
-//                             );
-//                           },
-//                           isDone: isDone,
-//                           onChanged: (value) async {
-//                             final checkinRepo = ref.read(
-//                               checkinRepositoryProvider,
-//                             );
-//                             await checkinRepo.toggleDone(habit.id);
-//                             // ref.invalidate(doneHabitIdsProvider);
-//                           },
-//                         );
-//                       },
-//                       separatorBuilder: (_, _) => const SizedBox(height: 10.0),
-//                       itemCount: habits.length,
-//                     );
-//                   },
-//                   error: (error, stack) => Center(child: Text('Error: $error')),
-//                   loading: () =>
-//                       Center(child: CircularProgressIndicator.adaptive()),
-//                 ),
-//               ),
-//               CreateHabitButton(),
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
-
 class HabitTile extends StatelessWidget {
   const HabitTile({
     super.key,
@@ -352,35 +231,6 @@ class HabitTile extends StatelessWidget {
   final void Function(bool?)? onChanged;
   final HabitIsar habit;
   final bool isDone;
-
-  // String createdDate(DateTime createdAt) {
-  //   final now = DateTime.now();
-  //   final today = DateTime(now.year, now.month, now.day);
-  //   final createdDay = DateTime(createdAt.year, createdAt.month, createdAt.day);
-
-  //   final diffDays = today.difference(createdDay).inDays;
-
-  //   if (diffDays == 0) return 'Created today';
-  //   if (diffDays == 1) return 'Created yesterday';
-  //   if (diffDays == 0) return 'Created today';
-
-  //   const months = [
-  //     'Jan',
-  //     'Feb',
-  //     'Mar',
-  //     'Apr',
-  //     'May',
-  //     'Jun',
-  //     'Jul',
-  //     'Aug',
-  //     'Sep',
-  //     'Oct',
-  //     'Nov',
-  //     'Dec',
-  //   ];
-
-  //   return 'Created ${months[createdAt.month - 1]} ${createdAt.day}';
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -417,9 +267,7 @@ class HabitTile extends StatelessWidget {
           );
         },
         child: Container(
-          // height: 74.0,
           height: 113.0,
-          // padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
           decoration: BoxDecoration(
             color: Colors.grey.shade200,
             borderRadius: BorderRadius.circular(13.0),
@@ -563,123 +411,7 @@ class CreateHabitButton extends StatelessWidget {
           },
           icon: Icon(Icons.add),
         ),
-        // if (type != null && context.mounted) {
-        //   final added = await context.pushNamed<bool>(
-        //     AppRoutes.addHabitsScreen.name,
-        //     pathParameters: {'type': type.name},
-        //   );
-        //   if (context.mounted && added == true) {
-        //     ScaffoldMessenger.of(
-        //       context,
-        //     ).showSnackBar(SnackBar(content: Text('Habit added')));
-        //   }
-        // }
       ],
     );
   }
 }
-
-//* agglo code
-// class CustomCard extends ConsumerWidget {
-//   CustomCard({
-//     super.key,
-//     required this.title,
-//     required this.titleColor,
-//     this.trailingWidget,
-//     this.menuPadding,
-//     this.width,
-//     this.height,
-//     this.dividerBottomSpace,
-//     required this.itemBuilder,
-//     this.onSelected,
-//     required this.children,
-//     this.isEnabled,
-//   });
-
-//   final String title;
-//   final Color? titleColor;
-//   final Widget? trailingWidget;
-//   final EdgeInsetsGeometry? menuPadding;
-//   final double? width;
-//   final double? height;
-//   final double? dividerBottomSpace;
-//   final void Function(String)? onSelected;
-//   final List<PopupMenuEntry<String>> Function(BuildContext) itemBuilder;
-//   final List<Widget> children;
-//   bool? isEnabled;
-
-//   @override
-//   Widget build(BuildContext context, WidgetRef ref) {
-//     return Container(
-//       height: height,
-//       decoration: BoxDecoration(
-//         color: Colors.white,
-//         borderRadius: BorderRadius.circular(4),
-//         boxShadow: const [
-//           BoxShadow(
-//             color: Color.fromRGBO(0, 0, 0, 0.1),
-//             blurRadius: 5,
-//             offset: Offset(0, 2),
-//           ),
-//         ],
-//       ),
-//       child: Padding(
-//         padding: const EdgeInsets.only(
-//           right: 15,
-//           left: 15,
-//           // bottom: 13,
-//           bottom: 15,
-//         ),
-//         child: Column(
-//           children: [
-//             Row(
-//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//               children: [
-//                 Text(
-//                   title,
-//                   style: context.textTheme.bodyMedium?.copyWith(
-//                     fontSize: 15,
-//                     fontWeight: FontWeight.w500,
-//                     color: titleColor,
-//                   ),
-//                 ),
-//                 if (trailingWidget != null) ...[
-//                   const SizedBox(width: 8.0),
-//                   trailingWidget!,
-//                 ],
-//                 PopupMenuButton<String>(
-//                   // shadowColor: ColorPicker.dividerColor,
-//                   offset: const Offset(14, 0),
-//                   padding: const EdgeInsets.only(left: 6),
-//                   menuPadding: menuPadding,
-//                   // menuPadding: const EdgeInsets.only(
-//                   //     left: 9, right: 9, top: 9, bottom: 7),
-//                   icon: SvgPicture.asset(
-//                     "assets/icons/options.svg",
-//                     height: 8,
-//                     fit: BoxFit.scaleDown,
-//                   ),
-//                   onSelected: onSelected,
-//                   enabled: isEnabled ?? true,
-//                   itemBuilder: itemBuilder,
-//                   constraints: BoxConstraints.tightFor(width: width),
-//                   // constraints: const BoxConstraints.tightFor(width: 121.5),
-//                   shape: RoundedRectangleBorder(
-//                     borderRadius: BorderRadius.circular(5),
-//                   ),
-//                 ),
-//               ],
-//             ),
-//             // const CustomDivider(),
-//             SizedBox(height: dividerBottomSpace),
-//             // const SizedBox(height: 10),
-//             Row(
-//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//               children: children,
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }

@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:habitera/constants/enums.dart';
 import 'package:habitera/features/auth/presentation/login_screen.dart';
 import 'package:habitera/features/auth/presentation/signup_screen.dart';
+import 'package:habitera/features/habit_tracker/data/models/habit.dart';
 import 'package:habitera/features/habit_tracker/data/models/habit_isar.dart';
 import 'package:habitera/features/habit_tracker/presentation/add_habit_screen.dart';
 import 'package:habitera/features/auth/presentation/auth_provider.dart';
@@ -156,7 +157,7 @@ GoRouter appRouter(AppRouterRef ref) {
             name: AppRoutes.editHabitsScreen.name,
             path: AppRoutes.editHabitsScreen.childPath,
             builder: (_, state) {
-              final habit = state.extra as HabitIsar;
+              final habit = state.extra as Habit;
               return EditHabitScreen(habit: habit);
             },
           ),
