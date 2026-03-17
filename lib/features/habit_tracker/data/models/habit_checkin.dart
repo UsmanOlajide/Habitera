@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 class HabitCheckin {
   HabitCheckin({
@@ -21,16 +20,16 @@ class HabitCheckin {
   }
 
   Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'habitId': habitId,
-      'dayKey': dayKey,
+    return {
+      'habit_id': habitId,
+      'day_key': dayKey,
     };
   }
 
   factory HabitCheckin.fromMap(Map<String, dynamic> map) {
     return HabitCheckin(
-      habitId: map['habitId'] as String,
-      dayKey: map['dayKey'] as int,
+      habitId: map['habit_id'] as String,
+      dayKey: map['day_key'] as int,
     );
   }
 

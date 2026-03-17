@@ -38,7 +38,7 @@ final checkinRepositoryProvider =
 
 typedef CheckinRepositoryRef = AutoDisposeProviderRef<CheckinRepository>;
 String _$checkinDayKeysForHabitHash() =>
-    r'1160a7b5d850cf7a79db573fc1c93655fb18f7c4';
+    r'36e706c97903ef4e048d607a401c0db8b4998d9f';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -72,7 +72,7 @@ class CheckinDayKeysForHabitFamily extends Family<AsyncValue<Set<int>>> {
 
   /// See also [checkinDayKeysForHabit].
   CheckinDayKeysForHabitProvider call(
-    int habitId,
+    String habitId,
   ) {
     return CheckinDayKeysForHabitProvider(
       habitId,
@@ -108,7 +108,7 @@ class CheckinDayKeysForHabitProvider
     extends AutoDisposeFutureProvider<Set<int>> {
   /// See also [checkinDayKeysForHabit].
   CheckinDayKeysForHabitProvider(
-    int habitId,
+    String habitId,
   ) : this._internal(
           (ref) => checkinDayKeysForHabit(
             ref as CheckinDayKeysForHabitRef,
@@ -136,7 +136,7 @@ class CheckinDayKeysForHabitProvider
     required this.habitId,
   }) : super.internal();
 
-  final int habitId;
+  final String habitId;
 
   @override
   Override overrideWith(
@@ -177,7 +177,7 @@ class CheckinDayKeysForHabitProvider
 
 mixin CheckinDayKeysForHabitRef on AutoDisposeFutureProviderRef<Set<int>> {
   /// The parameter `habitId` of this provider.
-  int get habitId;
+  String get habitId;
 }
 
 class _CheckinDayKeysForHabitProviderElement
@@ -186,15 +186,15 @@ class _CheckinDayKeysForHabitProviderElement
   _CheckinDayKeysForHabitProviderElement(super.provider);
 
   @override
-  int get habitId => (origin as CheckinDayKeysForHabitProvider).habitId;
+  String get habitId => (origin as CheckinDayKeysForHabitProvider).habitId;
 }
 
-String _$habitsHash() => r'f00aa67e63fe4931b28e8e1fbef8d3a0b5c0be0f';
+String _$habitsHash() => r'38e42996981a73d8c494a0ee72425f8e7152b999';
 
 /// See also [Habits].
 @ProviderFor(Habits)
 final habitsProvider =
-    AutoDisposeAsyncNotifierProvider<Habits, List<HabitIsar>>.internal(
+    AutoDisposeAsyncNotifierProvider<Habits, List<Habit>>.internal(
   Habits.new,
   name: r'habitsProvider',
   debugGetCreateSourceHash:
@@ -203,13 +203,13 @@ final habitsProvider =
   allTransitiveDependencies: null,
 );
 
-typedef _$Habits = AutoDisposeAsyncNotifier<List<HabitIsar>>;
-String _$doneHabitIdsHash() => r'903e52f7e1d74e6ee7c7f45a19eaf835622726ce';
+typedef _$Habits = AutoDisposeAsyncNotifier<List<Habit>>;
+String _$doneHabitIdsHash() => r'4d0e0e3e3c7324166f42e82afd452ae35de59062';
 
 /// See also [DoneHabitIds].
 @ProviderFor(DoneHabitIds)
 final doneHabitIdsProvider =
-    AutoDisposeAsyncNotifierProvider<DoneHabitIds, Set<int>>.internal(
+    AutoDisposeAsyncNotifierProvider<DoneHabitIds, Set<String>>.internal(
   DoneHabitIds.new,
   name: r'doneHabitIdsProvider',
   debugGetCreateSourceHash:
@@ -218,6 +218,6 @@ final doneHabitIdsProvider =
   allTransitiveDependencies: null,
 );
 
-typedef _$DoneHabitIds = AutoDisposeAsyncNotifier<Set<int>>;
+typedef _$DoneHabitIds = AutoDisposeAsyncNotifier<Set<String>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:habitera/constants/sizes.dart';
+import 'package:habitera/features/habit_tracker/data/models/habit.dart';
 import 'package:habitera/features/habit_tracker/data/models/habit_isar.dart';
 import 'package:habitera/features/habit_tracker/presentation/habit_provider.dart';
 import 'package:habitera/features/habit_tracker/presentation/widgets/last_seven_days_date_section.dart';
@@ -12,7 +13,7 @@ import 'package:habitera/utils/extensions.dart';
 class HabitDetailsScreen extends ConsumerStatefulWidget {
   const HabitDetailsScreen({super.key, required this.habit});
 
-  final HabitIsar habit;
+  final Habit habit;
 
   @override
   ConsumerState<HabitDetailsScreen> createState() => _HabitDetailsScreenState();
@@ -31,6 +32,11 @@ class _HabitDetailsScreenState extends ConsumerState<HabitDetailsScreen> {
     final doneHabitIdsAsync = ref.watch(doneHabitIdsProvider);
     final isDone =
         doneHabitIdsAsync.valueOrNull?.contains(widget.habit.id) ?? false;
+
+    final today = dayKey(DateTime.now());
+    final optimizedCheckinDayKeys = isDone
+        ? {...checkinDayKeysForHabit, today}
+        : checkinDayKeysForHabit.where((dayKey) => dayKey != today).toSet();
 
     return Scaffold(
       appBar: AppBar(),
@@ -77,9 +83,9 @@ class _HabitDetailsScreenState extends ConsumerState<HabitDetailsScreen> {
                     await ref
                         .read(doneHabitIdsProvider.notifier)
                         .toggleDone(widget.habit.id);
-                    ref.invalidate(
-                      checkinDayKeysForHabitProvider(widget.habit.id),
-                    );
+                    // ref.invalidate(
+                    //   checkinDayKeysForHabitProvider(widget.habit.id),
+                    // );
                   },
                 ),
                 Text(
@@ -90,7 +96,9 @@ class _HabitDetailsScreenState extends ConsumerState<HabitDetailsScreen> {
             ),
             Text('Last 7 days', style: context.textTheme.bodyLarge?.copyWith()),
             kSizedBoxH5,
-            LastSevenDaysDateSection(checkinDayKeysForHabit: checkinDayKeysForHabit),
+            LastSevenDaysDateSection(
+              checkinDayKeysForHabit: optimizedCheckinDayKeys,
+            ),
           ],
         ),
       ),

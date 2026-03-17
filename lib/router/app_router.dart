@@ -165,7 +165,7 @@ GoRouter appRouter(AppRouterRef ref) {
             name: AppRoutes.habitDetailsScreen.name,
             path: AppRoutes.habitDetailsScreen.childPath,
             builder: (_, state) {
-              final habit = state.extra as HabitIsar;
+              final habit = state.extra as Habit;
 
               return HabitDetailsScreen(habit: habit);
             },

@@ -1,7 +1,9 @@
+import 'package:habitera/features/habit_tracker/data/models/habit_checkin.dart';
 import 'package:habitera/features/habit_tracker/data/models/habit_checkin_isar.dart';
 import 'package:habitera/isar_service.dart';
 import 'package:habitera/utils/date_utils.dart';
 import 'package:isar/isar.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 //. Handle all checkin related stuffs here that the UI doesn't need to know about
 //. will handle all isar operations so the ui doesn't handle that
@@ -11,53 +13,109 @@ import 'package:isar/isar.dart';
 //. Toggle (insert/delete)
 
 //. this is what happens when the user taps the checkbox
+final _supabase = Supabase.instance.client;
+
 class CheckinRepository {
-  Future<void> toggleDone(int habitId) async {
+  Future<void> toggleDone(String habitId) async {
     final today = dayKey(DateTime.now());
 
-    final existing = await IsarService.isar.habitCheckinIsars
-        .filter()
-        .habitIdEqualTo(habitId)
-        .dayKeyEqualTo(today)
-        .findFirst();
+    final query = await _supabase
+        .from('habit_checkins')
+        .select()
+        .eq('habit_id', habitId)
+        .eq('day_key', today);
+    final existing = query.isNotEmpty;
 
-    await IsarService.isar.writeTxn(() async {
-      if (existing != null) {
-        await IsarService.isar.habitCheckinIsars.delete(existing.id);
-      } else {
-        final checkin = HabitCheckinIsar()
-          ..habitId = habitId
-          ..dayKey = today;
-        await IsarService.isar.habitCheckinIsars.put(checkin);
-      }
-    });
+    if (existing) {
+      await _supabase
+          .from('habit_checkins')
+          .delete()
+          .eq('habit_id', habitId)
+          .eq('day_key', today);
+    } else {
+      final checkin = HabitCheckin(habitId: habitId, dayKey: today);
+      await _supabase.from('habit_checkins').insert(checkin.toMap());
+    }
   }
 
-  Future<Set<int>> doneHabitIdsToday() async {
+  Future<Set<String>> doneHabitIdsToday() async {
     final today = dayKey(DateTime.now());
 
-    final doneCheckinsToday = await IsarService.isar.habitCheckinIsars
-        .filter()
-        .dayKeyEqualTo(today)
-        .findAll();
+    final doneCheckinsToday = await _supabase
+        .from('habit_checkins')
+        .select()
+        .eq('day_key', today);
 
-    return doneCheckinsToday.map((doneCheckin) => doneCheckin.habitId).toSet();
+    final doneHabitIdsToday = doneCheckinsToday
+        .map((doneCheckin) => doneCheckin['habit_id'] as String)
+        .toSet();
+    return doneHabitIdsToday;
   }
 
-  Future<Set<int>> getCheckinDayKeysForHabit(int habitId) async {
+  Future<Set<int>> getCheckinDayKeysForHabit(String habitId) async {
     final sevenDaysago = DateTime.now().subtract(Duration(days: 6));
     final startKey = dayKey(sevenDaysago);
     final firstKey = dayKey(DateTime.now());
 
-    final checkins = await IsarService.isar.habitCheckinIsars
-        .filter()
-        .habitIdEqualTo(habitId)
-        .dayKeyBetween(startKey, firstKey)
-        .findAll();
+    final checkins = await _supabase
+        .from('habit_checkins')
+        .select()
+        .eq('habit_id', habitId)
+        .gte('day_key', startKey)
+        .lte('day_key', firstKey);
 
-    return checkins.map((checkin) => checkin.dayKey).toSet();
+    return checkins.map((checkin) => checkin['day_key'] as int).toSet();
   }
 }
+
+//* FOR ISAR
+// class CheckinRepository {
+//   Future<void> toggleDone(int habitId) async {
+//     final today = dayKey(DateTime.now());
+
+//     final existing = await IsarService.isar.habitCheckinIsars
+//         .filter()
+//         .habitIdEqualTo(habitId)
+//         .dayKeyEqualTo(today)
+//         .findFirst();
+
+//     await IsarService.isar.writeTxn(() async {
+//       if (existing != null) {
+//         await IsarService.isar.habitCheckinIsars.delete(existing.id);
+//       } else {
+//         final checkin = HabitCheckinIsar()
+//           ..habitId = habitId
+//           ..dayKey = today;
+//         await IsarService.isar.habitCheckinIsars.put(checkin);
+//       }
+//     });
+//   }
+
+//   Future<Set<int>> doneHabitIdsToday() async {
+//     final today = dayKey(DateTime.now());
+
+//     final doneCheckinsToday = await IsarService.isar.habitCheckinIsars
+//         .filter()
+//         .dayKeyEqualTo(today)
+//         .findAll();
+
+//     return doneCheckinsToday.map((doneCheckin) => doneCheckin.habitId).toSet();
+//   }
+
+//   Future<Set<int>> getCheckinDayKeysForHabit(int habitId) async {
+//     final sevenDaysago = DateTime.now().subtract(Duration(days: 6));
+//     final startKey = dayKey(sevenDaysago);
+//     final firstKey = dayKey(DateTime.now());
+
+//     final checkins = await IsarService.isar.habitCheckinIsars
+//         .filter()
+//         .habitIdEqualTo(habitId)
+//         .dayKeyBetween(startKey, firstKey)
+//         .findAll();
+
+//     return checkins.map((checkin) => checkin.dayKey).toSet();
+//   }
+// }
 
 //. Create a method that fetches checkins for a habit in the last 7 days
 

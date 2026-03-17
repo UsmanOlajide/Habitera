@@ -1,17 +1,17 @@
 import 'package:habitera/constants/enums.dart';
 
-class Habit {
-  Habit({
-    required this.id,
-    required this.title,
-    required this.type,
-    required this.createdAt,
-  });
-  final String id;
-  final String title;
-  final HabitType type;
-  final DateTime createdAt;
-}
+// class Habit {
+//   Habit({
+//     required this.id,
+//     required this.title,
+//     required this.type,
+//     required this.createdAt,
+//   });
+//   final String id;
+//   final String title;
+//   final HabitType type;
+//   final DateTime createdAt;
+// }
 
 // class Habit {
 //   Habit({

@@ -11,9 +11,7 @@ final userId = _supabase.auth.currentUser!.id;
 
 class HabitRepository {
   Future<Habit> addHabit(Habit habit) async {
-    final newHabit = habit.copyWith(
-      userId: userId,
-    );
+    final newHabit = habit.copyWith(userId: userId);
     final result = await _supabase
         .from('habits')
         .insert(newHabit.toMap())
@@ -23,10 +21,12 @@ class HabitRepository {
   }
 
   Future<List<Habit>> getHabits() async {
+    print('getHabits called, userId: $userId');
     final rawHabits = await _supabase
         .from('habits')
         .select()
         .eq('user_id', userId);
+    print('rawHabits: $rawHabits');
     final habits = rawHabits.map((habit) => Habit.fromMap(habit)).toList();
 
     return habits;

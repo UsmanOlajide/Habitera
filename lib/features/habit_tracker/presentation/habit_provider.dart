@@ -1,3 +1,4 @@
+import 'package:habitera/features/habit_tracker/data/models/habit.dart';
 import 'package:habitera/features/habit_tracker/data/models/habit_isar.dart';
 import 'package:habitera/features/habit_tracker/data/repositories/checkin_repository.dart';
 import 'package:habitera/features/habit_tracker/data/repositories/habit_repository.dart';
@@ -10,22 +11,22 @@ part 'habit_provider.g.dart';
 class Habits extends _$Habits {
   late HabitRepository _repo;
   @override
-  Future<List<HabitIsar>> build() async {
+  Future<List<Habit>> build() async {
     _repo = ref.read(habitRepositoryProvider);
     return await _repo.getHabits();
   }
 
-  Future<void> addHabit(HabitIsar habit) async {
+  Future<void> addHabit(Habit habit) async {
     await _repo.addHabit(habit);
     ref.invalidateSelf();
   }
 
-  Future<void> editHabit(HabitIsar habit) async {
+  Future<void> editHabit(Habit habit) async {
     await _repo.editHabit(habit);
     ref.invalidateSelf();
   }
 
-  Future<void> deleteHabit(int habitId) async {
+  Future<void> deleteHabit(String habitId) async {
     await _repo.deleteHabit(habitId);
     ref.invalidateSelf();
   }
@@ -46,22 +47,89 @@ class DoneHabitIds extends _$DoneHabitIds {
   late CheckinRepository _repo;
 
   @override
-  Future<Set<int>> build() async {
+  Future<Set<String>> build() async {
     _repo = ref.read(checkinRepositoryProvider);
     return await _repo.doneHabitIdsToday();
   }
 
-  Future<void> toggleDone(int habitId) async {
+  Future<void> toggleDone(String habitId) async {
+    final current = state.value ?? {};
+    final exists = current.contains(habitId);
+    final newSet = exists
+        ? current.where((id) => id != habitId).toSet()
+        : {...current, habitId};
+    state = AsyncData(newSet);
     await _repo.toggleDone(habitId);
-    ref.invalidateSelf();
+    // ref.invalidateSelf();
   }
 }
 
 @riverpod
 Future<Set<int>> checkinDayKeysForHabit(
   CheckinDayKeysForHabitRef ref,
-  int habitId,
+  String habitId,
 ) async {
   final repo = ref.read(checkinRepositoryProvider);
   return await repo.getCheckinDayKeysForHabit(habitId);
 }
+
+//* FOR ISAR
+// @riverpod
+// class Habits extends _$Habits {
+//   late HabitRepository _repo;
+//   @override
+//   Future<List<HabitIsar>> build() async {
+//     _repo = ref.read(habitRepositoryProvider);
+//     return await _repo.getHabits();
+//   }
+
+//   Future<void> addHabit(HabitIsar habit) async {
+//     await _repo.addHabit(habit);
+//     ref.invalidateSelf();
+//   }
+
+//   Future<void> editHabit(HabitIsar habit) async {
+//     await _repo.editHabit(habit);
+//     ref.invalidateSelf();
+//   }
+
+//   Future<void> deleteHabit(int habitId) async {
+//     await _repo.deleteHabit(habitId);
+//     ref.invalidateSelf();
+//   }
+// }
+
+// @riverpod
+// HabitRepository habitRepository(HabitRepositoryRef ref) {
+//   return HabitRepository();
+// }
+
+// @riverpod
+// CheckinRepository checkinRepository(CheckinRepositoryRef ref) {
+//   return CheckinRepository();
+// }
+
+// @riverpod
+// class DoneHabitIds extends _$DoneHabitIds {
+//   late CheckinRepository _repo;
+
+//   @override
+//   Future<Set<int>> build() async {
+//     _repo = ref.read(checkinRepositoryProvider);
+//     return await _repo.doneHabitIdsToday();
+//   }
+
+//   Future<void> toggleDone(int habitId) async {
+//     await _repo.toggleDone(habitId);
+//     ref.invalidateSelf();
+//   }
+// }
+
+// @riverpod
+// Future<Set<int>> checkinDayKeysForHabit(
+//   CheckinDayKeysForHabitRef ref,
+//   int habitId,
+// ) async {
+//   final repo = ref.read(checkinRepositoryProvider);
+//   return await repo.getCheckinDayKeysForHabit(habitId);
+// }
