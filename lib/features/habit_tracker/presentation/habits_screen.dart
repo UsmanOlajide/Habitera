@@ -115,16 +115,7 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen> {
                 child: habits.when(
                   data: (habits) {
                     if (habits.isEmpty) {
-                      return Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text('No habits yet'),
-                            kSizedBoxH8,
-                            Text('Create a your first habit to get started'),
-                          ],
-                        ),
-                      );
+                      return EmptyState();
                     }
 
                     return HabitListView(
@@ -141,6 +132,32 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class EmptyState extends StatelessWidget {
+  const EmptyState({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.task_alt, size: 90.0),
+          kSizedBoxH10,
+          Text(
+            'No habits yet',
+            style: context.textTheme.titleLarge?.copyWith(fontSize: 19),
+          ),
+          kSizedBoxH8,
+          Text(
+            'Create a your first habit to get started',
+            style: context.textTheme.bodyMedium?.copyWith(fontSize: 16),
+          ),
+        ],
       ),
     );
   }
