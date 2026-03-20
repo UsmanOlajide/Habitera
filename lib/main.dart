@@ -7,18 +7,22 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:habitera/common/theme/app_theme_data.dart';
 import 'package:habitera/features/auth/presentation/auth_provider.dart';
-import 'package:habitera/isar_service.dart';
+// import 'package:habitera/isar_service.dart';
 import 'package:habitera/router/app_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: '.env');
-  await IsarService.init();
+  // await IsarService.init();
   await Supabase.initialize(
     url: dotenv.env['SUPABASE_URL']!,
     anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
   );
+
+  // final prefs = await SharedPreferences.getInstance();
+  // prefs.clear();
 
   runApp(const ProviderScope(child: MyApp()));
 }

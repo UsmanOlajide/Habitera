@@ -204,7 +204,7 @@ final habitsProvider =
 );
 
 typedef _$Habits = AutoDisposeAsyncNotifier<List<Habit>>;
-String _$doneHabitIdsHash() => r'4d0e0e3e3c7324166f42e82afd452ae35de59062';
+String _$doneHabitIdsHash() => r'cb2739960d4a9c412d2aeaf82f18d6f7a215f994';
 
 /// See also [DoneHabitIds].
 @ProviderFor(DoneHabitIds)

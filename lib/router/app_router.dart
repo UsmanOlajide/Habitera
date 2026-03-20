@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
+import 'package:habitera/app_provider.dart';
 import 'package:habitera/constants/enums.dart';
 import 'package:habitera/features/auth/presentation/login_screen.dart';
 import 'package:habitera/features/auth/presentation/signup_screen.dart';
@@ -15,6 +16,7 @@ import 'package:habitera/features/habit_tracker/presentation/forgot_password_scr
 import 'package:habitera/features/habit_tracker/presentation/habit_details_screen.dart';
 import 'package:habitera/features/habit_tracker/presentation/reset_password_screen.dart';
 import 'package:habitera/navigation/navbar.dart';
+import 'package:habitera/onboarding_screen.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -33,7 +35,8 @@ enum AppRoutes {
   signupScreen('/signup-screen'),
   forgotPasswordScreen('/forgot-password-screen'),
   resetPasswordScreen('/reset-password-screen'),
-  confirmEmailScreen('/confirm-email-screen');
+  confirmEmailScreen('/confirm-email-screen'),
+  onboardingScreen('/onboarding-screen');
 
   final String path;
   const AppRoutes(this.path);
@@ -50,6 +53,8 @@ class GoRouterRefreshStream extends ChangeNotifier {
 
   late final StreamSubscription<dynamic> _subscription;
 
+  void notify() => notifyListeners();
+
   @override
   void dispose() {
     _subscription.cancel();
@@ -63,14 +68,26 @@ GoRouter appRouter(AppRouterRef ref) {
     Supabase.instance.client.auth.onAuthStateChange,
   );
 
+  ref.listen(hasSeenOnboardingProvider, (_, _) {
+    refreshStream.notify();
+  });
+
   ref.onDispose(refreshStream.dispose);
 
   return GoRouter(
     refreshListenable: refreshStream,
     redirect: (context, state) {
-      final isLoggedIn = ref.read(isLoggedInProvider);
+      // print('hasSeenOB: ${ref.read(hasSeenOnboardingProvider).value}');
+      final hasSeenOnboarding =
+          ref.read(hasSeenOnboardingProvider).value ?? true;
+      // ref.read(hasSeenOnboardingProvider).value ?? true;
+
       // final authEvent = ref.read(authStateProvider).value?.event;
+      final isLoggedIn = ref.read(isLoggedInProvider);
       final isPasswordRecovery = ref.read(isPasswordRecoveryProvider);
+
+      final onOnboardingScreen =
+          state.matchedLocation == AppRoutes.onboardingScreen.path;
 
       final onAuthScreen =
           state.matchedLocation == AppRoutes.loginScreen.path ||
@@ -82,6 +99,14 @@ GoRouter appRouter(AppRouterRef ref) {
       print(
         'redirect running, isLoggedIn: $isLoggedIn , onAuthScreen: $onAuthScreen',
       );
+
+      if (!hasSeenOnboarding && !onOnboardingScreen) {
+        return AppRoutes.onboardingScreen.path;
+      }
+
+      if (hasSeenOnboarding && onOnboardingScreen) {
+        return AppRoutes.loginScreen.path;
+      }
 
       if (isPasswordRecovery) {
         return AppRoutes.resetPasswordScreen.path;
@@ -98,6 +123,13 @@ GoRouter appRouter(AppRouterRef ref) {
     },
     initialLocation: AppRoutes.navbar.path,
     routes: [
+      GoRoute(
+        name: AppRoutes.onboardingScreen.name,
+        path: AppRoutes.onboardingScreen.path,
+        builder: (_, state) {
+          return OnboardingScreen();
+        },
+      ),
       GoRoute(
         name: AppRoutes.loginScreen.name,
         path: AppRoutes.loginScreen.path,
