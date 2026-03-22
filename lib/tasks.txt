@@ -60,3 +60,17 @@ Last things i did
 
 Jan 31st 2026
 -  Add a snackbar after a habit is deleted 
+
+
+All of my screens
+• Onboarding screen
+• Login screen
+• Signup screen 
+• Confirm email screen
+• Reset password screen
+• Forgot Password screen
+• Habits Screen
+• Habit Details Screen
+• Add Habit Screen
+• Edit Habit Screen
+• Profile Screen

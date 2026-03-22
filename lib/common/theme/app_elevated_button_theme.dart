@@ -7,7 +7,9 @@ class AppElevatedButtonTheme {
       foregroundColor: Colors.white,
       fixedSize: const Size(double.infinity, 40),
       shape: StadiumBorder(),
-
+    ),
+  );
+}
       // shape: RoundedRectangleBorder(
       //   borderRadius: BorderRadius.circular(8.0),
       // ),
@@ -15,6 +17,3 @@ class AppElevatedButtonTheme {
       //   fontWeight: FontWeight.w600,
       //   fontSize: 16.0,
       // ),
-    ),
-  );
-}

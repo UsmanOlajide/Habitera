@@ -77,17 +77,22 @@ GoRouter appRouter(AppRouterRef ref) {
   return GoRouter(
     refreshListenable: refreshStream,
     redirect: (context, state) {
-      // print('hasSeenOB: ${ref.read(hasSeenOnboardingProvider).value}');
+      print(
+        'hasSeenOnboardingProvider state: ${ref.read(hasSeenOnboardingProvider).isLoading}',
+      );
+
       final hasSeenOnboarding =
-          ref.read(hasSeenOnboardingProvider).value ?? true;
+          ref.read(hasSeenOnboardingProvider).value ?? false;
+      // final hasSeenOnboarding =
+      //     ref.read(hasSeenOnboardingProvider).value ?? true;
       // ref.read(hasSeenOnboardingProvider).value ?? true;
 
       // final authEvent = ref.read(authStateProvider).value?.event;
-      final isLoggedIn = ref.read(isLoggedInProvider);
-      final isPasswordRecovery = ref.read(isPasswordRecoveryProvider);
-
       final onOnboardingScreen =
           state.matchedLocation == AppRoutes.onboardingScreen.path;
+
+      final isLoggedIn = ref.read(isLoggedInProvider);
+      final isPasswordRecovery = ref.read(isPasswordRecoveryProvider);
 
       final onAuthScreen =
           state.matchedLocation == AppRoutes.loginScreen.path ||
@@ -97,16 +102,18 @@ GoRouter appRouter(AppRouterRef ref) {
           state.matchedLocation == AppRoutes.confirmEmailScreen.path;
 
       print(
-        'redirect running, isLoggedIn: $isLoggedIn , onAuthScreen: $onAuthScreen',
+        'redirect running',
+        // 'redirect running, isLoggedIn: $isLoggedIn , onAuthScreen: $onAuthScreen',
       );
+
 
       if (!hasSeenOnboarding && !onOnboardingScreen) {
         return AppRoutes.onboardingScreen.path;
       }
 
-      if (hasSeenOnboarding && onOnboardingScreen) {
-        return AppRoutes.loginScreen.path;
-      }
+      // if (hasSeenOnboarding && onOnboardingScreen) {
+      //   return AppRoutes.loginScreen.path;
+      // }
 
       if (isPasswordRecovery) {
         return AppRoutes.resetPasswordScreen.path;

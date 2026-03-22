@@ -17,6 +17,8 @@ class HasSeenOnboarding extends _$HasSeenOnboarding {
     final prefs = await SharedPreferences.getInstance();
     final hasSeenOnboarding = prefs.getBool('hasSeenOnboarding') ?? false;
     // final hasSeenOnboarding = prefs.containsKey('hasSeenOnboarding');
+  // print('hasSeenOnboardingProvider state: ${state.isLoading}');
+
     return hasSeenOnboarding;
   }
 

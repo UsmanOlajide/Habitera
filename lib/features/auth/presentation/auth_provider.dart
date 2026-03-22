@@ -13,8 +13,8 @@ Stream<AuthState> authState(AuthStateRef ref) {
 @riverpod
 bool isLoggedIn(Ref ref) {
   final authStateAsync = ref.watch(authStateProvider);
-  print('authStateAsync: $authStateAsync');
-  print('session: ${authStateAsync.value?.session}');
+  // print('authStateAsync: $authStateAsync');
+  // print('session: ${authStateAsync.value?.session}');
 
   final authState = authStateAsync.value;
 

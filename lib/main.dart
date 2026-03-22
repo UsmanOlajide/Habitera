@@ -21,8 +21,8 @@ void main() async {
     anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
   );
 
-  // final prefs = await SharedPreferences.getInstance();
-  // prefs.clear();
+  final prefs = await SharedPreferences.getInstance();
+  prefs.clear();
 
   runApp(const ProviderScope(child: MyApp()));
 }
