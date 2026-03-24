@@ -1,10 +1,8 @@
 import 'dart:async';
 
-import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:habitera/common/theme/app_theme_data.dart';
 import 'package:habitera/features/auth/presentation/auth_provider.dart';
 // import 'package:habitera/isar_service.dart';
@@ -34,7 +32,6 @@ class MyApp extends ConsumerStatefulWidget {
 }
 
 class _MyAppState extends ConsumerState<MyApp> {
-  // late final AppLinks _appLinks;
   late StreamSubscription _linkSubscription;
 
   @override
@@ -44,7 +41,6 @@ class _MyAppState extends ConsumerState<MyApp> {
       authState,
     ) {
       if (authState.event == AuthChangeEvent.passwordRecovery && mounted) {
-        //  context.goNamed(AppRoutes.resetPasswordScreen.name);
         ref.read(isPasswordRecoveryProvider.notifier).setRecovery(true);
       }
     });
