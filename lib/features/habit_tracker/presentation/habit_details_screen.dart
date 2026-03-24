@@ -39,24 +39,25 @@ class _HabitDetailsScreenState extends ConsumerState<HabitDetailsScreen> {
         : checkinDayKeysForHabit.where((dayKey) => dayKey != today).toSet();
 
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(title: Text(widget.habit.title)),
       body: Padding(
         padding: padAll16,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  widget.habit.title,
-                  style: context.textTheme.titleLarge?.copyWith(fontSize: 18),
-                ),
-                Text(
-                  'Streak : $streak 🔥',
-                  style: context.textTheme.bodyLarge?.copyWith(),
-                ),
-              ],
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade100,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              //todo: Make the fire logo animate for a few seconds when user opens the details screen
+              child: Text(
+                '🔥 $streak day streak',
+                style: context.textTheme.titleMedium,
+                textAlign: TextAlign.center,
+              ),
             ),
             kSizedBoxH20,
             Row(
@@ -74,26 +75,48 @@ class _HabitDetailsScreenState extends ConsumerState<HabitDetailsScreen> {
               ],
             ),
             kSizedBoxH10,
-            Row(
-              children: [
-                Checkbox(
-                  value: isDone,
-                  activeColor: Colors.green,
-                  onChanged: (value) async {
-                    await ref
-                        .read(doneHabitIdsProvider.notifier)
-                        .toggleDone(widget.habit.id);
-                    // ref.invalidate(
-                    //   checkinDayKeysForHabitProvider(widget.habit.id),
-                    // );
-                  },
+            // Row(
+            //   children: [
+            //     Checkbox(
+            //       value: isDone,
+            //       activeColor: Colors.green,
+            //       onChanged: (value) async {
+            //         await ref
+            //             .read(doneHabitIdsProvider.notifier)
+            //             .toggleDone(widget.habit.id);
+            //         // ref.invalidate(
+            //         //   checkinDayKeysForHabitProvider(widget.habit.id),
+            //         // );
+            //       },
+            //     ),
+            //     Text(
+            //       'Mark as done',
+            //       style: context.textTheme.bodyLarge?.copyWith(),
+            //     ),
+            //   ],
+            // ),
+            GestureDetector(
+              onTap: () => ref
+                  .read(doneHabitIdsProvider.notifier)
+                  .toggleDone(widget.habit.id),
+              child: Container(
+                width: double.infinity,
+                padding: EdgeInsetsGeometry.symmetric(vertical: 12),
+                decoration: BoxDecoration(
+                  color: isDone ? Colors.green : Colors.grey.shade100,
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                Text(
-                  'Mark as done',
-                  style: context.textTheme.bodyLarge?.copyWith(),
+                child: Text(
+                  isDone ? '✓ Done' : 'Mark as done',
+                  textAlign: TextAlign.center,
+                  style: context.textTheme.bodyLarge?.copyWith(
+                    color: isDone ? Colors.white : Colors.black,
+                  ),
                 ),
-              ],
+              ),
             ),
+            kSizedBoxH20,
+            Divider(),
             Text('Last 7 days', style: context.textTheme.bodyLarge?.copyWith()),
             kSizedBoxH5,
             LastSevenDaysDateSection(

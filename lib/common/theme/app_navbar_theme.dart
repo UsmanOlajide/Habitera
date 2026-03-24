@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
     // indicatorShape: const CircleBorder(),
 class AppNavbarTheme {
   static final appNavbarTheme = NavigationBarThemeData(
+    // backgroundColor: ,
     labelTextStyle: WidgetStateProperty.resolveWith(
       (states) {
         if (states.contains(WidgetState.selected)) {

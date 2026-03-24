@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:habitera/common/theme/app_appbar_theme.dart';
 import 'package:habitera/common/theme/app_elevated_button_theme.dart';
 import 'package:habitera/common/theme/app_input_decoration_theme.dart';
 import 'package:habitera/common/theme/app_navbar_theme.dart';
@@ -16,47 +17,9 @@ class AppThemeData {
     inputDecorationTheme: AppInputDecorationTheme.appInputDecorationTheme,
     elevatedButtonTheme: AppElevatedButtonTheme.elevatedButtonTheme,
     scaffoldBackgroundColor: ColorPicker.white,
+    appBarTheme: AppAppbarTheme.appAppBarTheme,
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //*  Using provider to switch between the light mode and dark mode (MITCH KOKO's video)
 // class ThemeProvider extends ChangeNotifier {

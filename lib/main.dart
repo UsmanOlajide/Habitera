@@ -64,6 +64,7 @@ class _MyAppState extends ConsumerState<MyApp> {
       routerConfig: router,
       title: 'Habitera',
       theme: AppThemeData.lightTheme,
+      debugShowCheckedModeBanner: false,
     );
   }
 }

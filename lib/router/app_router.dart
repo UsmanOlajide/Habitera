@@ -82,7 +82,7 @@ GoRouter appRouter(AppRouterRef ref) {
       );
 
       final hasSeenOnboarding =
-          ref.read(hasSeenOnboardingProvider).value ?? false;
+          ref.read(hasSeenOnboardingProvider).value ?? true;
       // final hasSeenOnboarding =
       //     ref.read(hasSeenOnboardingProvider).value ?? true;
       // ref.read(hasSeenOnboardingProvider).value ?? true;
@@ -102,10 +102,9 @@ GoRouter appRouter(AppRouterRef ref) {
           state.matchedLocation == AppRoutes.confirmEmailScreen.path;
 
       print(
-        'redirect running',
-        // 'redirect running, isLoggedIn: $isLoggedIn , onAuthScreen: $onAuthScreen',
+        // 'redirect running',
+        'redirect running, isLoggedIn: $isLoggedIn , onAuthScreen: $onAuthScreen',
       );
-
 
       if (!hasSeenOnboarding && !onOnboardingScreen) {
         return AppRoutes.onboardingScreen.path;

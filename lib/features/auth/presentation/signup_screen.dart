@@ -135,6 +135,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                                     if (error is AuthException) {
                                       message = error.message;
                                     }
+                                    print(message);
                                     if (context.mounted) {
                                       ScaffoldMessenger.of(
                                         context,

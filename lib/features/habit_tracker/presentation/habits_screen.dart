@@ -92,22 +92,23 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen> {
                       fontSize: 15.0,
                     ),
                   ),
-                  Row(
-                    children: [
-                      Text(
-                        'SORT',
-                        style: context.textTheme.bodyLarge?.copyWith(
-                          // color: Colors.black38,
-                          // color: Theme.of(context).colorScheme.onSurfaceVariant,
-                          fontSize: 15.0,
-                        ),
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.filter_list),
-                        onPressed: () {},
-                      ),
-                    ],
-                  ),
+                  //todo: Implement sorting or filtering
+                  // Row(
+                  //   children: [
+                  //     Text(
+                  //       'SORT',
+                  //       style: context.textTheme.bodyLarge?.copyWith(
+                  //         // color: Colors.black38,
+                  //         // color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  //         fontSize: 15.0,
+                  //       ),
+                  //     ),
+                  //     IconButton(
+                  //       icon: Icon(Icons.filter_list),
+                  //       onPressed: () {},
+                  //     ),
+                  //   ],
+                  // ),
                 ],
               ),
               const SizedBox(height: 10.0),
@@ -128,11 +129,41 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen> {
                       Center(child: CircularProgressIndicator.adaptive()),
                 ),
               ),
-              CreateHabitButton(),
+              // CreateHabitButton(),
             ],
           ),
         ),
       ),
+      // bottomNavigationBar: FloatingActionButton(
+      //   shape: CircleBorder(),
+      //   onPressed: () async {
+      //     final type = await showModalBottomSheet<HabitType>(
+      //       context: context,
+      //       builder: (_) => HabitTypeBottomSheet(),
+      //     );
+
+      //     if (type == null || !context.mounted) return;
+
+      //     final added = await context.pushNamed<bool>(
+      //       AppRoutes.addHabitsScreen.name,
+      //       pathParameters: {'type': type.name},
+      //     );
+
+      //     if (!context.mounted) return;
+
+      //     if (added == true) {
+      //       final messenger = ScaffoldMessenger.of(context);
+      //       messenger.hideCurrentSnackBar();
+      //       messenger.showSnackBar(
+      //         SnackBar(
+      //           duration: Duration(seconds: 2),
+      //           content: Text('Habit added'),
+      //         ),
+      //       );
+      //     }
+      //   },
+      //   child: Icon(Icons.add),
+      // ),
     );
   }
 }
@@ -154,7 +185,7 @@ class EmptyState extends StatelessWidget {
           ),
           kSizedBoxH8,
           Text(
-            'Create a your first habit to get started',
+            'Create your first habit to get started',
             style: context.textTheme.bodyMedium?.copyWith(fontSize: 16),
           ),
         ],
@@ -255,7 +286,7 @@ class HabitTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Slidable(
-      key: UniqueKey(),
+      key: ValueKey(habit.id),
       endActionPane: ActionPane(
         motion: const StretchMotion(),
         children: [
@@ -287,105 +318,94 @@ class HabitTile extends StatelessWidget {
           );
         },
         child: Container(
-          height: 113.0,
+          // height: 113.0,
           decoration: BoxDecoration(
             color: Colors.grey.shade200,
             borderRadius: BorderRadius.circular(13.0),
           ),
-          child: Container(
-            // color: Colors.blue.shade200,
-            child: Stack(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10.0,
-                    vertical: 10.0,
-                  ),
-
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        // color: Colors.red.shade200,
-
-                        // height: 20,
-                        child: Row(
-                          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: Text(
-                                habitTitle,
-                                style: context.textTheme.bodyLarge,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        // color: Colors.green.shade200,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-                          children: [
-                            Text(
-                              'Daily • ${createdDate(createdAt)}',
-                              style: context.textTheme.bodySmall?.copyWith(
-                                // color: Colors.black38,
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.onSurfaceVariant,
-                              ),
-                            ),
-                            TypeChip(type: type),
-                          ],
-                        ),
-                      ),
-                      //. Checkbox
-                      Checkbox(
-                        value: isDone,
-                        activeColor: Colors.green,
-                        onChanged: onChanged,
-                      ),
-                    ],
-                  ),
+          child: Stack(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10.0,
+                  vertical: 10.0,
                 ),
-                Positioned(
-                  right: 6,
-                  top: 2,
-                  child: Container(
-                    // color: Colors.orange.shade200,
-                    // height: 10,
-                    child: PopupMenuButton(
-                      padding: EdgeInsets.zero,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Icon(Icons.more_horiz),
 
-                      itemBuilder: (_) {
-                        return [
-                          PopupMenuItem(
-                            onTap: () {
-                              context.goNamed(
-                                AppRoutes.editHabitsScreen.name,
-                                extra: habit,
-                              );
-                            },
-                            child: Text('Edit'),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            habitTitle,
+                            style: context.textTheme.bodyLarge,
                           ),
-
-                          PopupMenuItem(
-                            onTap: onTapDelete,
-                            child: Text('Delete'),
-                          ),
-                        ];
-                      },
+                        ),
+                      ],
                     ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+                      children: [
+                        Text(
+                          'Daily • ${createdDate(createdAt)}',
+                          style: context.textTheme.bodySmall?.copyWith(
+                            // color: Colors.black38,
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                        TypeChip(type: type),
+                      ],
+                    ),
+                    //. Checkbox
+                    Checkbox(
+                      value: isDone,
+                      activeColor: Colors.green,
+                      onChanged: onChanged,
+                    ),
+                  ],
+                ),
+              ),
+              Positioned(
+                right: 6,
+                top: 2,
+                child: Container(
+                  // color: Colors.orange.shade200,
+                  // height: 10,
+                  child: PopupMenuButton(
+                    padding: EdgeInsets.zero,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Icon(Icons.more_horiz),
+
+                    itemBuilder: (_) {
+                      return [
+                        PopupMenuItem(
+                          onTap: () {
+                            context.goNamed(
+                              AppRoutes.editHabitsScreen.name,
+                              extra: habit,
+                            );
+                          },
+                          child: Text('Edit'),
+                        ),
+
+                        PopupMenuItem(
+                          onTap: onTapDelete,
+                          child: Text('Delete'),
+                        ),
+                      ];
+                    },
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -393,48 +413,48 @@ class HabitTile extends StatelessWidget {
   }
 }
 
-class CreateHabitButton extends StatelessWidget {
-  const CreateHabitButton({super.key});
+// class CreateHabitButton extends StatelessWidget {
+//   const CreateHabitButton({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text('Create new habit', style: context.textTheme.bodyLarge),
-        IconButton(
-          onPressed: () async {
-            final type = await showModalBottomSheet<HabitType>(
-              context: context,
-              builder: (_) => HabitTypeBottomSheet(),
-            );
+//   @override
+//   Widget build(BuildContext context) {
+//     return Row(
+//       mainAxisAlignment: MainAxisAlignment.center,
+//       children: [
+//         Text('Create new habit', style: context.textTheme.bodyLarge),
+//         IconButton(
+//           onPressed: () async {
+//             final type = await showModalBottomSheet<HabitType>(
+//               context: context,
+//               builder: (_) => HabitTypeBottomSheet(),
+//             );
 
-            if (type == null || !context.mounted) return;
+//             if (type == null || !context.mounted) return;
 
-            final added = await context.pushNamed<bool>(
-              AppRoutes.addHabitsScreen.name,
-              pathParameters: {'type': type.name},
-            );
+//             final added = await context.pushNamed<bool>(
+//               AppRoutes.addHabitsScreen.name,
+//               pathParameters: {'type': type.name},
+//             );
 
-            if (!context.mounted) return;
+//             if (!context.mounted) return;
 
-            if (added == true) {
-              final messenger = ScaffoldMessenger.of(context);
-              messenger.hideCurrentSnackBar();
-              messenger.showSnackBar(
-                SnackBar(
-                  duration: Duration(seconds: 2),
-                  content: Text('Habit added'),
-                ),
-              );
-            }
-          },
-          icon: Icon(Icons.add),
-        ),
-      ],
-    );
-  }
-}
+//             if (added == true) {
+//               final messenger = ScaffoldMessenger.of(context);
+//               messenger.hideCurrentSnackBar();
+//               messenger.showSnackBar(
+//                 SnackBar(
+//                   duration: Duration(seconds: 2),
+//                   content: Text('Habit added'),
+//                 ),
+//               );
+//             }
+//           },
+//           icon: Icon(Icons.add),
+//         ),
+//       ],
+//     );
+//   }
+// }
 
 //* FOR ISAR
 // class HabitsScreen extends ConsumerStatefulWidget {

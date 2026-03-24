@@ -36,6 +36,7 @@ class ProfileScreen extends ConsumerWidget {
               child: Column(
                 children: [
                   SizedBox(height: maxHeight * 0.14),
+                  // SizedBox(height: 60),
                   CircleAvatar(
                     backgroundColor: ColorPicker.grey,
                     radius: 40,
@@ -47,15 +48,28 @@ class ProfileScreen extends ConsumerWidget {
                     ),
                   ),
                   SizedBox(height: maxHeight * 0.04),
-                  Text(
-                    name,
-                    style: context.textTheme.bodyMedium?.copyWith(
-                      fontSize: 16.0,
+                  // SizedBox(height: 24),
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade100,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Column(
+                      children: [
+                        Text(
+                          name,
+                          style: context.textTheme.bodyMedium?.copyWith(
+                            fontSize: 16.0,
+                          ),
+                        ),
+                        Text(email),
+                      ],
                     ),
                   ),
-                  Text(email),
-                  SizedBox(height: maxHeight * 0.14),
-
+                  // SizedBox(height: maxHeight * 0.14),
+                  Spacer(),
                   ElevatedButton(
                     onPressed: () async {
                       final authService = ref.read(authServiceProvider);
@@ -63,8 +77,11 @@ class ProfileScreen extends ConsumerWidget {
                     },
                     child: Text('Logout'),
                   ),
-                  SizedBox(height: maxHeight * 0.14),
+                  SizedBox(height: maxHeight * 0.01),
+                  // SizedBox(height: 8),
                   Text('Version $version'),
+                  // SizedBox(height: 24),
+                  SizedBox(height: maxHeight * 0.05),
                 ],
               ),
             ),
