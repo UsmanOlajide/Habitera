@@ -2,7 +2,10 @@
 A habit tracking app built with Flutter that helps you build good habits and break bad ones.
 
 ## Screenshots
-(Screenshots here)
+<img src="screenshots/habits_screen.png" width="250"> 
+<img src="screenshots/habit_details.png" width="250">
+<img src="screenshots/onboarding.png" width="250">
+<img src="screenshots/login.png" width="250">
 
 ## Features
 
