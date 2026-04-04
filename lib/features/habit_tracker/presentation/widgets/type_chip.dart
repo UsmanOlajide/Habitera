@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:habitera/utils/extensions.dart';
 
@@ -21,10 +20,13 @@ class TypeChip extends StatelessWidget {
       ),
       child: Text(
         label,
-        style: context.textTheme.labelSmall?.copyWith(
-          fontWeight: FontWeight.w700,
+        style: context.small.copyWith(
           letterSpacing: 0.6,
+          fontWeight: FontWeight.w900,
         ),
+        // style: context.textTheme.labelSmall?.copyWith(
+        //   letterSpacing: 0.6,
+        // ),
       ),
     );
   }

@@ -5,6 +5,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:habitera/common/theme/app_theme_data.dart';
 import 'package:habitera/features/auth/presentation/auth_provider.dart';
+import 'package:habitera/features/auth/presentation/confirm_email_screen.dart';
+import 'package:habitera/features/auth/presentation/reset_password_screen.dart';
 // import 'package:habitera/isar_service.dart';
 import 'package:habitera/router/app_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,8 +21,8 @@ void main() async {
     anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
   );
 
-  final prefs = await SharedPreferences.getInstance();
-  prefs.clear();
+  // final prefs = await SharedPreferences.getInstance();
+  // prefs.clear();
 
   runApp(const ProviderScope(child: MyApp()));
 }
@@ -62,5 +64,23 @@ class _MyAppState extends ConsumerState<MyApp> {
       theme: AppThemeData.lightTheme,
       debugShowCheckedModeBanner: false,
     );
+
+    //* For testing purposes only, to avoid going through the auth flow 
+    // return MaterialApp(
+    //   // routerConfig: router,
+    //   title: 'Habitera',
+    //   theme: AppThemeData.lightTheme,
+    //   debugShowCheckedModeBanner: false,
+    //   home: ResetPasswordScreen(),
+    // );
   }
 }
+
+    // signingConfigs {
+    //     create("release") {
+    //         keyAlias = keystoreProperties["keyAlias"] as String
+    //         keyPassword = keystoreProperties["keyPassword"] as String
+    //         storeFile = keystoreProperties["storeFile"]?.let { file(it as String) }
+    //         storePassword = keystoreProperties["storePassword"] as String
+    //     }
+    // }

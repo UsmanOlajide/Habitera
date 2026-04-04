@@ -4,8 +4,10 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:habitera/constants/color_picker.dart';
 import 'package:habitera/constants/sizes.dart';
+import 'package:habitera/constants/texts.dart';
 import 'package:habitera/features/auth/presentation/auth_provider.dart';
 import 'package:habitera/features/auth/presentation/login_screen.dart';
+import 'package:habitera/features/auth/signin_field.dart';
 import 'package:habitera/router/app_router.dart';
 import 'package:habitera/utils/extensions.dart';
 import 'package:habitera/utils/validators.dart';
@@ -44,27 +46,24 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
           child: LayoutBuilder(
             builder: (context, constraints) {
               final maxHeight = constraints.maxHeight;
+              final labelFontSize = 17.0;
+
               return Form(
                 key: _formKey,
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
                       Text(
-                        'habitera',
-                        style: GoogleFonts.nunitoSans(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20.0,
-                        ),
+                        appName,
+                        style: context.screenTitle.copyWith(fontSize: 26),
                       ),
+
                       SizedBox(height: maxHeight * 0.08),
                       Align(
                         alignment: AlignmentGeometry.centerLeft,
                         child: Text(
                           'Create your account',
-                          style: GoogleFonts.nunitoSans(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 25.0,
-                          ),
+                          style: context.screenTitle,
                         ),
                       ),
                       const SizedBox(height: 28.0),
@@ -74,7 +73,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                         controller: _nameController,
                         keyboardType: TextInputType.name,
                         validator: Validators.validateName,
-                        label: Text('John Doe'),
+                        labelText: 'John Doe',
                       ),
                       kSizedBoxH15,
                       SigninField(
@@ -83,7 +82,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
                         validator: Validators.validateEmail,
-                        label: Text('youremail@mail.com'),
+                        labelText: 'youremail@gmail.com',
                       ),
                       kSizedBoxH15,
                       SigninField(
@@ -92,7 +91,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                         controller: _passwordController,
                         keyboardType: TextInputType.visiblePassword,
                         validator: Validators.validatePassword,
-                        label: Text('*******'),
+                        labelText: '*******',
                         suffixIcon: IconButton(
                           onPressed: () {
                             setState(() {
@@ -171,8 +170,8 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                         children: [
                           Text(
                             'Already have an account?',
-                            style: context.textTheme.labelMedium?.copyWith(
-                              fontSize: 17,
+                            style: context.body.copyWith(
+                              fontSize: labelFontSize,
                               color: ColorPicker.grey,
                             ),
                           ),
@@ -188,8 +187,9 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                             ),
                             child: Text(
                               'Login here',
-                              style: context.textTheme.labelMedium?.copyWith(
-                                fontSize: 17,
+                              style: context.body.copyWith(
+                                fontWeight: FontWeight.w600,
+                                fontSize: labelFontSize,
                               ),
                             ),
                           ),

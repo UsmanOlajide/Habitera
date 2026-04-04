@@ -38,6 +38,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print(context.textTheme.titleLarge);
+    // print(context.textTheme.bodyLarge);
+    // print(context.screenTitle);
     bool isLastPage = _currentPageIndex == pages.length - 1;
     return Scaffold(
       body: PageView.builder(
@@ -66,16 +69,17 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     ),
                     child: onboardingPageData.icon,
                   ),
-                  kSizedBoxH15,
+                  // kSizedBoxH15,
+                  SizedBox(height: maxHeight * 0.028),
                   Text(
                     onboardingPageData.title,
-                    style: context.textTheme.titleLarge?.copyWith(fontSize: 19),
+                    style: context.screenTitle,
                     textAlign: TextAlign.center,
                   ),
                   kSizedBoxH10,
                   Text(
                     onboardingPageData.subtitle,
-                    style: context.textTheme.bodyMedium?.copyWith(fontSize: 16),
+                    style: context.body.copyWith(fontSize: 16),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: maxHeight * 0.04),

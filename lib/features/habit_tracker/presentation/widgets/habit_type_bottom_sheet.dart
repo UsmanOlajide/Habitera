@@ -16,7 +16,7 @@ class HabitTypeBottomSheet extends StatelessWidget {
       child: Column(
         children: [
           kSizedBoxH10,
-          Text('Add a Habit', style: context.textTheme.titleMedium),
+          Text('Add a Habit', style: context.sectionTitle),
           kSizedBoxH20,
           ElevatedButton(
             onPressed: () => context.pop(HabitType.startHabit),

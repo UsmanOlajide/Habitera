@@ -4,7 +4,9 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:habitera/constants/color_picker.dart';
 import 'package:habitera/constants/sizes.dart';
+import 'package:habitera/constants/texts.dart';
 import 'package:habitera/features/auth/presentation/auth_provider.dart';
+import 'package:habitera/features/auth/signin_field.dart';
 import 'package:habitera/router/app_router.dart';
 import 'package:habitera/utils/extensions.dart';
 import 'package:habitera/utils/validators.dart';
@@ -42,6 +44,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           child: LayoutBuilder(
             builder: (context, constraints) {
               final maxHeight = constraints.maxHeight;
+              final labelFontSize = 17.0;
+
               // final maxWidth = constraints.maxWidth;
               return Form(
                 key: _formKey,
@@ -50,21 +54,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     children: [
                       SizedBox(height: maxHeight * 0.02),
                       Text(
-                        'habitera',
-                        style: GoogleFonts.nunitoSans(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20.0,
-                        ),
+                        appName,
+                        style: context.screenTitle.copyWith(fontSize: 26),
                       ),
                       SizedBox(height: maxHeight * 0.14),
                       Align(
                         alignment: AlignmentGeometry.centerLeft,
                         child: Text(
                           'Login to your account',
-                          style: GoogleFonts.nunitoSans(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 25.0,
-                          ),
+                          style: context.screenTitle,
                         ),
                       ),
                       const SizedBox(height: 28.0),
@@ -74,7 +72,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
                         validator: Validators.validateEmail,
-                        label: Text('youremail@mail.com'),
+                        labelText: 'youremail@mail.com',
                       ),
                       SizedBox(height: 20),
                       SigninField(
@@ -83,7 +81,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         controller: _passwordController,
                         keyboardType: TextInputType.visiblePassword,
                         validator: Validators.validatePassword,
-                        label: Text('*******'),
+                        labelText: '*******',
+
                         suffixIcon: IconButton(
                           onPressed: () {
                             setState(() {
@@ -114,9 +113,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           ),
                           child: Text(
                             'Forgot Password?',
-                            style: context.textTheme.bodyMedium?.copyWith(
-                              color: ColorPicker.black,
-                            ),
+                            style: context.body.copyWith(fontSize: 15),
                           ),
                         ),
                       ),
@@ -180,8 +177,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         children: [
                           Text(
                             "Don't have an account?",
-                            style: context.textTheme.labelMedium?.copyWith(
-                              fontSize: 17,
+                            style: context.body.copyWith(
+                              fontSize: labelFontSize,
                               color: ColorPicker.grey,
                             ),
                           ),
@@ -197,164 +194,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             ),
                             child: Text(
                               'Create one',
-                              style: context.textTheme.labelMedium?.copyWith(
-                                fontSize: 17,
+                              style: context.body.copyWith(
+                                fontWeight: FontWeight.w600,
+                                fontSize: labelFontSize,
                               ),
                             ),
                           ),
                         ],
                       ),
-                     
                     ],
                   ),
                 ),
               );
             },
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class SigninField extends StatelessWidget {
-  const SigninField({
-    super.key,
-    required this.title,
-    this.controller,
-    this.onChanged,
-    required this.obscureText,
-    this.keyboardType,
-    this.validator,
-    this.label,
-    this.suffixIcon,
-  });
-
-  final String title;
-  final TextEditingController? controller;
-  final Function(String)? onChanged;
-  final bool obscureText;
-  final TextInputType? keyboardType;
-  final String? Function(String?)? validator;
-  final Widget? label;
-  final Widget? suffixIcon;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 93.0,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: context.textTheme.labelLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          kSizedBoxH8,
-          TextFormField(
-            controller: controller,
-            onChanged: onChanged,
-            obscureText: obscureText,
-            keyboardType: keyboardType ?? TextInputType.name,
-            validator: validator,
-            decoration: InputDecoration(label: label, suffixIcon: suffixIcon),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class OldSigninField extends StatelessWidget {
-  const OldSigninField({
-    super.key,
-    this.prefixIcon,
-    this.label,
-    this.isDense,
-    this.validator,
-    this.onChanged,
-    this.focusedBorder,
-    this.enabledBorder,
-    this.controller,
-    this.suffixIcon,
-    this.obscureText = false,
-    this.keyboardType,
-  });
-
-  final String? Function(String?)? validator;
-  final Widget? prefixIcon;
-  final Widget? suffixIcon;
-  final Widget? label;
-  final bool? isDense;
-  final bool obscureText;
-  final Function(String)? onChanged;
-  final InputBorder? focusedBorder;
-  final InputBorder? enabledBorder;
-  final TextEditingController? controller;
-  final TextInputType? keyboardType;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 48.0,
-      decoration: const BoxDecoration(
-        color: ColorPicker.red,
-        // boxShadow: [
-        //   BoxShadow(
-        //     color: Color.fromRGBO(229, 233, 237, 0.24),
-        //     blurRadius: 5,
-        //     offset: Offset(0, 2),
-        //   ),
-        // ],
-      ),
-      child: TextFormField(
-        // cursorColor: ColorPicker.black,
-        // cursorHeight: 15.0,
-        controller: controller,
-        onChanged: onChanged,
-        obscureText: obscureText,
-        keyboardType: keyboardType ?? TextInputType.name,
-        validator: validator,
-        // style: context.textTheme.bodySmall?.copyWith(
-        //   color: ColorPicker.black,
-        //   height: 0,
-        // ),
-        decoration: InputDecoration(
-          isDense: isDense ?? true,
-          border: InputBorder.none,
-          // prefixIconConstraints: const BoxConstraints(minWidth: 125),
-          prefixIcon: prefixIcon,
-          suffixIcon: suffixIcon,
-          // suffixIconConstraints: const BoxConstraints(minWidth: 0),
-          label: label,
-          // contentPadding: const EdgeInsets.symmetric(
-          //   horizontal: 15.0,
-          //   vertical: 15.0,
-          // ),
-          focusedBorder:
-              focusedBorder ??
-              OutlineInputBorder(
-                borderRadius: BorderRadius.circular(5.0),
-                borderSide: BorderSide(
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
-              ),
-          enabledBorder:
-              enabledBorder ??
-              OutlineInputBorder(
-                borderRadius: BorderRadius.circular(5.0),
-                borderSide: const BorderSide(
-                  color: ColorPicker.grey,
-                  width: 0.5,
-                ),
-              ),
-          errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(5),
-            borderSide: const BorderSide(color: ColorPicker.red),
-          ),
-          floatingLabelBehavior: FloatingLabelBehavior.never,
         ),
       ),
     );

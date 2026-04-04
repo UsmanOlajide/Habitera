@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import 'package:habitera/constants/enums.dart';
 import 'package:habitera/constants/sizes.dart';
@@ -73,10 +72,7 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen> {
               kSizedBoxH10,
               Text(
                 currentGreeting,
-                style: GoogleFonts.nunitoSans(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 30.0,
-                ),
+                style: context.screenTitle.copyWith(fontSize: 30.0),
               ),
               kSizedBoxH10,
               DateSection(),
@@ -87,10 +83,7 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen> {
                   Text(
                     'YOUR HABITS',
                     // 'TODAY',
-                    style: GoogleFonts.nunitoSans(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 15.0,
-                    ),
+                    style: context.sectionTitle,
                   ),
                   //todo: Implement sorting or filtering
                   // Row(
@@ -181,12 +174,12 @@ class EmptyState extends StatelessWidget {
           kSizedBoxH10,
           Text(
             'No habits yet',
-            style: context.textTheme.titleLarge?.copyWith(fontSize: 19),
+            style: context.screenTitle.copyWith(fontSize: 19),
           ),
           kSizedBoxH8,
           Text(
             'Create your first habit to get started',
-            style: context.textTheme.bodyMedium?.copyWith(fontSize: 16),
+            style: context.body.copyWith(fontSize: 16),
           ),
         ],
       ),
@@ -341,18 +334,21 @@ class HabitTile extends StatelessWidget {
                         Expanded(
                           child: Text(
                             habitTitle,
-                            style: context.textTheme.bodyLarge,
+                            style: context.body.copyWith(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16,
+                            ),
+                            // style: context.textTheme.bodyLarge,
                           ),
                         ),
                       ],
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
                       children: [
                         Text(
                           'Daily • ${createdDate(createdAt)}',
-                          style: context.textTheme.bodySmall?.copyWith(
+                          style: context.small.copyWith(
                             // color: Colors.black38,
                             color: Theme.of(
                               context,
@@ -393,12 +389,30 @@ class HabitTile extends StatelessWidget {
                               extra: habit,
                             );
                           },
-                          child: Text('Edit'),
+                          child: Text(
+                            'Edit',
+                            style: context.body.copyWith(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 15,
+                            ),
+                            // style: context.textTheme.bodyLarge?.copyWith(
+                            //   fontSize: 15,
+                            // ),
+                          ),
                         ),
 
                         PopupMenuItem(
                           onTap: onTapDelete,
-                          child: Text('Delete'),
+                          child: Text(
+                            'Delete',
+                            style: context.body.copyWith(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 15,
+                            ),
+                            // style: context.textTheme.bodyLarge?.copyWith(
+                            //   fontSize: 15,
+                            // ),
+                          ),
                         ),
                       ];
                     },

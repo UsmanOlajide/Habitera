@@ -8,7 +8,10 @@ import 'package:habitera/utils/extensions.dart';
 import 'package:intl/intl.dart';
 
 class LastSevenDaysDateSection extends StatelessWidget {
-  const LastSevenDaysDateSection({super.key, required this.checkinDayKeysForHabit});
+  const LastSevenDaysDateSection({
+    super.key,
+    required this.checkinDayKeysForHabit,
+  });
 
   final Set<int> checkinDayKeysForHabit;
 
@@ -56,7 +59,8 @@ class DetailsDateColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final labelMediumFSize14 = context.textTheme.labelMedium!.copyWith(
+    final labelMediumFSize14 = context.body.copyWith(
+      // final labelMediumFSize14 = context.textTheme.labelMedium!.copyWith(
       fontSize: 14.0,
     );
     final date = dayKeyToDate(dates[index]);
@@ -82,12 +86,18 @@ class DetailsDateColumn extends StatelessWidget {
             children: [
               Text(
                 weekDay.toLowerCase(),
-                style: context.textTheme.labelMedium!.copyWith(
+                style: context.small.copyWith(
                   fontSize: 14.0,
-                  fontWeight: isToday ? FontWeight.w700 : FontWeight.normal,
+                  fontWeight: isToday ? FontWeight.w700 : FontWeight.w400,
                 ),
               ),
-              Text('$dayNumber', style: labelMediumFSize14),
+              Text(
+                '$dayNumber',
+                style: context.small.copyWith(
+                  fontSize: 14.0,
+                  fontWeight: isToday ? FontWeight.w700 : FontWeight.w400,
+                ),
+              ),
             ],
           ),
         ),

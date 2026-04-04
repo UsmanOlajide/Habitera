@@ -52,7 +52,8 @@ class DateColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final labelMediumFSize14 = context.textTheme.labelMedium!.copyWith(
+    final labelMediumFSize14 = context.body.copyWith(
+    // final labelMediumFSize14 = context.textTheme.labelMedium?.copyWith(
       fontSize: 14.0,
     );
     return Column(

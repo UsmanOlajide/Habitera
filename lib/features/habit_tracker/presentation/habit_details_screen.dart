@@ -55,7 +55,7 @@ class _HabitDetailsScreenState extends ConsumerState<HabitDetailsScreen> {
               //todo: Make the fire logo animate for a few seconds when user opens the details screen
               child: Text(
                 '🔥 $streak day streak',
-                style: context.textTheme.titleMedium,
+                style: context.sectionTitle,
                 textAlign: TextAlign.center,
               ),
             ),
@@ -67,7 +67,7 @@ class _HabitDetailsScreenState extends ConsumerState<HabitDetailsScreen> {
                 TypeChip(type: widget.habit.type),
                 Text(
                   'Daily • ${createdDate(widget.habit.createdAt)}',
-                  style: context.textTheme.bodySmall?.copyWith(
+                  style: context.small.copyWith(
                     // color: Colors.black38,
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
@@ -109,15 +109,25 @@ class _HabitDetailsScreenState extends ConsumerState<HabitDetailsScreen> {
                 child: Text(
                   isDone ? '✓ Done' : 'Mark as done',
                   textAlign: TextAlign.center,
-                  style: context.textTheme.bodyLarge?.copyWith(
+                  //todo- change fontWeight to w500
+                  style: context.body.copyWith(
+                    fontWeight: FontWeight.w500,
                     color: isDone ? Colors.white : Colors.black,
                   ),
+                  // style: context.textTheme.bodyLarge?.copyWith(
+                  //   color: isDone ? Colors.white : Colors.black,
+                  // ),
                 ),
               ),
             ),
             kSizedBoxH20,
             Divider(),
-            Text('Last 7 days', style: context.textTheme.bodyLarge?.copyWith()),
+            //todo- change fontWeight to w500
+            Text(
+              'Last 7 days',
+              style: context.body.copyWith(fontWeight: FontWeight.w500),
+            ),
+            // Text('Last 7 days', style: context.textTheme.bodyLarge?.copyWith()),
             kSizedBoxH5,
             LastSevenDaysDateSection(
               checkinDayKeysForHabit: optimizedCheckinDayKeys,

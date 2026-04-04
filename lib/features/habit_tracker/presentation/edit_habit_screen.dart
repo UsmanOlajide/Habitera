@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:habitera/constants/color_picker.dart';
 import 'package:habitera/constants/enums.dart';
 import 'package:habitera/constants/sizes.dart';
 import 'package:habitera/features/habit_tracker/data/models/habit.dart';
@@ -87,7 +88,7 @@ class _EditHabitScreenState extends ConsumerState<EditHabitScreen> {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         'Frequency',
-                        style: context.textTheme.labelLarge,
+                        style: context.formTitle,
                       ),
                     ),
                     kSizedBoxH8,
@@ -109,8 +110,9 @@ class _EditHabitScreenState extends ConsumerState<EditHabitScreen> {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         'Hourly & Weekly coming soon',
-                        style: context.textTheme.labelSmall?.copyWith(
-                          color: Colors.grey,
+                        style: context.body.copyWith(
+                          color: ColorPicker.grey,
+                          fontSize: 12,
                         ),
                       ),
                     ),
@@ -129,7 +131,7 @@ class _EditHabitScreenState extends ConsumerState<EditHabitScreen> {
                     setState(() => _isSubmitting = true);
 
                     final repository = ref.read(habitRepositoryProvider);
-                    
+
                     //   //TODO: I should be able to edit the type
                     final editedHabit = widget.habit.copyWith(
                       title: textController.text,
@@ -234,7 +236,7 @@ class TitleField extends StatelessWidget {
             validator: validator,
             onChanged: onChanged,
 
-            style: context.textTheme.bodySmall?.copyWith(fontSize: 14),
+            // style: context.textTheme.bodySmall?.copyWith(fontSize: 14),
             // keyboardType: TextInputType.name,
             decoration: InputDecoration(
               isDense: isDense,

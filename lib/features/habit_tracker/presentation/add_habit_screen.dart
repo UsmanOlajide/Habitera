@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:habitera/constants/color_picker.dart';
 import 'package:habitera/constants/enums.dart';
 import 'package:habitera/constants/sizes.dart';
 import 'package:habitera/features/habit_tracker/data/models/habit.dart';
@@ -81,10 +83,7 @@ class _AddHabitScreenState extends ConsumerState<AddHabitScreen> {
                     kSizedBoxH8,
                     Align(
                       alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Frequency',
-                        style: context.textTheme.labelLarge,
-                      ),
+                      child: Text('Frequency', style: context.formTitle),
                     ),
                     kSizedBoxH8,
                     Align(
@@ -105,8 +104,9 @@ class _AddHabitScreenState extends ConsumerState<AddHabitScreen> {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         'Hourly & Weekly coming soon',
-                        style: context.textTheme.labelSmall?.copyWith(
-                          color: Colors.grey,
+                        style: context.body.copyWith(
+                          color: ColorPicker.grey,
+                          fontSize: 12,
                         ),
                       ),
                     ),
@@ -228,7 +228,7 @@ class TitleField extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: context.textTheme.labelLarge),
+        Text(title, style: context.formTitle),
         kSizedBoxH8,
         SizedBox(
           height: 50.0,
@@ -237,7 +237,7 @@ class TitleField extends StatelessWidget {
             validator: validator,
             onChanged: onChanged,
 
-            style: context.textTheme.bodySmall?.copyWith(fontSize: 14),
+            // style: context.textTheme.bodySmall?.copyWith(fontSize: 14),
             // keyboardType: TextInputType.name,
             decoration: InputDecoration(
               isDense: isDense,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:habitera/app_provider.dart';
 import 'package:habitera/constants/color_picker.dart';
 import 'package:habitera/constants/sizes.dart';
@@ -26,29 +27,35 @@ class ProfileScreen extends ConsumerWidget {
 
     final version = ref.watch(appVersionProvider).value ?? '';
 
+    print(context.textTheme.titleLarge);
+    // print(GoogleFonts.nunitoSans());
+
     return Scaffold(
       body: LayoutBuilder(
         builder: (context, constraints) {
           final maxHeight = constraints.maxHeight;
+          final smallTextStyle = context.small.copyWith(fontSize: 14.0);
           return Padding(
             padding: padAll16,
             child: Center(
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  //app text theme
+                  // Text('ABCDEFG', style: context.textTheme.titleLarge),
+                  //new app text theme
+                  // Text('ABCDEFG', style: context.screenTitle),
                   SizedBox(height: maxHeight * 0.14),
-                  // SizedBox(height: 60),
+                  // // SizedBox(height: 60),
                   CircleAvatar(
                     backgroundColor: ColorPicker.grey,
                     radius: 40,
                     child: Text(
                       getInitials(name),
-                      style: context.textTheme.titleLarge?.copyWith(
-                        fontSize: 28.0,
-                      ),
+                      style: context.screenTitle.copyWith(fontSize: 28.0),
                     ),
                   ),
                   SizedBox(height: maxHeight * 0.04),
-                  // SizedBox(height: 24),
                   Container(
                     width: double.infinity,
                     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -60,15 +67,12 @@ class ProfileScreen extends ConsumerWidget {
                       children: [
                         Text(
                           name,
-                          style: context.textTheme.bodyMedium?.copyWith(
-                            fontSize: 16.0,
-                          ),
+                          style: context.body.copyWith(fontSize: 16.0),
                         ),
-                        Text(email),
+                        Text(email, style: smallTextStyle),
                       ],
                     ),
                   ),
-                  // SizedBox(height: maxHeight * 0.14),
                   Spacer(),
                   ElevatedButton(
                     onPressed: () async {
@@ -78,9 +82,7 @@ class ProfileScreen extends ConsumerWidget {
                     child: Text('Logout'),
                   ),
                   SizedBox(height: maxHeight * 0.01),
-                  // SizedBox(height: 8),
-                  Text('Version $version'),
-                  // SizedBox(height: 24),
+                  Text('Version $version', style: smallTextStyle),
                   SizedBox(height: maxHeight * 0.05),
                 ],
               ),

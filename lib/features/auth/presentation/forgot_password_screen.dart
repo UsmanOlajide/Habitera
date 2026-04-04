@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:habitera/constants/color_picker.dart';
 import 'package:habitera/constants/sizes.dart';
 import 'package:habitera/features/auth/presentation/auth_provider.dart';
 import 'package:habitera/features/auth/presentation/login_screen.dart';
+import 'package:habitera/features/auth/signin_field.dart';
 import 'package:habitera/utils/extensions.dart';
 import 'package:habitera/utils/validators.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -30,7 +30,9 @@ class _ForgotpasswordScreenState extends ConsumerState<ForgotpasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print('is now on Forgot Password Screen');
+    // print('is now on Forgot Password Screen');
+    print(context.textTheme.bodyLarge);
+    print(context.textTheme.bodyMedium);
 
     return Scaffold(
       appBar: AppBar(backgroundColor: ColorPicker.white),
@@ -39,6 +41,7 @@ class _ForgotpasswordScreenState extends ConsumerState<ForgotpasswordScreen> {
         child: LayoutBuilder(
           builder: (context, constraints) {
             final maxHeight = constraints.maxHeight;
+
             return Form(
               key: _formKey,
               child: Column(
@@ -46,20 +49,18 @@ class _ForgotpasswordScreenState extends ConsumerState<ForgotpasswordScreen> {
                 children: [
                   Align(
                     alignment: AlignmentGeometry.centerLeft,
-                    child: Text(
-                      'Forgot Password',
-                      style: GoogleFonts.nunitoSans(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 25.0,
-                      ),
-                    ),
+                    child: Text('Forgot Password', style: context.screenTitle),
                   ),
                   kSizedBoxH10,
                   Align(
                     alignment: AlignmentGeometry.centerLeft,
                     child: Text(
                       'Please enter your e-mail address to get a reset link',
-                      style: context.textTheme.bodyLarge,
+                        style: context.body.copyWith(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16.0,
+                      ),
+                      // style: context.bodyBig,
                     ),
                   ),
                   kSizedBoxH20,
@@ -69,7 +70,7 @@ class _ForgotpasswordScreenState extends ConsumerState<ForgotpasswordScreen> {
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
                     validator: Validators.validateEmail,
-                    label: Text('youremail@mail.com'),
+                    labelText: 'youremail@mail.com',
                   ),
                   SizedBox(height: maxHeight * 0.03),
                   ElevatedButton(

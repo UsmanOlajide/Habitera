@@ -7,7 +7,9 @@ import 'package:habitera/constants/color_picker.dart';
 import 'package:habitera/constants/sizes.dart';
 import 'package:habitera/features/auth/presentation/auth_provider.dart';
 import 'package:habitera/features/auth/presentation/login_screen.dart';
+import 'package:habitera/features/auth/signin_field.dart';
 import 'package:habitera/router/app_router.dart';
+import 'package:habitera/utils/extensions.dart';
 import 'package:habitera/utils/validators.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -52,10 +54,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
                       alignment: AlignmentGeometry.centerLeft,
                       child: Text(
                         'Create New Password',
-                        style: GoogleFonts.nunitoSans(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 25.0,
-                        ),
+                        style: context.screenTitle,
                       ),
                     ),
                     kSizedBoxH10,
@@ -73,7 +72,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
                       controller: _passwordController,
                       keyboardType: TextInputType.visiblePassword,
                       validator: Validators.validateNewPassword,
-                      label: Text('Enter your new password'),
+                      labelText: 'Enter your new password',
                     ),
                     SigninField(
                       title: 'Confirm Password',
@@ -84,7 +83,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
                         value,
                         _passwordController.text,
                       ),
-                      label: Text('Confirm your new password'),
+                      labelText: 'Confirm your new password',
                     ),
                     SizedBox(height: maxHeight * 0.03),
                     ElevatedButton(
@@ -117,7 +116,8 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
                                     context.goNamed(AppRoutes.navbar.name);
                                   }
                                 } catch (error) {
-                                  var message = 'Something went wrong. Try again';
+                                  var message =
+                                      'Something went wrong. Try again';
                                   if (error is AuthException) {
                                     message = error.message;
                                   }
@@ -146,7 +146,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
                                 color: ColorPicker.white,
                               ),
                             )
-                          : Text('Send'),
+                          : Text('Reset'),
                     ),
                   ],
                 ),

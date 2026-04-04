@@ -3,6 +3,7 @@ import 'package:habitera/common/theme/app_appbar_theme.dart';
 import 'package:habitera/common/theme/app_elevated_button_theme.dart';
 import 'package:habitera/common/theme/app_input_decoration_theme.dart';
 import 'package:habitera/common/theme/app_navbar_theme.dart';
+import 'package:habitera/common/theme/app_snackbar_theme.dart';
 import 'package:habitera/common/theme/text_theme.dart';
 import 'package:habitera/constants/color_picker.dart';
 // import 'package:habitera/common/theme/dark_mode.dart';
@@ -13,11 +14,13 @@ class AppThemeData {
     colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
     useMaterial3: true,
     navigationBarTheme: AppNavbarTheme.appNavbarTheme,
+    // textTheme: NewAppTextTheme.newAppTextTheme,
     textTheme: AppTextTheme.appTextTheme,
     inputDecorationTheme: AppInputDecorationTheme.appInputDecorationTheme,
     elevatedButtonTheme: AppElevatedButtonTheme.elevatedButtonTheme,
     scaffoldBackgroundColor: ColorPicker.white,
     appBarTheme: AppAppbarTheme.appAppBarTheme,
+    snackBarTheme: AppSnackbarTheme.appSnackbarTheme,
   );
 }
 

@@ -64,15 +64,12 @@ class _ConfirmEmailScreenState extends ConsumerState<ConfirmEmailScreen> {
                 SizedBox(height: maxHeight * 0.16),
                 Text(
                   'Confirm your email',
-                  style: GoogleFonts.nunitoSans(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 25.0,
-                  ),
+                  style: context.screenTitle,
                 ),
                 kSizedBoxH15,
                 Text(
                   "We've sent a confirmation email to your email address. Please check your inbox and click the link to verify your account",
-                  style: context.textTheme.bodyMedium?.copyWith(fontSize: 16.0),
+                  style: context.body.copyWith(fontSize: 16.0),
                   textAlign: TextAlign.center,
                 ),
 

@@ -3,7 +3,7 @@
 import 'package:habitera/features/habit_tracker/data/models/habit.dart';
 import 'package:habitera/features/habit_tracker/data/models/habit_isar.dart';
 import 'package:habitera/isar_service.dart';
-import 'package:isar/isar.dart';
+// import 'package:isar/isar.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 final _supabase = Supabase.instance.client;

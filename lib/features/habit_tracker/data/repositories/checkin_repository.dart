@@ -2,7 +2,7 @@ import 'package:habitera/features/habit_tracker/data/models/habit_checkin.dart';
 import 'package:habitera/features/habit_tracker/data/models/habit_checkin_isar.dart';
 import 'package:habitera/isar_service.dart';
 import 'package:habitera/utils/date_utils.dart';
-import 'package:isar/isar.dart';
+// import 'package:isar/isar.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 //. Handle all checkin related stuffs here that the UI doesn't need to know about
