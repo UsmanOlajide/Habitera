@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:habitera/constants/color_picker.dart';
 import 'package:habitera/constants/sizes.dart';
 import 'package:habitera/utils/extensions.dart';
 
@@ -27,26 +28,23 @@ class SigninField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final signInFieldLabelStyle = context.body.copyWith(fontSize: 16);
-    return SizedBox(
-      height: 93.0,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title, style: context.formTitle),
-          kSizedBoxH8,
-          TextFormField(
-            controller: controller,
-            onChanged: onChanged,
-            obscureText: obscureText,
-            keyboardType: keyboardType ?? TextInputType.name,
-            validator: validator,
-            decoration: InputDecoration(
-              label: Text(labelText, style: signInFieldLabelStyle),
-              suffixIcon: suffixIcon,
-            ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(title, style: context.formTitle),
+        kSizedBoxH8,
+        TextFormField(
+          controller: controller,
+          onChanged: onChanged,
+          obscureText: obscureText,
+          keyboardType: keyboardType ?? TextInputType.name,
+          validator: validator,
+          decoration: InputDecoration(
+            label: Text(labelText, style: signInFieldLabelStyle),
+            suffixIcon: suffixIcon,
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

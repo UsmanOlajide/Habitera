@@ -36,123 +36,107 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print('is now on Reset Password Screen');
     return Scaffold(
-      appBar: AppBar(backgroundColor: ColorPicker.white),
+      appBar: AppBar(),
       body: Padding(
         padding: padAll16,
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final maxHeight = constraints.maxHeight;
-            return Form(
-              key: _formKey,
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Align(
-                      alignment: AlignmentGeometry.centerLeft,
-                      child: Text(
-                        'Create New Password',
-                        style: context.screenTitle,
-                      ),
-                    ),
-                    kSizedBoxH10,
-                    // Align(
-                    //   alignment: AlignmentGeometry.centerLeft,
-                    //   child: Text(
-                    //     'Please enter your e-mail address to get a reset link',
-                    //     style: context.textTheme.bodyLarge,
-                    //   ),
-                    // ),
-                    kSizedBoxH20,
-                    SigninField(
-                      title: 'Password',
-                      obscureText: false,
-                      controller: _passwordController,
-                      keyboardType: TextInputType.visiblePassword,
-                      validator: Validators.validateNewPassword,
-                      labelText: 'Enter your new password',
-                    ),
-                    SigninField(
-                      title: 'Confirm Password',
-                      obscureText: false,
-                      controller: _confirmPasswordController,
-                      keyboardType: TextInputType.visiblePassword,
-                      validator: (value) => Validators.validateConfirmPassword(
-                        value,
-                        _passwordController.text,
-                      ),
-                      labelText: 'Confirm your new password',
-                    ),
-                    SizedBox(height: maxHeight * 0.03),
-                    ElevatedButton(
-                      onPressed: _isLoading
-                          ? null
-                          : () async {
-                              if (_formKey.currentState!.validate()) {
-                                setState(() {
-                                  _isLoading = true;
-                                });
-                                try {
-                                  final authService = ref.read(
-                                    authServiceProvider,
-                                  );
-                                  await authService.updatePassword(
-                                    _confirmPasswordController.text,
-                                  );
-                                  ref
-                                      .read(isPasswordRecoveryProvider.notifier)
-                                      .setRecovery(false);
-                                  if (context.mounted) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        duration: Duration(seconds: 4),
-                                        content: Text(
-                                          'Password reset successfully',
-                                        ),
-                                      ),
-                                    );
-                                    context.goNamed(AppRoutes.navbar.name);
-                                  }
-                                } catch (error) {
-                                  var message =
-                                      'Something went wrong. Try again';
-                                  if (error is AuthException) {
-                                    message = error.message;
-                                  }
-                                  if (context.mounted) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        duration: Duration(seconds: 2),
-                                        content: Text(message),
-                                      ),
-                                    );
-                                  }
-                                } finally {
-                                  setState(() {
-                                    _isLoading = false;
-                                  });
-                                }
-                                return;
-                              }
-                            },
-                      style: ElevatedButton.styleFrom(shape: StadiumBorder()),
-                      child: _isLoading
-                          ? SizedBox(
-                              width: 20.0,
-                              height: 20.0,
-                              child: CircularProgressIndicator(
-                                color: ColorPicker.white,
-                              ),
-                            )
-                          : Text('Reset'),
-                    ),
-                  ],
+        child: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Align(
+                  alignment: AlignmentGeometry.centerLeft,
+                  child: Text(
+                    'Create New Password',
+                    style: context.screenTitle,
+                  ),
                 ),
-              ),
-            );
-          },
+                kSizedBoxH20,
+                SigninField(
+                  title: 'Password',
+                  obscureText: false,
+                  controller: _passwordController,
+                  keyboardType: TextInputType.visiblePassword,
+                  validator: Validators.validateNewPassword,
+                  labelText: 'Enter your new password',
+                ),
+                kSizedBoxH20,
+                SigninField(
+                  title: 'Confirm Password',
+                  obscureText: false,
+                  controller: _confirmPasswordController,
+                  keyboardType: TextInputType.visiblePassword,
+                  validator: (value) => Validators.validateConfirmPassword(
+                    value,
+                    _passwordController.text,
+                  ),
+                  labelText: 'Confirm your new password',
+                ),
+                kSizedBoxH20,
+                ElevatedButton(
+                  onPressed: _isLoading
+                      ? null
+                      : () async {
+                          if (_formKey.currentState!.validate()) {
+                            setState(() {
+                              _isLoading = true;
+                            });
+                            try {
+                              final authService = ref.read(authServiceProvider);
+                              await authService.updatePassword(
+                                _confirmPasswordController.text,
+                              );
+                              ref
+                                  .read(isPasswordRecoveryProvider.notifier)
+                                  .setRecovery(false);
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    duration: Duration(seconds: 4),
+                                    content: Text(
+                                      'Password reset successfully',
+                                    ),
+                                  ),
+                                );
+                                context.goNamed(AppRoutes.navbar.name);
+                              }
+                            } catch (error) {
+                              var message = 'Something went wrong. Try again';
+                              if (error is AuthException) {
+                                message = error.message;
+                              }
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    duration: Duration(seconds: 2),
+                                    content: Text(message),
+                                  ),
+                                );
+                              }
+                            } finally {
+                              setState(() {
+                                _isLoading = false;
+                              });
+                            }
+                            return;
+                          }
+                        },
+                  style: ElevatedButton.styleFrom(shape: StadiumBorder()),
+                  child: _isLoading
+                      ? SizedBox(
+                          width: 20.0,
+                          height: 20.0,
+                          child: CircularProgressIndicator(
+                            color: ColorPicker.white,
+                          ),
+                        )
+                      : Text('Reset'),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

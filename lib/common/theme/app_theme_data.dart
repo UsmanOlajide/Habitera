@@ -21,6 +21,11 @@ class AppThemeData {
     scaffoldBackgroundColor: ColorPicker.white,
     appBarTheme: AppAppbarTheme.appAppBarTheme,
     snackBarTheme: AppSnackbarTheme.appSnackbarTheme,
+    // bottomNavigationBarTheme: BottomNavigationBarThemeData(
+    //   backgroundColor: ColorPicker.scaffoldBg,
+    //   selectedItemColor: ColorPicker.black,
+    //   unselectedItemColor: ColorPicker.grey,
+    // ),
   );
 }
 

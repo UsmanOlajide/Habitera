@@ -7,6 +7,7 @@ import 'package:habitera/common/theme/app_theme_data.dart';
 import 'package:habitera/features/auth/presentation/auth_provider.dart';
 import 'package:habitera/features/auth/presentation/confirm_email_screen.dart';
 import 'package:habitera/features/auth/presentation/reset_password_screen.dart';
+import 'package:habitera/onboarding_screen.dart';
 // import 'package:habitera/isar_service.dart';
 import 'package:habitera/router/app_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -58,21 +59,20 @@ class _MyAppState extends ConsumerState<MyApp> {
   Widget build(BuildContext context) {
     final router = ref.watch(appRouterProvider);
 
-    return MaterialApp.router(
-      routerConfig: router,
-      title: 'Habitera',
-      theme: AppThemeData.lightTheme,
-      debugShowCheckedModeBanner: false,
-    );
-
-    //* For testing purposes only, to avoid going through the auth flow 
-    // return MaterialApp(
-    //   // routerConfig: router,
+    // return MaterialApp.router(
+    //   routerConfig: router,
     //   title: 'Habitera',
     //   theme: AppThemeData.lightTheme,
     //   debugShowCheckedModeBanner: false,
-    //   home: ResetPasswordScreen(),
     // );
+
+    //* For testing purposes only, to avoid going through the auth flow
+    return MaterialApp(
+      title: 'Habitera',
+      theme: AppThemeData.lightTheme,
+      debugShowCheckedModeBanner: false,
+      home: ConfirmEmailScreen(email: ''),
+    );
   }
 }
 

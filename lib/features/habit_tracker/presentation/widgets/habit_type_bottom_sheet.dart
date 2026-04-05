@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:habitera/constants/color_picker.dart';
 import 'package:habitera/constants/enums.dart';
 import 'package:habitera/constants/sizes.dart';
 import 'package:habitera/router/app_router.dart';
@@ -10,7 +11,11 @@ class HabitTypeBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Container(
+      decoration: BoxDecoration(
+        color: ColorPicker.white,
+        borderRadius: BorderRadius.circular(30.0),
+      ),
       height: 250,
       width: double.infinity,
       child: Column(

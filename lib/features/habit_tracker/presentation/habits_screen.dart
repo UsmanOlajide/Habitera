@@ -85,23 +85,6 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen> {
                     // 'TODAY',
                     style: context.sectionTitle,
                   ),
-                  //todo: Implement sorting or filtering
-                  // Row(
-                  //   children: [
-                  //     Text(
-                  //       'SORT',
-                  //       style: context.textTheme.bodyLarge?.copyWith(
-                  //         // color: Colors.black38,
-                  //         // color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  //         fontSize: 15.0,
-                  //       ),
-                  //     ),
-                  //     IconButton(
-                  //       icon: Icon(Icons.filter_list),
-                  //       onPressed: () {},
-                  //     ),
-                  //   ],
-                  // ),
                 ],
               ),
               const SizedBox(height: 10.0),
@@ -127,36 +110,6 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen> {
           ),
         ),
       ),
-      // bottomNavigationBar: FloatingActionButton(
-      //   shape: CircleBorder(),
-      //   onPressed: () async {
-      //     final type = await showModalBottomSheet<HabitType>(
-      //       context: context,
-      //       builder: (_) => HabitTypeBottomSheet(),
-      //     );
-
-      //     if (type == null || !context.mounted) return;
-
-      //     final added = await context.pushNamed<bool>(
-      //       AppRoutes.addHabitsScreen.name,
-      //       pathParameters: {'type': type.name},
-      //     );
-
-      //     if (!context.mounted) return;
-
-      //     if (added == true) {
-      //       final messenger = ScaffoldMessenger.of(context);
-      //       messenger.hideCurrentSnackBar();
-      //       messenger.showSnackBar(
-      //         SnackBar(
-      //           duration: Duration(seconds: 2),
-      //           content: Text('Habit added'),
-      //         ),
-      //       );
-      //     }
-      //   },
-      //   child: Icon(Icons.add),
-      // ),
     );
   }
 }

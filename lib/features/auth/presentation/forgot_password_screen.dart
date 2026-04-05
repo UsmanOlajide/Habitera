@@ -30,110 +30,98 @@ class _ForgotpasswordScreenState extends ConsumerState<ForgotpasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // print('is now on Forgot Password Screen');
-    print(context.textTheme.bodyLarge);
-    print(context.textTheme.bodyMedium);
-
     return Scaffold(
       appBar: AppBar(backgroundColor: ColorPicker.white),
       body: Padding(
         padding: padAll16,
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final maxHeight = constraints.maxHeight;
-
-            return Form(
-              key: _formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Align(
-                    alignment: AlignmentGeometry.centerLeft,
-                    child: Text('Forgot Password', style: context.screenTitle),
-                  ),
-                  kSizedBoxH10,
-                  Align(
-                    alignment: AlignmentGeometry.centerLeft,
-                    child: Text(
-                      'Please enter your e-mail address to get a reset link',
-                        style: context.body.copyWith(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16.0,
-                      ),
-                      // style: context.bodyBig,
-                    ),
-                  ),
-                  kSizedBoxH20,
-                  SigninField(
-                    title: 'Email Address',
-                    obscureText: false,
-                    controller: _emailController,
-                    keyboardType: TextInputType.emailAddress,
-                    validator: Validators.validateEmail,
-                    labelText: 'youremail@mail.com',
-                  ),
-                  SizedBox(height: maxHeight * 0.03),
-                  ElevatedButton(
-                    onPressed: _isLoading
-                        ? null
-                        : () async {
-                            if (_formKey.currentState!.validate()) {
-                              setState(() {
-                                _isLoading = true;
-                              });
-                              try {
-                                final authService = ref.read(
-                                  authServiceProvider,
-                                );
-                                await authService.sendPasswordResetEmail(
-                                  _emailController.text,
-                                );
-                                if (context.mounted) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      duration: Duration(seconds: 4),
-                                      content: Text(
-                                        'Password reset link sent. Check your email.',
-                                      ),
-                                    ),
-                                  );
-                                }
-                              } catch (error) {
-                                var message = 'Something went wrong. Try again';
-                                if (error is AuthException) {
-                                  message = error.message;
-                                }
-                                if (context.mounted) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      duration: Duration(seconds: 2),
-                                      content: Text(message),
-                                    ),
-                                  );
-                                }
-                              } finally {
-                                setState(() {
-                                  _isLoading = false;
-                                });
-                              }
-                              return;
-                            }
-                          },
-                    style: ElevatedButton.styleFrom(shape: StadiumBorder()),
-                    child: _isLoading
-                        ? SizedBox(
-                            width: 20.0,
-                            height: 20.0,
-                            child: CircularProgressIndicator(
-                              color: ColorPicker.white,
-                            ),
-                          )
-                        : Text('Send'),
-                  ),
-                ],
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Align(
+                alignment: AlignmentGeometry.centerLeft,
+                child: Text('Forgot Password', style: context.screenTitle),
               ),
-            );
-          },
+              kSizedBoxH10,
+              Align(
+                alignment: AlignmentGeometry.centerLeft,
+                child: Text(
+                  'Please enter your e-mail address to get a reset link',
+                  style: context.body.copyWith(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16.0,
+                  ),
+                  // style: context.bodyBig,
+                ),
+              ),
+              kSizedBoxH20,
+              SigninField(
+                title: 'Email Address',
+                obscureText: false,
+                controller: _emailController,
+                keyboardType: TextInputType.emailAddress,
+                validator: Validators.validateEmail,
+                labelText: 'youremail@mail.com',
+              ),
+              SizedBox(height: 15),
+              ElevatedButton(
+                onPressed: _isLoading
+                    ? null
+                    : () async {
+                        if (_formKey.currentState!.validate()) {
+                          setState(() {
+                            _isLoading = true;
+                          });
+                          try {
+                            final authService = ref.read(authServiceProvider);
+                            await authService.sendPasswordResetEmail(
+                              _emailController.text,
+                            );
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  duration: Duration(seconds: 4),
+                                  content: Text(
+                                    'Password reset link sent. Check your email.',
+                                  ),
+                                ),
+                              );
+                            }
+                          } catch (error) {
+                            var message = 'Something went wrong. Try again';
+                            if (error is AuthException) {
+                              message = error.message;
+                            }
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  duration: Duration(seconds: 2),
+                                  content: Text(message),
+                                ),
+                              );
+                            }
+                          } finally {
+                            setState(() {
+                              _isLoading = false;
+                            });
+                          }
+                          return;
+                        }
+                      },
+                style: ElevatedButton.styleFrom(shape: StadiumBorder()),
+                child: _isLoading
+                    ? SizedBox(
+                        width: 20.0,
+                        height: 20.0,
+                        child: CircularProgressIndicator(
+                          color: ColorPicker.white,
+                        ),
+                      )
+                    : Text('Send'),
+              ),
+            ],
+          ),
         ),
       ),
     );

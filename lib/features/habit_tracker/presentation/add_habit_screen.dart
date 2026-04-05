@@ -224,19 +224,19 @@ class TitleField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(title, style: context.formTitle),
-        kSizedBoxH8,
-        SizedBox(
-          height: 50.0,
-          child: TextFormField(
+    return Container(
+      // color: Colors.red.shade200,
+      // height: 55.0,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title, style: context.formTitle),
+          kSizedBoxH8,
+          TextFormField(
             controller: controller,
             validator: validator,
             onChanged: onChanged,
-
             // style: context.textTheme.bodySmall?.copyWith(fontSize: 14),
             // keyboardType: TextInputType.name,
             decoration: InputDecoration(
@@ -257,8 +257,8 @@ class TitleField extends StatelessWidget {
               //             color: isCorrect ? Colors.green : black3)),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

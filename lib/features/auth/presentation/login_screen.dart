@@ -36,177 +36,169 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     print('is now on Login Screen');
+    final labelFontSize = 17.0;
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              final maxHeight = constraints.maxHeight;
-              final labelFontSize = 17.0;
+          child: Form(
+            key: _formKey,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  SizedBox(height: 12),
+                  Text(
+                    appName,
+                    style: context.screenTitle.copyWith(fontSize: 26),
+                  ),
+                  kSizedBoxH85,
+                  Align(
+                    alignment: AlignmentGeometry.centerLeft,
+                    child: Text(
+                      'Login to your account',
+                      style: context.screenTitle,
+                    ),
+                  ),
+                  const SizedBox(height: 28.0),
+                  SigninField(
+                    title: 'Email Address',
+                    obscureText: false,
+                    controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    validator: Validators.validateEmail,
+                    labelText: 'Enter your email',
+                  ),
+                  kSizedBoxH20,
+                  SigninField(
+                    title: 'Password',
+                    obscureText: _obscureText,
+                    controller: _passwordController,
+                    keyboardType: TextInputType.visiblePassword,
+                    validator: Validators.validatePassword,
+                    labelText: 'Enter your password',
 
-              // final maxWidth = constraints.maxWidth;
-              return Form(
-                key: _formKey,
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      SizedBox(height: maxHeight * 0.02),
-                      Text(
-                        appName,
-                        style: context.screenTitle.copyWith(fontSize: 26),
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _obscureText = !_obscureText;
+                        });
+                      },
+                      icon: _obscureText
+                          ? Icon(Icons.visibility_rounded)
+                          : Icon(Icons.visibility_off_rounded),
+                    ),
+                  ),
+                  kSizedBoxH10,
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: () {
+                        // context.pushNamed(
+                        //   AppRoutes.forgotPasswordScreen.name,
+                        // );
+                        context.goNamed(AppRoutes.forgotPasswordScreen.name);
+                      },
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.zero,
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       ),
-                      SizedBox(height: maxHeight * 0.14),
-                      Align(
-                        alignment: AlignmentGeometry.centerLeft,
-                        child: Text(
-                          'Login to your account',
-                          style: context.screenTitle,
-                        ),
+                      child: Text(
+                        'Forgot Password?',
+                        style: context.body.copyWith(fontSize: 15),
                       ),
-                      const SizedBox(height: 28.0),
-                      SigninField(
-                        title: 'Email Address',
-                        obscureText: false,
-                        controller: _emailController,
-                        keyboardType: TextInputType.emailAddress,
-                        validator: Validators.validateEmail,
-                        labelText: 'youremail@mail.com',
-                      ),
-                      SizedBox(height: 20),
-                      SigninField(
-                        title: 'Password',
-                        obscureText: _obscureText,
-                        controller: _passwordController,
-                        keyboardType: TextInputType.visiblePassword,
-                        validator: Validators.validatePassword,
-                        labelText: '*******',
-
-                        suffixIcon: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              _obscureText = !_obscureText;
-                            });
-                          },
-                          icon: _obscureText
-                              ? Icon(Icons.visibility_rounded)
-                              : Icon(Icons.visibility_off_rounded),
-                        ),
-                      ),
-                      kSizedBoxH10,
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: TextButton(
-                          onPressed: () {
-                            // context.pushNamed(
-                            //   AppRoutes.forgotPasswordScreen.name,
-                            // );
-                            context.goNamed(
-                              AppRoutes.forgotPasswordScreen.name,
-                            );
-                          },
-                          style: TextButton.styleFrom(
-                            padding: EdgeInsets.zero,
-                            minimumSize: Size.zero,
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          ),
-                          child: Text(
-                            'Forgot Password?',
-                            style: context.body.copyWith(fontSize: 15),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 40),
-                      ElevatedButton(
-                        onPressed: isLoading
-                            ? null
-                            : () async {
-                                if (_formKey.currentState!.validate()) {
-                                  setState(() {
-                                    isLoading = true;
-                                  });
-                                  try {
-                                    final authService = ref.read(
-                                      authServiceProvider,
-                                    );
-                                    await authService.signInWithEmailPassword(
-                                      _emailController.text,
-                                      _passwordController.text,
-                                    );
-                                  } catch (error) {
-                                    var message =
-                                        'Something went wrong. Try again';
-                                    if (error is AuthException) {
-                                      message = error.message;
-                                    }
-                                    if (context.mounted) {
-                                      ScaffoldMessenger.of(
-                                        context,
-                                      ).showSnackBar(
-                                        SnackBar(
-                                          duration: Duration(seconds: 2),
-                                          content: Text(message),
-                                        ),
-                                      );
-                                    }
-                                  } finally {
-                                    setState(() {
-                                      isLoading = false;
-                                    });
-                                    // print(ref.read(isLoggedInProvider));
+                    ),
+                  ),
+                  SizedBox(height: 40),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: isLoading
+                          ? null
+                          : () async {
+                              if (_formKey.currentState!.validate()) {
+                                setState(() {
+                                  isLoading = true;
+                                });
+                                try {
+                                  final authService = ref.read(
+                                    authServiceProvider,
+                                  );
+                                  await authService.signInWithEmailPassword(
+                                    _emailController.text,
+                                    _passwordController.text,
+                                  );
+                                } catch (error) {
+                                  var message =
+                                      'Something went wrong. Try again';
+                                  if (error is AuthException) {
+                                    message = error.message;
                                   }
-                                  // context.goNamed(AppRoutes.navbar.name);
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        duration: Duration(seconds: 2),
+                                        content: Text(message),
+                                      ),
+                                    );
+                                  }
+                                } finally {
+                                  setState(() {
+                                    isLoading = false;
+                                  });
+                                  // print(ref.read(isLoggedInProvider));
                                 }
-                                return;
-                              },
-                        style: ElevatedButton.styleFrom(shape: StadiumBorder()),
-                        child: isLoading
-                            ? SizedBox(
-                                width: 20.0,
-                                height: 20.0,
-                                child: CircularProgressIndicator(
-                                  color: ColorPicker.white,
-                                ),
-                              )
-                            : Text('Login'),
-                      ),
-                      kSizedBoxH10,
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Don't have an account?",
-                            style: context.body.copyWith(
-                              fontSize: labelFontSize,
-                              color: ColorPicker.grey,
-                            ),
-                          ),
-                          kSizedBoxW4,
-                          TextButton(
-                            onPressed: () {
-                              context.goNamed(AppRoutes.signupScreen.name);
+                                // context.goNamed(AppRoutes.navbar.name);
+                              }
+                              return;
                             },
-                            style: TextButton.styleFrom(
-                              padding: EdgeInsets.zero,
-                              minimumSize: Size.zero,
-                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            ),
-                            child: Text(
-                              'Create one',
-                              style: context.body.copyWith(
-                                fontWeight: FontWeight.w600,
-                                fontSize: labelFontSize,
+                      style: ElevatedButton.styleFrom(shape: StadiumBorder()),
+                      child: isLoading
+                          ? SizedBox(
+                              width: 20.0,
+                              height: 20.0,
+                              child: CircularProgressIndicator(
+                                color: ColorPicker.white,
                               ),
-                            ),
+                            )
+                          : Text('Login'),
+                    ),
+                  ),
+                  kSizedBoxH10,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Don't have an account?",
+                        style: context.body.copyWith(
+                          fontSize: labelFontSize,
+                          color: ColorPicker.grey,
+                        ),
+                      ),
+                      kSizedBoxW4,
+                      TextButton(
+                        onPressed: () {
+                          context.goNamed(AppRoutes.signupScreen.name);
+                        },
+                        style: TextButton.styleFrom(
+                          padding: EdgeInsets.zero,
+                          minimumSize: Size.zero,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
+                        child: Text(
+                          'Create one',
+                          style: context.body.copyWith(
+                            fontWeight: FontWeight.w600,
+                            fontSize: labelFontSize,
                           ),
-                        ],
+                        ),
                       ),
                     ],
                   ),
-                ),
-              );
-            },
+                ],
+              ),
+            ),
           ),
         ),
       ),

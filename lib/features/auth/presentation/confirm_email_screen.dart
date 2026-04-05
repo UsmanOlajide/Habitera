@@ -52,100 +52,93 @@ class _ConfirmEmailScreenState extends ConsumerState<ConfirmEmailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // print(widget.email);
     return Scaffold(
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          final maxHeight = constraints.maxHeight;
-          return Padding(
-            padding: padAll16,
-            child: Column(
-              children: [
-                SizedBox(height: maxHeight * 0.16),
-                Text(
-                  'Confirm your email',
-                  style: context.screenTitle,
-                ),
-                kSizedBoxH15,
-                Text(
-                  "We've sent a confirmation email to your email address. Please check your inbox and click the link to verify your account",
-                  style: context.body.copyWith(fontSize: 16.0),
-                  textAlign: TextAlign.center,
-                ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: padAll16,
+          child: Column(
+            children: [
+              SizedBox(height: 60),
+              Text('Confirm your email', style: context.screenTitle),
+              kSizedBoxH15,
+              Text(
+                "We've sent a confirmation email to your email address. Please check your inbox and click the link to verify your account",
+                style: context.body.copyWith(fontSize: 16.0),
+                textAlign: TextAlign.center,
+              ),
 
-                SizedBox(height: maxHeight * 0.08),
-                ElevatedButton(
-                  onPressed: () {
-                    context.goNamed(AppRoutes.loginScreen.name);
-                  },
+              kSizedBoxH20,
+              ElevatedButton(
+                onPressed: () {
+                  context.goNamed(AppRoutes.loginScreen.name);
+                },
 
-                  child: Text('Back to Login'),
-                ),
-                SizedBox(height: maxHeight * 0.01),
+                child: Text('Back to Login'),
+              ),
 
-                ElevatedButton(
-                  onPressed: _isLoading || _countdown > 0
-                      ? null
-                      : () async {
+              kSizedBoxH5,
+              ElevatedButton(
+                onPressed: _isLoading || _countdown > 0
+                    ? null
+                    : () async {
+                        setState(() {
+                          _isLoading = true;
+                        });
+                        try {
+                          final authService = ref.read(authServiceProvider);
+                          await authService.resendLink(widget.email);
+
                           setState(() {
-                            _isLoading = true;
+                            _countdown = 60;
                           });
-                          try {
-                            final authService = ref.read(authServiceProvider);
-                            await authService.resendLink(widget.email);
+                          startCountdown();
 
-                            setState(() {
-                              _countdown = 60;
-                            });
-                            startCountdown();
-
-                            if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  duration: Duration(seconds: 4),
-                                  content: Text(
-                                    'Confirmation email link sent. Check your email.',
-                                  ),
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                duration: Duration(seconds: 4),
+                                content: Text(
+                                  'Confirmation email link sent. Check your email.',
                                 ),
-                              );
-                            }
-                          } catch (error) {
-                            var message = 'Something went wrong. Try again';
-                            if (error is AuthException) {
-                              message = error.message;
-                            }
-                            if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  duration: Duration(seconds: 2),
-                                  content: Text(message),
-                                ),
-                              );
-                            }
-                          } finally {
-                            setState(() {
-                              _isLoading = false;
-                            });
+                              ),
+                            );
                           }
-                        },
-                  child: _isLoading
-                      ? SizedBox(
-                          width: 20.0,
-                          height: 20.0,
-                          child: CircularProgressIndicator(
-                            color: ColorPicker.white,
-                          ),
-                        )
-                      : Text(
-                          _countdown > 0
-                              ? 'Resend in ${_countdown}s'
-                              : 'Resend Link',
+                        } catch (error) {
+                          var message = 'Something went wrong. Try again';
+                          if (error is AuthException) {
+                            message = error.message;
+                          }
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                duration: Duration(seconds: 2),
+                                content: Text(message),
+                              ),
+                            );
+                          }
+                        } finally {
+                          setState(() {
+                            _isLoading = false;
+                          });
+                        }
+                      },
+                child: _isLoading
+                    ? SizedBox(
+                        width: 20.0,
+                        height: 20.0,
+                        child: CircularProgressIndicator(
+                          color: ColorPicker.white,
                         ),
-                ),
-              ],
-            ),
-          );
-        },
+                      )
+                    : Text(
+                        _countdown > 0
+                            ? 'Resend in ${_countdown}s'
+                            : 'Resend Link',
+                      ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

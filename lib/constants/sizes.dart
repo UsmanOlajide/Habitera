@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 const kSizedBoxH20 = SizedBox(height: 20.0);
 const kSizedBoxH15 = SizedBox(height: 15.0);
 const kSizedBoxH10 = SizedBox(height: 10.0);
+const kSizedBoxH85 = SizedBox(height: 85.0);
 const kSizedBoxH8 = SizedBox(height: 8.0);
 const kSizedBoxH5 = SizedBox(height: 5.0);
 const kSizedBoxW4 = SizedBox(width: 4.0);

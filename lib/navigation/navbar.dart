@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:habitera/constants/color_picker.dart';
 import 'package:habitera/constants/enums.dart';
 import 'package:habitera/constants/sizes.dart';
 import 'package:habitera/features/habit_tracker/presentation/add_habit_screen.dart';
@@ -25,8 +26,6 @@ class _NavBarState extends State<NavBar> {
 
   @override
   Widget build(BuildContext context) {
-    var isHabitScreen = _currentIndex == 0;
-
     return Scaffold(
       body: screens[_currentIndex],
       bottomNavigationBar: Container(
@@ -34,7 +33,6 @@ class _NavBarState extends State<NavBar> {
           border: Border(top: BorderSide(color: Colors.grey.shade300)),
         ),
         child: NavigationBar(
-          // elevation: 2,
           selectedIndex: _currentIndex,
           onDestinationSelected: (index) {
             setState(() {
