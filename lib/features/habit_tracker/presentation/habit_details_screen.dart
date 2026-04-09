@@ -27,7 +27,6 @@ class _HabitDetailsScreenState extends ConsumerState<HabitDetailsScreen> {
     );
     final checkinDayKeysForHabit = checkinDayKeysForHabitAsync.value ?? <int>{};
 
-    final streak = calculateStreak(checkinDayKeysForHabit);
 
     final doneHabitIdsAsync = ref.watch(doneHabitIdsProvider);
     final isDone =
@@ -38,6 +37,8 @@ class _HabitDetailsScreenState extends ConsumerState<HabitDetailsScreen> {
         ? {...checkinDayKeysForHabit, today}
         : checkinDayKeysForHabit.where((dayKey) => dayKey != today).toSet();
 
+    final streak = calculateStreak(optimizedCheckinDayKeys);
+    
     return Scaffold(
       appBar: AppBar(title: Text(widget.habit.title)),
       body: Padding(

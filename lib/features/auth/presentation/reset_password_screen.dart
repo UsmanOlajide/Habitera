@@ -79,6 +79,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
                   onPressed: _isLoading
                       ? null
                       : () async {
+                          FocusScope.of(context).unfocus();
                           if (_formKey.currentState!.validate()) {
                             setState(() {
                               _isLoading = true;

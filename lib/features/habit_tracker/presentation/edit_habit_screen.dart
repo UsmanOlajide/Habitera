@@ -126,6 +126,7 @@ class _EditHabitScreenState extends ConsumerState<EditHabitScreen> {
                   selectedFrequency: _selectedFrequency,
                   isSubmitting: _isSubmitting,
                   onPressed: () async {
+                    FocusScope.of(context).unfocus();
                     if (!_formKey.currentState!.validate()) return;
 
                     setState(() => _isSubmitting = true);

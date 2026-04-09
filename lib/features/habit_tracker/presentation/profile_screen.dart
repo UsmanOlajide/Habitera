@@ -35,7 +35,7 @@ class ProfileScreen extends ConsumerWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(height: 60),
+              SizedBox(height: 85),
               CircleAvatar(
                 backgroundColor: ColorPicker.grey,
                 radius: 40,
@@ -59,7 +59,8 @@ class ProfileScreen extends ConsumerWidget {
                   ],
                 ),
               ),
-              // Spacer(),
+              // kSizedBoxH85,
+              Spacer(),
               ElevatedButton(
                 onPressed: () async {
                   final authService = ref.read(authServiceProvider);

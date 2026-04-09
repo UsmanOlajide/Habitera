@@ -22,8 +22,8 @@ void main() async {
     anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
   );
 
-  // final prefs = await SharedPreferences.getInstance();
-  // prefs.clear();
+  final prefs = await SharedPreferences.getInstance();
+  prefs.clear();
 
   runApp(const ProviderScope(child: MyApp()));
 }
@@ -59,20 +59,20 @@ class _MyAppState extends ConsumerState<MyApp> {
   Widget build(BuildContext context) {
     final router = ref.watch(appRouterProvider);
 
-    // return MaterialApp.router(
-    //   routerConfig: router,
-    //   title: 'Habitera',
-    //   theme: AppThemeData.lightTheme,
-    //   debugShowCheckedModeBanner: false,
-    // );
-
-    //* For testing purposes only, to avoid going through the auth flow
-    return MaterialApp(
+    return MaterialApp.router(
+      routerConfig: router,
       title: 'Habitera',
       theme: AppThemeData.lightTheme,
       debugShowCheckedModeBanner: false,
-      home: ConfirmEmailScreen(email: ''),
     );
+
+    //* For testing purposes only, to avoid going through the auth flow
+    // return MaterialApp(
+    //   title: 'Habitera',
+    //   theme: AppThemeData.lightTheme,
+    //   debugShowCheckedModeBanner: false,
+    //   home: ConfirmEmailScreen(email: ''),
+    // );
   }
 }
 

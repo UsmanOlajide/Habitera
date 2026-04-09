@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:habitera/constants/color_picker.dart';
 import 'package:habitera/constants/enums.dart';
@@ -40,8 +41,14 @@ class _NavBarState extends State<NavBar> {
             });
           },
           destinations: [
-            const NavigationDestination(
-              icon: Icon(Icons.punch_clock_rounded),
+            NavigationDestination(
+              icon: Icon(Icons.checklist_rounded),
+              // icon: Icon(Icons.task_alt_rounded),
+              // icon: SvgPicture.asset(
+              //   'assets/icons/habits.svg',
+              //   fit: BoxFit.scaleDown,
+              //   width: 22,
+              // ),
               label: 'Habits',
             ),
             const NavigationDestination(

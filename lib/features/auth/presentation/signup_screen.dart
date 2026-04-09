@@ -106,6 +106,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                       onPressed: _isLoading
                           ? null
                           : () async {
+                            FocusScope.of(context).unfocus();
                               if (_formKey.currentState!.validate()) {
                                 setState(() {
                                   _isLoading = true;

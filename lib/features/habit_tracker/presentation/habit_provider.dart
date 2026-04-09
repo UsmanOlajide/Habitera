@@ -17,8 +17,10 @@ class Habits extends _$Habits {
   }
 
   Future<void> addHabit(Habit habit) async {
+    final current = state.value ?? [];
+    state = AsyncData([...current, habit]);
     await _repo.addHabit(habit);
-    ref.invalidateSelf();
+    // ref.invalidateSelf();
   }
 
   Future<void> editHabit(Habit habit) async {
@@ -27,8 +29,10 @@ class Habits extends _$Habits {
   }
 
   Future<void> deleteHabit(String habitId) async {
+    final current = state.value ?? [];
+    state = AsyncData(current.where((habit) => habit.id != habitId).toList());
     await _repo.deleteHabit(habitId);
-    ref.invalidateSelf();
+    // ref.invalidateSelf();
   }
 }
 

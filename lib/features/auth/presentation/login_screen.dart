@@ -117,6 +117,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       onPressed: isLoading
                           ? null
                           : () async {
+                            FocusScope.of(context).unfocus();
                               if (_formKey.currentState!.validate()) {
                                 setState(() {
                                   isLoading = true;
@@ -173,7 +174,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         "Don't have an account?",
                         style: context.body.copyWith(
                           fontSize: labelFontSize,
-                          color: ColorPicker.grey,
+                          color: const Color.fromARGB(255, 115, 114, 114),
                         ),
                       ),
                       kSizedBoxW4,
