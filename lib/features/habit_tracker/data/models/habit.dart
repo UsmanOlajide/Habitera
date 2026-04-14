@@ -1,11 +1,6 @@
-class Habit {
-  final String id;
-  final String userId;
-  final String title;
-  final int type;
-  final DateTime createdAt;
-  final int frequency;
+import 'package:flutter/material.dart';
 
+class Habit {
   Habit({
     this.id = "",
     required this.userId,
@@ -13,7 +8,16 @@ class Habit {
     required this.type,
     required this.createdAt,
     required this.frequency,
+    this.reminderTime,
   });
+
+  final String id;
+  final String userId;
+  final String title;
+  final int type;
+  final DateTime createdAt;
+  final int frequency;
+  final TimeOfDay? reminderTime;
 
   Habit copyWith({
     String? id,
@@ -22,6 +26,7 @@ class Habit {
     int? type,
     DateTime? createdAt,
     int? frequency,
+    TimeOfDay? reminderTime,
   }) {
     return Habit(
       id: id ?? this.id,
@@ -30,6 +35,7 @@ class Habit {
       type: type ?? this.type,
       createdAt: createdAt ?? this.createdAt,
       frequency: frequency ?? this.frequency,
+      reminderTime: reminderTime ?? this.reminderTime,
     );
   }
 
@@ -41,6 +47,8 @@ class Habit {
       'type': type,
       'created_at': createdAt.toIso8601String(),
       'frequency': frequency,
+      'reminder_hour': reminderTime?.hour,
+      'reminder_minute': reminderTime?.minute,
     };
   }
 
@@ -52,6 +60,14 @@ class Habit {
       type: map['type'] as int,
       createdAt: DateTime.parse(map['created_at']),
       frequency: map['frequency'] as int,
+      reminderTime:
+          map['reminder_hour'] != null && map['reminder_minute'] != null
+          ? TimeOfDay(
+              hour: map['reminder_hour'] as int,
+              minute: map['reminder_minute'] as int,
+            )
+          : null,
+      // reminderTime: TimeOfDay(hour: map['reminder_hour'] as int, minute: map['reminder_minute'] as int)
     );
   }
 }
@@ -85,4 +101,3 @@ class Habit {
   //       type.hashCode ^
   //       createdAt.hashCode ^
   //       frequency.hashCode;
-  // }

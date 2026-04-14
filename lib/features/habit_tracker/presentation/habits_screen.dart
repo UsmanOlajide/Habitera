@@ -15,6 +15,7 @@ import 'package:habitera/features/habit_tracker/presentation/habit_provider.dart
 import 'package:habitera/features/habit_tracker/presentation/widgets/date_section.dart';
 import 'package:habitera/features/habit_tracker/presentation/widgets/habit_type_bottom_sheet.dart';
 import 'package:habitera/features/habit_tracker/presentation/widgets/type_chip.dart';
+import 'package:habitera/notification_service.dart';
 import 'package:habitera/router/app_router.dart';
 import 'package:habitera/utils/created_date.dart';
 import 'package:habitera/utils/extensions.dart';
@@ -95,6 +96,16 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen> {
                       return EmptyState();
                     }
 
+                    // return ElevatedButton(
+                    //   onPressed: () {
+                    //     NotificationService().showNotifications(
+                    //       title: 'Remember your habit',
+                    //       body: 'Time to: ',
+                    //     );
+                    //   },
+                    //   child: Text('Show notification'),
+                    // );
+
                     return HabitListView(
                       doneHabitIds: doneHabitIds,
                       habits: habits,
@@ -161,10 +172,11 @@ class HabitListView extends ConsumerWidget {
           type: habit.type,
           habitTitle: habit.title,
           createdAt: habit.createdAt,
-          onDelete: () async {
-            ref.read(habitsProvider.notifier).deleteHabit(habit.id);
+          onEdit: () {
+            context.goNamed(AppRoutes.editHabitsScreen.name, extra: habit);
+            // print('Edit habit: ${habit.title}');
           },
-          onTapDelete: () async {
+          onTapDelete: () {
             final deletedHabit = habit;
             ref.read(habitsProvider.notifier).deleteHabit(deletedHabit.id);
 
@@ -222,8 +234,9 @@ class HabitTile extends StatelessWidget {
   // final String habitCreatedTime;
   final int type;
   final DateTime createdAt;
-  final VoidCallback? onEdit;
-  final Future<void> Function()? onDelete;
+  // final VoidCallback? onEdit;
+  final void Function()? onDelete;
+  final void Function()? onEdit;
   final void Function()? onTapDelete;
   final void Function(bool?)? onChanged;
   final Habit habit;
@@ -237,13 +250,15 @@ class HabitTile extends StatelessWidget {
         motion: const StretchMotion(),
         children: [
           SlidableAction(
-            onPressed: (_) {},
+            onPressed: (_) {
+              onEdit?.call();
+            },
             icon: Icons.edit,
             backgroundColor: Colors.grey,
           ),
           SlidableAction(
-            onPressed: (_) async {
-              await onDelete?.call();
+            onPressed: (_) {
+              onTapDelete?.call();
             },
             icon: Icons.delete,
             backgroundColor: Theme.of(context).colorScheme.error,
@@ -252,16 +267,7 @@ class HabitTile extends StatelessWidget {
       ),
       child: InkWell(
         onTap: () {
-          context.goNamed(
-            AppRoutes.habitDetailsScreen.name,
-            extra: habit,
-
-            // extra: HabitDetailsArgs(
-            //   habit: habit,
-            //   isDone: isDone,
-            //   onChanged: onChanged,
-            // ),
-          );
+          context.goNamed(AppRoutes.habitDetailsScreen.name, extra: habit);
         },
         child: Container(
           // height: 113.0,
@@ -336,12 +342,7 @@ class HabitTile extends StatelessWidget {
                     itemBuilder: (_) {
                       return [
                         PopupMenuItem(
-                          onTap: () {
-                            context.goNamed(
-                              AppRoutes.editHabitsScreen.name,
-                              extra: habit,
-                            );
-                          },
+                          onTap: onEdit,
                           child: Text(
                             'Edit',
                             style: context.body.copyWith(

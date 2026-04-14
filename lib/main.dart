@@ -7,6 +7,7 @@ import 'package:habitera/common/theme/app_theme_data.dart';
 import 'package:habitera/features/auth/presentation/auth_provider.dart';
 import 'package:habitera/features/auth/presentation/confirm_email_screen.dart';
 import 'package:habitera/features/auth/presentation/reset_password_screen.dart';
+import 'package:habitera/notification_service.dart';
 import 'package:habitera/onboarding_screen.dart';
 // import 'package:habitera/isar_service.dart';
 import 'package:habitera/router/app_router.dart';
@@ -22,8 +23,10 @@ void main() async {
     anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
   );
 
-  final prefs = await SharedPreferences.getInstance();
-  prefs.clear();
+  await NotificationService().initNotification();
+
+  // final prefs = await SharedPreferences.getInstance();
+  // prefs.clear();
 
   runApp(const ProviderScope(child: MyApp()));
 }

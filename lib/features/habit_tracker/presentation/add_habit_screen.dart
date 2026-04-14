@@ -8,6 +8,7 @@ import 'package:habitera/constants/sizes.dart';
 import 'package:habitera/features/habit_tracker/data/models/habit.dart';
 import 'package:habitera/features/habit_tracker/data/models/habit_isar.dart';
 import 'package:habitera/features/habit_tracker/presentation/habit_provider.dart';
+import 'package:habitera/features/habit_tracker/presentation/widgets/custom_switch.dart';
 import 'package:habitera/utils/extensions.dart';
 
 class AddHabitScreen extends ConsumerStatefulWidget {
@@ -51,6 +52,11 @@ class _AddHabitScreenState extends ConsumerState<AddHabitScreen> {
     super.dispose();
   }
 
+  var selectedTime = TimeOfDay(hour: 8, minute: 0);
+  TimeOfDay? _timeOfDay;
+
+  var switchValue = false;
+
   @override
   Widget build(BuildContext context) {
     final title = widget.type == HabitType.startHabit
@@ -64,93 +70,184 @@ class _AddHabitScreenState extends ConsumerState<AddHabitScreen> {
           padding: padAll16,
           child: Form(
             key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              // crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Column(
-                  children: [
-                    TitleField(
-                      controller: textController,
-                      title: 'Title',
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return 'Please enter a title';
-                        }
-                        return null;
-                      },
-                    ),
-                    kSizedBoxH8,
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text('Frequency', style: context.formTitle),
-                    ),
-                    kSizedBoxH8,
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: SegmentedButton(
-                        segments: _frequencySegments,
-                        selected: _selectedFrequencies,
-                        onSelectionChanged: (newSelection) {
-                          setState(() {
-                            _selectedFrequencies = newSelection;
-                            _selectedFrequency = newSelection.first;
-                          });
+            child: SingleChildScrollView(
+              child: Column(
+                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    children: [
+                      TitleField(
+                        controller: textController,
+                        title: 'Title',
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return 'Please enter a title';
+                          }
+                          return null;
                         },
                       ),
-                    ),
-                    const SizedBox(height: 4),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Hourly & Weekly coming soon',
-                        style: context.body.copyWith(
-                          color: ColorPicker.grey,
-                          fontSize: 12,
+                      kSizedBoxH8,
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text('Frequency', style: context.formTitle),
+                      ),
+                      kSizedBoxH8,
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: SegmentedButton(
+                          segments: _frequencySegments,
+                          selected: _selectedFrequencies,
+                          onSelectionChanged: (newSelection) {
+                            setState(() {
+                              _selectedFrequencies = newSelection;
+                              _selectedFrequency = newSelection.first;
+                            });
+                          },
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                AddHabitButton(
-                  formKey: _formKey,
-                  ref: ref,
-                  textController: textController,
-                  widget: widget,
-                  selectedFrequency: _selectedFrequency,
-                  isSubmitting: _isSubmitting,
-                  onPressed: () async {
-                    FocusScope.of(context).unfocus();
-                    if (!_formKey.currentState!.validate()) return;
+                      const SizedBox(height: 4),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Hourly & Weekly coming soon',
+                          style: context.body.copyWith(
+                            color: ColorPicker.grey,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
+                      kSizedBoxH8,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('Set Reminder', style: context.formTitle),
+                          // Transform.scale(
+                          //   scaleX: 0.9,
+                          //   scaleY: 0.8,
+                          //   // scale: 0.8,
+                          //   child: Switch(
+                          //     padding: EdgeInsets.zero,
+                          //     materialTapTargetSize:
+                          //         MaterialTapTargetSize.shrinkWrap,
+                          //     // minimumSize: Size.zero,
+                          //     value: switchValue,
+                          //     onChanged: (newValue) {
+                          //       setState(() {
+                          //         switchValue = newValue;
+                          //       });
+                          //     },
+                          //   ),
+                          // ),
+                          CustomSwitch(
+                            width: 47,
+                            height: 26,
+                            value: switchValue,
+                            onChanged: (newValue) {
+                              setState(() {
+                                switchValue = newValue;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                      kSizedBoxH8,
+                      if (switchValue == true)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(Icons.access_time_rounded),
+                                kSizedBoxW8,
+                                Text(
+                                  selectedTime.format(context),
+                                  style: context.body.copyWith(fontSize: 17),
+                                ),
+                              ],
+                            ),
+                            IconButton(
+                              onPressed: () async {
+                                _timeOfDay = await showTimePicker(
+                                  context: context,
+                                  initialTime: TimeOfDay.now(),
+                                  initialEntryMode: TimePickerEntryMode.dial,
+                                );
+                                if (_timeOfDay != null) {
+                                  setState(() {
+                                    selectedTime = _timeOfDay!;
+                                  });
+                                }
+                              },
+                              icon: Icon(Icons.edit_rounded),
+                            ),
+                          ],
+                        ),
+                      // TextButton(
+                      //   onPressed: () async {
+                      //     _timeOfDay = await showTimePicker(
+                      //       context: context,
+                      //       initialTime: TimeOfDay.now(),
+                      //       initialEntryMode: TimePickerEntryMode.dial,
+                      //     );
 
-                    setState(() => _isSubmitting = true);
+                      //     if (_timeOfDay != null) {
+                      //       setState(() {
+                      //         selectedTime = _timeOfDay!;
+                      //       });
+                      //     }
+                      //   },
 
-                    final repository = ref.read(habitRepositoryProvider);
+                      //   child: Text('Set a reminder'),
+                      // ),
+                      // Text(selectedTime.format(context)),
+                    ],
+                    // setState(() {});
+                    // print(timeOfDay);
+                  ),
+                  //TODO: Find a way to adjust this
+                  SizedBox(height: 180),
+                  AddHabitButton(
+                    formKey: _formKey,
+                    ref: ref,
+                    textController: textController,
+                    widget: widget,
+                    selectedFrequency: _selectedFrequency,
+                    isSubmitting: _isSubmitting,
+                    onPressed: () async {
+                      FocusScope.of(context).unfocus();
+                      // print(timeOfDay);
+                      if (!_formKey.currentState!.validate()) return;
 
-                    // final habit = HabitIsar()
-                    //   ..title = textController.text
-                    //   ..type = widget.type.index
-                    //   ..frequency = _selectedFrequency.index
-                    //   ..createdAt = DateTime.now();
-                    final habit = Habit(
-                      userId: '',
-                      title: textController.text,
-                      type: widget.type.index,
-                      createdAt: DateTime.now(),
-                      frequency: _selectedFrequency.index,
-                    );
+                      setState(() => _isSubmitting = true);
 
-                    await repository.addHabit(habit);
+                      final repository = ref.read(habitRepositoryProvider);
 
-                    ref.invalidate(habitsProvider);
-                    // this is me telling the provider that the database has changed
+                      // final habit = HabitIsar()
+                      //   ..title = textController.text
+                      //   ..type = widget.type.index
+                      //   ..frequency = _selectedFrequency.index
+                      //   ..createdAt = DateTime.now();
+                      final habit = Habit(
+                        userId: '',
+                        title: textController.text,
+                        type: widget.type.index,
+                        createdAt: DateTime.now(),
+                        frequency: _selectedFrequency.index,
+                        reminderTime: selectedTime,
+                      );
 
-                    textController.clear();
-                    if (!context.mounted) return;
-                    context.pop(true);
-                  },
-                ),
-              ],
+                      await repository.addHabit(habit);
+
+                      ref.invalidate(habitsProvider);
+                      // this is me telling the provider that the database has changed
+
+                      textController.clear();
+                      if (!context.mounted) return;
+                      context.pop(true);
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),

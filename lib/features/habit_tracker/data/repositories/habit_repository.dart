@@ -25,7 +25,8 @@ class HabitRepository {
     final rawHabits = await _supabase
         .from('habits')
         .select()
-        .eq('user_id', userId);
+        .eq('user_id', userId)
+        .order('created_at', ascending: false);
     print('rawHabits: $rawHabits');
     final habits = rawHabits.map((habit) => Habit.fromMap(habit)).toList();
 

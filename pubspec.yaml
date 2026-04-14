@@ -27,6 +27,8 @@ dependencies:
   app_links: ^6.4.1
   package_info_plus: ^9.0.0
   shared_preferences: ^2.5.4
+  flutter_local_notifications: ^20.1.0
+  timezone: ^0.10.1
 
 dev_dependencies:
   flutter_test:
