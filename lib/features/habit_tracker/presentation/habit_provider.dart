@@ -16,11 +16,28 @@ class Habits extends _$Habits {
     return await _repo.getHabits();
   }
 
-  Future<void> addHabit(Habit habit) async {
+  Future<Habit> addHabit(Habit habit) async {
     final current = state.value ?? [];
     state = AsyncData([...current, habit]);
-    await _repo.addHabit(habit);
+    final addedHabit = await _repo.addHabit(habit);
+    return addedHabit;
     // ref.invalidateSelf();
+  }
+
+  // Future<void> addHabit(Habit habit) async {
+  //   final current = state.value ?? [];
+  //   state = AsyncData([...current, habit]);
+  //   await _repo.addHabit(habit);
+  //   // ref.invalidateSelf();
+  // }
+  Future<Habit> restoreDeletedHabit(Habit habit, int index) async {
+    final current = state.value ?? [];
+    var newList = [...current];
+    newList.insert(index, habit);
+    state = AsyncData(newList);
+
+    final restoredHabit = await _repo.addHabit(habit);
+    return restoredHabit;
   }
 
   Future<void> editHabit(Habit habit) async {
@@ -33,6 +50,7 @@ class Habits extends _$Habits {
     state = AsyncData(current.where((habit) => habit.id != habitId).toList());
     await _repo.deleteHabit(habitId);
     // ref.invalidateSelf();
+    // print(state.value);
   }
 }
 

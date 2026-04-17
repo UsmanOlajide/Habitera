@@ -20,7 +20,7 @@ final authStateProvider = AutoDisposeStreamProvider<AuthState>.internal(
 );
 
 typedef AuthStateRef = AutoDisposeStreamProviderRef<AuthState>;
-String _$isLoggedInHash() => r'91e7a26a943460eda86db9705c8c08539780a9c3';
+String _$isLoggedInHash() => r'ca5020903cba771f440f404e01af5657415717bb';
 
 /// See also [isLoggedIn].
 @ProviderFor(isLoggedIn)

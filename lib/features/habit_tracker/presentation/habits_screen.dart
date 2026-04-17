@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:habitera/constants/enums.dart';
 import 'package:habitera/constants/sizes.dart';
+import 'package:habitera/constants/texts.dart';
 import 'package:habitera/features/habit_tracker/data/models/habit.dart';
 import 'package:habitera/features/habit_tracker/data/models/habit_isar.dart';
 import 'package:habitera/features/habit_tracker/data/repositories/habit_repository.dart';
@@ -59,7 +60,7 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen> {
   @override
   Widget build(BuildContext context) {
     final habits = ref.watch(habitsProvider);
-
+    print('Habits in HabitsScreen: ${habits.value}');
     final doneHabitIdsAsync = ref.watch(doneHabitIdsProvider);
     final doneHabitIds = doneHabitIdsAsync.value ?? <String>{};
 
@@ -95,15 +96,36 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen> {
                     if (habits.isEmpty) {
                       return EmptyState();
                     }
-
-                    // return ElevatedButton(
-                    //   onPressed: () {
-                    //     NotificationService().showNotifications(
-                    //       title: 'Remember your habit',
-                    //       body: 'Time to: ',
-                    //     );
-                    //   },
-                    //   child: Text('Show notification'),
+                    //*  Testing purpose only
+                    // return Center(
+                    //   child: Column(
+                    //     mainAxisAlignment: MainAxisAlignment.center,
+                    //     children: [
+                    //       ElevatedButton(
+                    //         onPressed: () {
+                    //           NotificationService.showInstantNotifications(
+                    //             title: 'Habit Reminder',
+                    //             body: 'Time to: ',
+                    //           );
+                    //         },
+                    //         child: Text('Show Instant notification'),
+                    //       ),
+                    //       ElevatedButton(
+                    //         onPressed: () {
+                    //           NotificationService.scheduleReminder(
+                    //             id: 1,
+                    //             title: 'Scheduled Reminder',
+                    //             body: 'Time to work on your habit',
+                    //             hour: 11,
+                    //             minute: 40,
+                    //           );
+                    //           // title: 'Habit Reminder',
+                    //           // body: 'Time to: ',
+                    //         },
+                    //         child: Text('Show Scheduled notification'),
+                    //       ),
+                    //     ],
+                    //   ),
                     // );
 
                     return HabitListView(
@@ -177,8 +199,17 @@ class HabitListView extends ConsumerWidget {
             // print('Edit habit: ${habit.title}');
           },
           onTapDelete: () {
-            final deletedHabit = habit;
-            ref.read(habitsProvider.notifier).deleteHabit(deletedHabit.id);
+            final habitToDelete = habit;
+            final indexOfHabitToDelete = habits.indexOf(habitToDelete);
+
+            ref.read(habitsProvider.notifier).deleteHabit(habitToDelete.id);
+            // print('Habits after onTapDelete $habits');
+
+            if (habit.reminderTime != null) {
+              NotificationService.cancelNotification(
+                habitToDelete.notificationId!,
+              );
+            }
 
             if (!context.mounted) return;
 
@@ -191,7 +222,20 @@ class HabitListView extends ConsumerWidget {
                 action: SnackBarAction(
                   label: 'UNDO',
                   onPressed: () async {
-                    ref.read(habitsProvider.notifier).addHabit(habit);
+                    final restoredHabit = await ref
+                        .read(habitsProvider.notifier)
+                        .restoreDeletedHabit(
+                          habitToDelete,
+                          indexOfHabitToDelete,
+                        );
+
+                    NotificationService.scheduleReminder(
+                      id: restoredHabit.notificationId!,
+                      title: restoredHabit.title,
+                      body: reminderBody,
+                      hour: restoredHabit.reminderTime!.hour,
+                      minute: restoredHabit.reminderTime!.minute,
+                    );
 
                     messenger.showSnackBar(
                       SnackBar(

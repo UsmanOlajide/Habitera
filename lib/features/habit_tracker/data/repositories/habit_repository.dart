@@ -11,7 +11,18 @@ final userId = _supabase.auth.currentUser!.id;
 
 class HabitRepository {
   Future<Habit> addHabit(Habit habit) async {
-    final newHabit = habit.copyWith(userId: userId);
+    int? notificationId;
+
+    if (habit.reminderTime != null) {
+      notificationId = generateNotificationId();
+      // print(notificationId);
+    }
+
+    final newHabit = habit.copyWith(
+      userId: userId,
+      notificationId: notificationId,
+    );
+
     final result = await _supabase
         .from('habits')
         .insert(newHabit.toMap())
@@ -27,7 +38,7 @@ class HabitRepository {
         .select()
         .eq('user_id', userId)
         .order('created_at', ascending: false);
-    print('rawHabits: $rawHabits');
+    print('Habits from getHabis in Repository: $rawHabits');
     final habits = rawHabits.map((habit) => Habit.fromMap(habit)).toList();
 
     return habits;
@@ -43,6 +54,10 @@ class HabitRepository {
 
   Future<void> deleteHabit(String habitId) async {
     await _supabase.from('habits').delete().eq('id', habitId);
+  }
+
+  int generateNotificationId() {
+    return DateTime.now().millisecondsSinceEpoch % 100000;
   }
 }
 

@@ -23,7 +23,7 @@ void main() async {
     anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
   );
 
-  await NotificationService().initNotification();
+  await NotificationService.initNotification();
 
   // final prefs = await SharedPreferences.getInstance();
   // prefs.clear();

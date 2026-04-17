@@ -189,7 +189,7 @@ class _CheckinDayKeysForHabitProviderElement
   String get habitId => (origin as CheckinDayKeysForHabitProvider).habitId;
 }
 
-String _$habitsHash() => r'38e42996981a73d8c494a0ee72425f8e7152b999';
+String _$habitsHash() => r'10aca5d4f3f4ff3f6ce955110138cb6e8b0e8eb8';
 
 /// See also [Habits].
 @ProviderFor(Habits)

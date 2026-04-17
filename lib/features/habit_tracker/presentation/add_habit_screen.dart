@@ -9,6 +9,7 @@ import 'package:habitera/features/habit_tracker/data/models/habit.dart';
 import 'package:habitera/features/habit_tracker/data/models/habit_isar.dart';
 import 'package:habitera/features/habit_tracker/presentation/habit_provider.dart';
 import 'package:habitera/features/habit_tracker/presentation/widgets/custom_switch.dart';
+import 'package:habitera/notification_service.dart';
 import 'package:habitera/utils/extensions.dart';
 
 class AddHabitScreen extends ConsumerStatefulWidget {
@@ -201,7 +202,7 @@ class _AddHabitScreenState extends ConsumerState<AddHabitScreen> {
                       // ),
                       // Text(selectedTime.format(context)),
                     ],
-                    // setState(() {});
+                    // setState(() {});//
                     // print(timeOfDay);
                   ),
                   //TODO: Find a way to adjust this
@@ -236,7 +237,17 @@ class _AddHabitScreenState extends ConsumerState<AddHabitScreen> {
                         reminderTime: selectedTime,
                       );
 
-                      await repository.addHabit(habit);
+                      final addedHabit = await repository.addHabit(habit);
+
+                      if (addedHabit.reminderTime != null) {               
+                        NotificationService.scheduleReminder(
+                          id: addedHabit.notificationId!,
+                          title: addedHabit.title,
+                          body: "Don't break your streak 🔥",
+                          hour: addedHabit.reminderTime!.hour,
+                          minute: addedHabit.reminderTime!.minute,
+                        );
+                      }
 
                       ref.invalidate(habitsProvider);
                       // this is me telling the provider that the database has changed

@@ -27,7 +27,6 @@ class _HabitDetailsScreenState extends ConsumerState<HabitDetailsScreen> {
     );
     final checkinDayKeysForHabit = checkinDayKeysForHabitAsync.value ?? <int>{};
 
-
     final doneHabitIdsAsync = ref.watch(doneHabitIdsProvider);
     final isDone =
         doneHabitIdsAsync.valueOrNull?.contains(widget.habit.id) ?? false;
@@ -38,7 +37,7 @@ class _HabitDetailsScreenState extends ConsumerState<HabitDetailsScreen> {
         : checkinDayKeysForHabit.where((dayKey) => dayKey != today).toSet();
 
     final streak = calculateStreak(optimizedCheckinDayKeys);
-    
+
     return Scaffold(
       appBar: AppBar(title: Text(widget.habit.title)),
       body: Padding(
@@ -132,6 +131,10 @@ class _HabitDetailsScreenState extends ConsumerState<HabitDetailsScreen> {
             kSizedBoxH5,
             LastSevenDaysDateSection(
               checkinDayKeysForHabit: optimizedCheckinDayKeys,
+            ),
+            Text(
+              '${widget.habit.reminderTime}',
+              style: context.body.copyWith(fontWeight: FontWeight.w500),
             ),
           ],
         ),

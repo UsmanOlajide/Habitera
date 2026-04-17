@@ -9,6 +9,7 @@ class Habit {
     required this.createdAt,
     required this.frequency,
     this.reminderTime,
+    this.notificationId,
   });
 
   final String id;
@@ -18,6 +19,7 @@ class Habit {
   final DateTime createdAt;
   final int frequency;
   final TimeOfDay? reminderTime;
+  final int? notificationId;
 
   Habit copyWith({
     String? id,
@@ -27,6 +29,7 @@ class Habit {
     DateTime? createdAt,
     int? frequency,
     TimeOfDay? reminderTime,
+    int? notificationId,
   }) {
     return Habit(
       id: id ?? this.id,
@@ -36,6 +39,7 @@ class Habit {
       createdAt: createdAt ?? this.createdAt,
       frequency: frequency ?? this.frequency,
       reminderTime: reminderTime ?? this.reminderTime,
+      notificationId: notificationId ?? this.notificationId,
     );
   }
 
@@ -49,6 +53,7 @@ class Habit {
       'frequency': frequency,
       'reminder_hour': reminderTime?.hour,
       'reminder_minute': reminderTime?.minute,
+      'notification_id': notificationId,
     };
   }
 
@@ -67,8 +72,12 @@ class Habit {
               minute: map['reminder_minute'] as int,
             )
           : null,
-      // reminderTime: TimeOfDay(hour: map['reminder_hour'] as int, minute: map['reminder_minute'] as int)
+      notificationId: map['notification_id'] as int?,
     );
+  }
+  @override
+  String toString() {
+    return 'Habit(id: $id, userId: $userId, title: $title, type: $type, createdAt: $createdAt, frequency: $frequency, reminderTime: $reminderTime, notificationId: $notificationId)';
   }
 }
   // String toJson() => json.encode(toMap());
@@ -76,10 +85,6 @@ class Habit {
   // factory Habit.fromJson(String source) =>
   //     Habit.fromMap(json.decode(source) as Map<String, dynamic>);
 
-  // @override
-  // String toString() {
-  //   return 'Habit(id: $id, userId: $userId, title: $title, type: $type, createdAt: $createdAt, frequency: $frequency)';
-  // }
 
   // @override
   // bool operator ==(covariant Habit other) {

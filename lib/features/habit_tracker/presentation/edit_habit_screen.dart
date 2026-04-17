@@ -7,6 +7,7 @@ import 'package:habitera/constants/sizes.dart';
 import 'package:habitera/features/habit_tracker/data/models/habit.dart';
 import 'package:habitera/features/habit_tracker/data/models/habit_isar.dart';
 import 'package:habitera/features/habit_tracker/presentation/habit_provider.dart';
+import 'package:habitera/features/habit_tracker/presentation/widgets/custom_switch.dart';
 import 'package:habitera/utils/extensions.dart';
 
 class EditHabitScreen extends ConsumerStatefulWidget {
@@ -43,6 +44,11 @@ class _EditHabitScreenState extends ConsumerState<EditHabitScreen> {
     ),
   ];
 
+  var switchValue = false;
+
+  // var selectedTime = TimeOfDay(hour: 8, minute: 0);
+  TimeOfDay? _timeOfDay;
+
   @override
   void initState() {
     super.initState();
@@ -60,6 +66,7 @@ class _EditHabitScreenState extends ConsumerState<EditHabitScreen> {
   @override
   Widget build(BuildContext context) {
     print(widget.habit);
+    var selectedTime = TimeOfDay(hour: widget.habit.reminderTime!.hour, minute: widget.habit.reminderTime!.minute);
     return Scaffold(
       appBar: AppBar(title: Text('Edit Habit')),
       body: SafeArea(
@@ -86,10 +93,7 @@ class _EditHabitScreenState extends ConsumerState<EditHabitScreen> {
                     kSizedBoxH8,
                     Align(
                       alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Frequency',
-                        style: context.formTitle,
-                      ),
+                      child: Text('Frequency', style: context.formTitle),
                     ),
                     kSizedBoxH8,
                     Align(
@@ -116,6 +120,72 @@ class _EditHabitScreenState extends ConsumerState<EditHabitScreen> {
                         ),
                       ),
                     ),
+                    kSizedBoxH8,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Set Reminder', style: context.formTitle),
+                        // Transform.scale(
+                        //   scaleX: 0.9,
+                        //   scaleY: 0.8,
+                        //   // scale: 0.8,
+                        //   child: Switch(
+                        //     padding: EdgeInsets.zero,
+                        //     materialTapTargetSize:
+                        //         MaterialTapTargetSize.shrinkWrap,
+                        //     // minimumSize: Size.zero,
+                        //     value: switchValue,
+                        //     onChanged: (newValue) {
+                        //       setState(() {
+                        //         switchValue = newValue;
+                        //       });
+                        //     },
+                        //   ),
+                        // ),
+                        CustomSwitch(
+                          width: 47,
+                          height: 26,
+                          value: switchValue,
+                          onChanged: (newValue) {
+                            setState(() {
+                              switchValue = newValue;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                    kSizedBoxH8,
+                    if (switchValue == true)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(Icons.access_time_rounded),
+                              kSizedBoxW8,
+                              Text(
+                                selectedTime.format(context),
+                                style: context.body.copyWith(fontSize: 17),
+                              ),
+                            ],
+                          ),
+                          IconButton(
+                            onPressed: () async {
+                              _timeOfDay = await showTimePicker(
+                                context: context,
+                                initialTime: TimeOfDay.now(),
+                                initialEntryMode: TimePickerEntryMode.dial,
+                              );
+                              if (_timeOfDay != null) {
+                                setState(() {
+                                  selectedTime = _timeOfDay!;
+                                });
+                              }
+                            },
+                            icon: Icon(Icons.edit_rounded),
+                          ),
+                        ],
+                      ),
                   ],
                 ),
                 AddHabitButton(

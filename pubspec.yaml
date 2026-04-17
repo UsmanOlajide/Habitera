@@ -29,6 +29,7 @@ dependencies:
   shared_preferences: ^2.5.4
   flutter_local_notifications: ^20.1.0
   timezone: ^0.10.1
+  flutter_timezone: ^5.0.2
 
 dev_dependencies:
   flutter_test:
@@ -42,7 +43,7 @@ dev_dependencies:
 
 flutter_launcher_icons:
   android: true
-  ios: false
+  ios: true
   image_path: "assets/habitera_icon.png"
   adaptive_icon_background: "#38b6ff"
   adaptive_icon_foreground: "assets/habitera_icon.png"
