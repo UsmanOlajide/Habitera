@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -5,12 +8,14 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:habitera/constants/color_picker.dart';
 import 'package:habitera/constants/enums.dart';
 import 'package:habitera/constants/sizes.dart';
+import 'package:habitera/constants/texts.dart';
 import 'package:habitera/features/habit_tracker/data/models/habit.dart';
 import 'package:habitera/features/habit_tracker/data/models/habit_isar.dart';
 import 'package:habitera/features/habit_tracker/presentation/habit_provider.dart';
 import 'package:habitera/features/habit_tracker/presentation/widgets/custom_switch.dart';
 import 'package:habitera/notification_service.dart';
 import 'package:habitera/utils/extensions.dart';
+import 'package:habitera/utils/time_picker.dart';
 
 class AddHabitScreen extends ConsumerStatefulWidget {
   const AddHabitScreen({super.key, required this.type});
@@ -54,7 +59,6 @@ class _AddHabitScreenState extends ConsumerState<AddHabitScreen> {
   }
 
   var selectedTime = TimeOfDay(hour: 8, minute: 0);
-  TimeOfDay? _timeOfDay;
 
   var switchValue = false;
 
@@ -168,42 +172,16 @@ class _AddHabitScreenState extends ConsumerState<AddHabitScreen> {
                             ),
                             IconButton(
                               onPressed: () async {
-                                _timeOfDay = await showTimePicker(
-                                  context: context,
-                                  initialTime: TimeOfDay.now(),
-                                  initialEntryMode: TimePickerEntryMode.dial,
-                                );
-                                if (_timeOfDay != null) {
-                                  setState(() {
-                                    selectedTime = _timeOfDay!;
-                                  });
+                                final picked = await pickTime(context, selectedTime);
+                                if (picked != null) {
+                                  setState(() => selectedTime = picked);
                                 }
                               },
                               icon: Icon(Icons.edit_rounded),
                             ),
                           ],
                         ),
-                      // TextButton(
-                      //   onPressed: () async {
-                      //     _timeOfDay = await showTimePicker(
-                      //       context: context,
-                      //       initialTime: TimeOfDay.now(),
-                      //       initialEntryMode: TimePickerEntryMode.dial,
-                      //     );
-
-                      //     if (_timeOfDay != null) {
-                      //       setState(() {
-                      //         selectedTime = _timeOfDay!;
-                      //       });
-                      //     }
-                      //   },
-
-                      //   child: Text('Set a reminder'),
-                      // ),
-                      // Text(selectedTime.format(context)),
                     ],
-                    // setState(() {});//
-                    // print(timeOfDay);
                   ),
                   //TODO: Find a way to adjust this
                   SizedBox(height: 180),
@@ -234,23 +212,22 @@ class _AddHabitScreenState extends ConsumerState<AddHabitScreen> {
                         type: widget.type.index,
                         createdAt: DateTime.now(),
                         frequency: _selectedFrequency.index,
-                        reminderTime: selectedTime,
+                        reminderTime: switchValue ? selectedTime : null,
                       );
 
                       final addedHabit = await repository.addHabit(habit);
 
-                      if (addedHabit.reminderTime != null) {               
+                      if (addedHabit.reminderTime != null) {
                         NotificationService.scheduleReminder(
                           id: addedHabit.notificationId!,
                           title: addedHabit.title,
-                          body: "Don't break your streak 🔥",
+                          body: reminderBody,
                           hour: addedHabit.reminderTime!.hour,
                           minute: addedHabit.reminderTime!.minute,
                         );
                       }
 
                       ref.invalidate(habitsProvider);
-                      // this is me telling the provider that the database has changed
 
                       textController.clear();
                       if (!context.mounted) return;

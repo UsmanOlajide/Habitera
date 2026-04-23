@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+const _keep = Object();
+
 class Habit {
   Habit({
     this.id = "",
@@ -28,8 +30,8 @@ class Habit {
     int? type,
     DateTime? createdAt,
     int? frequency,
-    TimeOfDay? reminderTime,
-    int? notificationId,
+    Object? reminderTime = _keep,
+    Object? notificationId = _keep,
   }) {
     return Habit(
       id: id ?? this.id,
@@ -38,8 +40,8 @@ class Habit {
       type: type ?? this.type,
       createdAt: createdAt ?? this.createdAt,
       frequency: frequency ?? this.frequency,
-      reminderTime: reminderTime ?? this.reminderTime,
-      notificationId: notificationId ?? this.notificationId,
+      reminderTime: reminderTime == _keep ? this.reminderTime : reminderTime as TimeOfDay?,
+      notificationId: notificationId == _keep ? this.notificationId : notificationId as int?,
     );
   }
 

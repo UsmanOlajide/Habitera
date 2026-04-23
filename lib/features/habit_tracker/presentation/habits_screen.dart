@@ -311,6 +311,7 @@ class HabitTile extends StatelessWidget {
       ),
       child: InkWell(
         onTap: () {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
           context.goNamed(AppRoutes.habitDetailsScreen.name, extra: habit);
         },
         child: Container(

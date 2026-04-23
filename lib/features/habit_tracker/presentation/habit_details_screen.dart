@@ -60,41 +60,48 @@ class _HabitDetailsScreenState extends ConsumerState<HabitDetailsScreen> {
               ),
             ),
             kSizedBoxH20,
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-              children: [
-                TypeChip(type: widget.habit.type),
-                Text(
-                  'Daily • ${createdDate(widget.habit.createdAt)}',
-                  style: context.small.copyWith(
-                    // color: Colors.black38,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+            Container(
+              padding: EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade100,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      TypeChip(type: widget.habit.type),
+                      Text(
+                        'Daily · ${createdDate(widget.habit.createdAt)}',
+                        style: context.body.copyWith(
+                          fontWeight: FontWeight.w500,
+                          // color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              ],
+                  Divider(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Reminder',
+                        style: context.body.copyWith(
+                          fontSize: 15.0,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      Text(
+                        widget.habit.reminderTime?.format(context) ?? 'Off',
+                        style: context.body.copyWith(fontSize: 15.0),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-            kSizedBoxH10,
-            // Row(
-            //   children: [
-            //     Checkbox(
-            //       value: isDone,
-            //       activeColor: Colors.green,
-            //       onChanged: (value) async {
-            //         await ref
-            //             .read(doneHabitIdsProvider.notifier)
-            //             .toggleDone(widget.habit.id);
-            //         // ref.invalidate(
-            //         //   checkinDayKeysForHabitProvider(widget.habit.id),
-            //         // );
-            //       },
-            //     ),
-            //     Text(
-            //       'Mark as done',
-            //       style: context.textTheme.bodyLarge?.copyWith(),
-            //     ),
-            //   ],
-            // ),
+            kSizedBoxH20,
             GestureDetector(
               onTap: () => ref
                   .read(doneHabitIdsProvider.notifier)
@@ -114,9 +121,6 @@ class _HabitDetailsScreenState extends ConsumerState<HabitDetailsScreen> {
                     fontWeight: FontWeight.w500,
                     color: isDone ? Colors.white : Colors.black,
                   ),
-                  // style: context.textTheme.bodyLarge?.copyWith(
-                  //   color: isDone ? Colors.white : Colors.black,
-                  // ),
                 ),
               ),
             ),
@@ -125,16 +129,14 @@ class _HabitDetailsScreenState extends ConsumerState<HabitDetailsScreen> {
             //todo- change fontWeight to w500
             Text(
               'Last 7 days',
-              style: context.body.copyWith(fontWeight: FontWeight.w500),
+              style: context.body.copyWith(
+                fontSize: 16.0,
+                fontWeight: FontWeight.w700,
+              ),
             ),
-            // Text('Last 7 days', style: context.textTheme.bodyLarge?.copyWith()),
             kSizedBoxH5,
             LastSevenDaysDateSection(
               checkinDayKeysForHabit: optimizedCheckinDayKeys,
-            ),
-            Text(
-              '${widget.habit.reminderTime}',
-              style: context.body.copyWith(fontWeight: FontWeight.w500),
             ),
           ],
         ),
@@ -145,3 +147,24 @@ class _HabitDetailsScreenState extends ConsumerState<HabitDetailsScreen> {
 
 //. generate the last 7 days including today
 //. hint: I can use dayKey but how?
+
+           // Row(
+            //   children: [
+            //     Checkbox(
+            //       value: isDone,
+            //       activeColor: Colors.green,
+            //       onChanged: (value) async {
+            //         await ref
+            //             .read(doneHabitIdsProvider.notifier)
+            //             .toggleDone(widget.habit.id);
+            //         // ref.invalidate(
+            //         //   checkinDayKeysForHabitProvider(widget.habit.id),
+            //         // );
+            //       },
+            //     ),
+            //     Text(
+            //       'Mark as done',
+            //       style: context.textTheme.bodyLarge?.copyWith(),
+            //     ),
+            //   ],
+            // ),

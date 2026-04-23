@@ -1,5 +1,6 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:timezone/data/latest.dart';
 import 'package:timezone/timezone.dart';
 // import 'package:timezone/timezone.dart' as tz;
@@ -30,9 +31,18 @@ class NotificationService {
     );
 
     await notificationsPlugin.initialize(settings: initSettings);
+    await requestNotificationPermission();
   }
 
- static NotificationDetails notificationDetails() {
+  static Future<void> requestNotificationPermission() async {
+    final status = await Permission.notification.status;
+
+    if (!status.isGranted) {
+      await Permission.notification.request();
+    }
+  }
+
+  static NotificationDetails notificationDetails() {
     final androidNotificationDetails = AndroidNotificationDetails(
       'default_channel',
       'Default Channel',

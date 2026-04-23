@@ -6,6 +6,12 @@ import 'package:habitera/isar_service.dart';
 // import 'package:isar/isar.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+//* REVIEW and Implement:
+// int? notificationId = habit.notificationId;
+
+// if (habit.reminderTime != null && notificationId == null) {
+//   notificationId = generateNotificationId();
+// }
 final _supabase = Supabase.instance.client;
 final userId = _supabase.auth.currentUser!.id;
 
@@ -48,6 +54,9 @@ class HabitRepository {
     final editedHabitItems = {
       'title': habit.title,
       'frequency': habit.frequency,
+      'reminder_hour': habit.reminderTime?.hour,
+      'reminder_minute': habit.reminderTime?.minute,
+      'notification_id': habit.notificationId,
     };
     await _supabase.from('habits').update(editedHabitItems).eq('id', habit.id);
   }
