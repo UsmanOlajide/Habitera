@@ -83,11 +83,7 @@ GoRouter appRouter(AppRouterRef ref) {
 
       final hasSeenOnboarding =
           ref.read(hasSeenOnboardingProvider).value ?? true;
-      // final hasSeenOnboarding =
-      //     ref.read(hasSeenOnboardingProvider).value ?? true;
-      // ref.read(hasSeenOnboardingProvider).value ?? true;
 
-      // final authEvent = ref.read(authStateProvider).value?.event;
       final onOnboardingScreen =
           state.matchedLocation == AppRoutes.onboardingScreen.path;
 
@@ -109,10 +105,6 @@ GoRouter appRouter(AppRouterRef ref) {
       if (!hasSeenOnboarding && !onOnboardingScreen) {
         return AppRoutes.onboardingScreen.path;
       }
-
-      // if (hasSeenOnboarding && onOnboardingScreen) {
-      //   return AppRoutes.loginScreen.path;
-      // }
 
       if (isPasswordRecovery) {
         return AppRoutes.resetPasswordScreen.path;

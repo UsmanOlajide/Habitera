@@ -24,12 +24,6 @@ class Habits extends _$Habits {
     // ref.invalidateSelf();
   }
 
-  // Future<void> addHabit(Habit habit) async {
-  //   final current = state.value ?? [];
-  //   state = AsyncData([...current, habit]);
-  //   await _repo.addHabit(habit);
-  //   // ref.invalidateSelf();
-  // }
   Future<Habit> restoreDeletedHabit(Habit habit, int index) async {
     final current = state.value ?? [];
     var newList = [...current];

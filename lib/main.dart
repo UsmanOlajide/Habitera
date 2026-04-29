@@ -21,6 +21,10 @@ void main() async {
   await Supabase.initialize(
     url: dotenv.env['SUPABASE_URL']!,
     anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
+    // when app is launched from cold start, exchange token from URL, android config
+    authOptions: FlutterAuthClientOptions(
+      authFlowType: AuthFlowType.pkce
+    )
   );
 
   await NotificationService.initNotification();
@@ -87,3 +91,5 @@ class _MyAppState extends ConsumerState<MyApp> {
     //         storePassword = keystoreProperties["storePassword"] as String
     //     }
     // }
+
+  
