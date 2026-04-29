@@ -7,7 +7,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'habit_provider.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class Habits extends _$Habits {
   late HabitRepository _repo;
   @override
@@ -21,7 +21,6 @@ class Habits extends _$Habits {
     state = AsyncData([...current, habit]);
     final addedHabit = await _repo.addHabit(habit);
     return addedHabit;
-    // ref.invalidateSelf();
   }
 
   Future<Habit> restoreDeletedHabit(Habit habit, int index) async {
@@ -34,17 +33,30 @@ class Habits extends _$Habits {
     return restoredHabit;
   }
 
-  Future<void> editHabit(Habit habit) async {
-    await _repo.editHabit(habit);
-    ref.invalidateSelf();
+  Future<void> editHabit(Habit habitToEdit) async {
+    final current = state.value ?? [];
+    final previousState = state;
+    state = AsyncData(
+      current.map((habit) {
+        return habit.id == habitToEdit.id ? habitToEdit : habit;
+      }).toList(),
+    );
+    try {
+      await _repo.editHabit(habitToEdit);
+    } catch (e) {
+      state = previousState;
+    }
   }
 
   Future<void> deleteHabit(String habitId) async {
     final current = state.value ?? [];
+    final previousState = state;
     state = AsyncData(current.where((habit) => habit.id != habitId).toList());
-    await _repo.deleteHabit(habitId);
-    // ref.invalidateSelf();
-    // print(state.value);
+    try {
+      await _repo.deleteHabit(habitId);
+    } catch (e) {
+      state = previousState;
+    }
   }
 }
 
@@ -58,7 +70,7 @@ CheckinRepository checkinRepository(CheckinRepositoryRef ref) {
   return CheckinRepository();
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 class DoneHabitIds extends _$DoneHabitIds {
   late CheckinRepository _repo;
 

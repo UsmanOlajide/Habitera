@@ -189,12 +189,11 @@ class _CheckinDayKeysForHabitProviderElement
   String get habitId => (origin as CheckinDayKeysForHabitProvider).habitId;
 }
 
-String _$habitsHash() => r'10aca5d4f3f4ff3f6ce955110138cb6e8b0e8eb8';
+String _$habitsHash() => r'a5ecb839149ed2739da08329858426c8a2f79a1a';
 
 /// See also [Habits].
 @ProviderFor(Habits)
-final habitsProvider =
-    AutoDisposeAsyncNotifierProvider<Habits, List<Habit>>.internal(
+final habitsProvider = AsyncNotifierProvider<Habits, List<Habit>>.internal(
   Habits.new,
   name: r'habitsProvider',
   debugGetCreateSourceHash:
@@ -203,13 +202,13 @@ final habitsProvider =
   allTransitiveDependencies: null,
 );
 
-typedef _$Habits = AutoDisposeAsyncNotifier<List<Habit>>;
-String _$doneHabitIdsHash() => r'cb2739960d4a9c412d2aeaf82f18d6f7a215f994';
+typedef _$Habits = AsyncNotifier<List<Habit>>;
+String _$doneHabitIdsHash() => r'3d624838ee71332f1fb5d9e5b4648bdd4f5d70b9';
 
 /// See also [DoneHabitIds].
 @ProviderFor(DoneHabitIds)
 final doneHabitIdsProvider =
-    AutoDisposeAsyncNotifierProvider<DoneHabitIds, Set<String>>.internal(
+    AsyncNotifierProvider<DoneHabitIds, Set<String>>.internal(
   DoneHabitIds.new,
   name: r'doneHabitIdsProvider',
   debugGetCreateSourceHash:
@@ -218,6 +217,6 @@ final doneHabitIdsProvider =
   allTransitiveDependencies: null,
 );
 
-typedef _$DoneHabitIds = AutoDisposeAsyncNotifier<Set<String>>;
+typedef _$DoneHabitIds = AsyncNotifier<Set<String>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
