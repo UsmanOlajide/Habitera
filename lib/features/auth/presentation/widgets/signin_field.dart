@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:habitera/constants/color_picker.dart';
 import 'package:habitera/constants/sizes.dart';
 import 'package:habitera/utils/extensions.dart';
 

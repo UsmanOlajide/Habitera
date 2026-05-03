@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:habitera/constants/color_picker.dart';
 import 'package:habitera/constants/sizes.dart';
 import 'package:habitera/constants/texts.dart';
+import 'package:habitera/features/auth/presentation/widgets/auth_bottom_section.dart';
 import 'package:habitera/features/auth/presentation/auth_provider.dart';
-import 'package:habitera/features/auth/signin_field.dart';
+import 'package:habitera/features/auth/presentation/widgets/auth_circular_progress.dart';
+import 'package:habitera/features/auth/presentation/widgets/signin_field.dart';
 import 'package:habitera/router/app_router.dart';
 import 'package:habitera/utils/extensions.dart';
 import 'package:habitera/utils/validators.dart';
@@ -22,7 +22,7 @@ class LoginScreen extends ConsumerStatefulWidget {
 class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  var isLoading = false;
+  var _isLoading = false;
   var _obscureText = true;
   final _formKey = GlobalKey<FormState>();
 
@@ -36,7 +36,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     print('is now on Login Screen');
-    final labelFontSize = 17.0;
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -94,9 +93,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     alignment: Alignment.centerRight,
                     child: TextButton(
                       onPressed: () {
-                        // context.pushNamed(
-                        //   AppRoutes.forgotPasswordScreen.name,
-                        // );
                         context.goNamed(AppRoutes.forgotPasswordScreen.name);
                       },
                       style: TextButton.styleFrom(
@@ -114,13 +110,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: isLoading
+                      onPressed: _isLoading
                           ? null
                           : () async {
-                            FocusScope.of(context).unfocus();
+                              FocusScope.of(context).unfocus();
                               if (_formKey.currentState!.validate()) {
                                 setState(() {
-                                  isLoading = true;
+                                  _isLoading = true;
                                 });
                                 try {
                                   final authService = ref.read(
@@ -146,7 +142,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                   }
                                 } finally {
                                   setState(() {
-                                    isLoading = false;
+                                    _isLoading = false;
                                   });
                                   // print(ref.read(isLoggedInProvider));
                                 }
@@ -155,47 +151,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               return;
                             },
                       style: ElevatedButton.styleFrom(shape: StadiumBorder()),
-                      child: isLoading
-                          ? SizedBox(
-                              width: 20.0,
-                              height: 20.0,
-                              child: CircularProgressIndicator(
-                                color: ColorPicker.white,
-                              ),
-                            )
+                      child: _isLoading
+                          ? AuthCircularProgress()
                           : Text('Login'),
                     ),
                   ),
                   kSizedBoxH10,
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Don't have an account?",
-                        style: context.body.copyWith(
-                          fontSize: labelFontSize,
-                          color: const Color.fromARGB(255, 115, 114, 114),
-                        ),
-                      ),
-                      kSizedBoxW4,
-                      TextButton(
-                        onPressed: () {
-                          context.goNamed(AppRoutes.signupScreen.name);
-                        },
-                        style: TextButton.styleFrom(
-                          padding: EdgeInsets.zero,
-                          minimumSize: Size.zero,
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        ),
-                        child: Text(
-                          'Create one',
-                          style: context.body.copyWith(
-                            fontWeight: FontWeight.w600,
-                            fontSize: labelFontSize,
-                          ),
-                        ),
-                      ),
-                    ],
+                  AuthBottomSection(
+                    leftText: "Don't have an account?",
+                    rightText: 'Create one',
+                    onPressed: () =>
+                        context.goNamed(AppRoutes.signupScreen.name),
                   ),
                 ],
               ),

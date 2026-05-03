@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:habitera/constants/color_picker.dart';
 import 'package:habitera/constants/sizes.dart';
 import 'package:habitera/features/auth/presentation/auth_provider.dart';
-import 'package:habitera/features/auth/presentation/login_screen.dart';
-import 'package:habitera/features/auth/signin_field.dart';
+import 'package:habitera/features/auth/presentation/widgets/auth_circular_progress.dart';
+import 'package:habitera/features/auth/presentation/widgets/signin_field.dart';
 import 'package:habitera/utils/extensions.dart';
 import 'package:habitera/utils/validators.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -111,13 +111,7 @@ class _ForgotpasswordScreenState extends ConsumerState<ForgotpasswordScreen> {
                       },
                 style: ElevatedButton.styleFrom(shape: StadiumBorder()),
                 child: _isLoading
-                    ? SizedBox(
-                        width: 20.0,
-                        height: 20.0,
-                        child: CircularProgressIndicator(
-                          color: ColorPicker.white,
-                        ),
-                      )
+                    ? AuthCircularProgress()
                     : Text('Send'),
               ),
             ],

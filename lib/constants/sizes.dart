@@ -17,3 +17,6 @@ const kSizedBoxW4 = SizedBox(width: 4.0);
 const kSizedBoxW8 = SizedBox(width: 8.0);
 const EdgeInsetsGeometry padAll16 = EdgeInsets.all(16.0);
 // const kHabitsScreenPadding = EdgeInsets.symmetric(horizontal: 16.0);
+
+//* fontSize
+const labelFontSize = 17.0;

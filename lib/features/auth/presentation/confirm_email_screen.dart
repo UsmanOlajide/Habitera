@@ -3,10 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:habitera/constants/color_picker.dart';
 import 'package:habitera/constants/sizes.dart';
 import 'package:habitera/features/auth/presentation/auth_provider.dart';
+import 'package:habitera/features/auth/presentation/widgets/auth_circular_progress.dart';
 import 'package:habitera/router/app_router.dart';
 import 'package:habitera/utils/extensions.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -123,13 +122,7 @@ class _ConfirmEmailScreenState extends ConsumerState<ConfirmEmailScreen> {
                         }
                       },
                 child: _isLoading
-                    ? SizedBox(
-                        width: 20.0,
-                        height: 20.0,
-                        child: CircularProgressIndicator(
-                          color: ColorPicker.white,
-                        ),
-                      )
+                    ? AuthCircularProgress()
                     : Text(
                         _countdown > 0
                             ? 'Resend in ${_countdown}s'
